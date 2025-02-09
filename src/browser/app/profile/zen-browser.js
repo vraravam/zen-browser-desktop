@@ -158,7 +158,6 @@ pref('zen.view.hide-window-controls', true);
 pref('zen.view.experimental-no-window-controls', false);
 
 pref('zen.tabs.dim-pending', true);
-pref('zen.tabs.newtab-on-middle-click', true);
 
 pref('zen.keyboard.shortcuts.enabled', true);
 pref('zen.keyboard.shortcuts.version', 0); // Empty string means default shortcuts
@@ -184,7 +183,6 @@ pref('zen.sidebar.close-on-blur', true);
 pref('zen.sidebar.max-webpanels', 8);
 
 // Zen Split View
-pref('zen.splitView.working', false);
 pref('zen.splitView.min-resize-width', 7);
 pref('zen.splitView.change-on-hover', false);
 pref('zen.splitView.rearrange-hover-size', 24);

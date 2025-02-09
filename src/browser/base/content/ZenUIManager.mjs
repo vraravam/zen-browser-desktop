@@ -221,22 +221,8 @@ var gZenVerticalTabsManager = {
 
     const tabs = document.getElementById('tabbrowser-tabs');
 
-    XPCOMUtils.defineLazyPreferenceGetter(this, 'canOpenTabOnMiddleClick', 'zen.tabs.newtab-on-middle-click', true);
-
     if (!this.isWindowsStyledButtons) {
       document.documentElement.setAttribute('zen-window-buttons-reversed', true);
-    }
-
-    if (tabs) {
-      tabs.addEventListener('mouseup', this.openNewTabOnTabsMiddleClick.bind(this));
-    }
-  },
-
-  openNewTabOnTabsMiddleClick(event) {
-    if (event.button === 1 && event.target.id === 'tabbrowser-tabs' && this.canOpenTabOnMiddleClick) {
-      document.getElementById('cmd_newNavigatorTabNoEvent').doCommand();
-      event.stopPropagation();
-      event.preventDefault();
     }
   },
 
