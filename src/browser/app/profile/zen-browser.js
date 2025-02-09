@@ -103,15 +103,13 @@ pref('zen.rice.share.notice.accepted', false);
 pref('zen.theme.border-radius', 10); // In pixels
 #else
 #ifdef XP_WIN
-pref('zen.theme.border-radius', 12); // In pixels
+pref('zen.theme.border-radius', 10); // In pixels
 #else
 pref('zen.theme.border-radius', 8); // In pixels
 #endif
 #endif
 
 pref('zen.theme.color-prefs.use-workspace-colors', true);
-pref('zen.theme.color-prefs.amoled', false);
-pref('zen.theme.color-prefs.colorful', false);
 
 pref('zen.view.compact.hide-tabbar', true);
 pref('zen.view.compact.hide-toolbar', false);
