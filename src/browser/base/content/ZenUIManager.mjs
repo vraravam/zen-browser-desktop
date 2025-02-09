@@ -232,7 +232,8 @@ var gZenVerticalTabsManager = {
       tabs.addEventListener('mouseup', this.openNewTabOnTabsMiddleClick.bind(this));
     }
 
-    this._insertDoubleClickListenerPinnedTabs();
+    //this._insertDoubleClickListenerPinnedTabs();
+    gBrowser.tabContainer.addEventListener('dblclick', this.renameTabStart.bind(this));
   },
 
   openNewTabOnTabsMiddleClick(event) {
@@ -601,12 +602,12 @@ var gZenVerticalTabsManager = {
     target.appendChild(child);
   },
 
-  _insertDoubleClickListenerPinnedTabs() {
-    const tabs = gBrowser.tabs;
-    for (const tab of tabs) {
-      tab.addEventListener('dblclick', this.renameTabStart.bind(this));
-    }
-  },
+  //_insertDoubleClickListenerPinnedTabs() {
+  //  const tabs = gBrowser.tabs;
+  //  for (const tab of tabs) {
+  //    tab.addEventListener('dblclick', this.renameTabStart.bind(this));
+  //  }
+  //},
 
   renameTabKeydown(event) {
     if (event.key === 'Enter') {
@@ -647,7 +648,7 @@ var gZenVerticalTabsManager = {
   renameTabStart(event) {
     if (this._tabEdited) return;
     this._tabEdited = event.target.closest('.tabbrowser-tab');
-    if (!this._tabEdited.pinned) {
+    if (!this._tabEdited || !this._tabEdited.pinned) {
       this._tabEdited = null;
       return;
     }
