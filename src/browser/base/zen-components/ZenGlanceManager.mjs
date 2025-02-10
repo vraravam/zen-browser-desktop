@@ -491,8 +491,6 @@
         index: this.getTabPosition(this.#currentTab),
       });
 
-      this.#currentParentTab._visuallySelected = false;
-
       this.browserWrapper.removeAttribute('style');
       this.browserWrapper.removeAttribute('has-finished-animation');
       this.browserWrapper.setAttribute('animate-full', true);
@@ -501,6 +499,7 @@
       this.#currentParentTab.removeAttribute('glance-id');
       gBrowser.selectedTab = this.#currentTab;
       this.#currentParentTab.linkedBrowser.closest('.browserSidebarContainer').classList.remove('zen-glance-background');
+      this.#currentParentTab._visuallySelected = false;
       this.hideSidebarButtons();
       gZenUIManager.motion
         .animate(
