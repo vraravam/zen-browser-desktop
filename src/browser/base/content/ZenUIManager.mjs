@@ -8,6 +8,7 @@ var gZenUIManager = {
     document.addEventListener('popuphidden', this.onPopupHidden.bind(this));
     XPCOMUtils.defineLazyPreferenceGetter(this, 'sidebarHeightThrottle', 'zen.view.sidebar-height-throttle', 500);
     XPCOMUtils.defineLazyPreferenceGetter(this, 'contentElementSeparation', 'zen.theme.content-element-separation', 0);
+    XPCOMUtils.defineLazyPreferenceGetter(this, 'urlbarWaitToClear', 'zen.urlbar.wait-to-clear', 0);
 
     ChromeUtils.defineLazyGetter(this, 'motion', () => {
       return ChromeUtils.importESModule('chrome://browser/content/zen-vendor/motion.min.mjs', { global: 'current' });
@@ -149,11 +150,15 @@ var gZenUIManager = {
 
   _prevUrlbarLabel: null,
   _lastSearch: '',
+  _clearTimeout: null,
 
   handleNewTab(werePassedURL, searchClipboard, where) {
     const shouldOpenURLBar =
       Services.prefs.getBoolPref('zen.urlbar.replace-newtab') && !werePassedURL && !searchClipboard && where === 'tab';
     if (shouldOpenURLBar) {
+      if (this._clearTimeout) {
+        clearTimeout(this._clearTimeout);
+      }
       this._prevUrlbarLabel = gURLBar._untrimmedValue;
       gURLBar._zenHandleUrlbarClose = this.handleUrlbarClose.bind(this);
       gURLBar.setAttribute('zen-newtab', true);
@@ -164,14 +169,21 @@ var gZenUIManager = {
     return false;
   },
 
+  clearUrlbarData() {
+    this._prevUrlbarLabel = null;
+    this._lastSearch = '';
+  },
+
   handleUrlbarClose(onSwitch) {
     gURLBar._zenHandleUrlbarClose = null;
     gURLBar.removeAttribute('zen-newtab');
     if (onSwitch) {
-      this._prevUrlbarLabel = null;
-      this._lastSearch = '';
+      this.clearUrlbarData();
     } else {
       this._lastSearch = gURLBar._untrimmedValue;
+      this._clearTimeout = setTimeout(() => {
+        this.clearUrlbarData();
+      }, this.urlbarWaitToClear);
     }
     gURLBar.setURI(this._prevUrlbarLabel, onSwitch, false, false, !onSwitch);
     gURLBar.handleRevert();
