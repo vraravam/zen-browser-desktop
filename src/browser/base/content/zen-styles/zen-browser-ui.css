@@ -22,7 +22,7 @@
 :root:is([inDOMFullscreen='true'], [chromehidden~='location'], [chromehidden~='toolbar']) {
   #navigator-toolbox,
   #zen-sidebar-splitter {
-    display: none;
+    visibility: collapse;
   }
 }
 
