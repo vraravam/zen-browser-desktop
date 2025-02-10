@@ -173,7 +173,7 @@ var gZenUIManager = {
     } else {
       this._lastSearch = gURLBar._untrimmedValue;
     }
-    gURLBar.setURI(this._prevUrlbarLabel, false, false, false, true);
+    gURLBar.setURI(this._prevUrlbarLabel, onSwitch, false, false, !onSwitch);
     gURLBar.handleRevert();
     if (gURLBar.focused) {
       gURLBar.view.close({ elementPicked: onSwitch });
