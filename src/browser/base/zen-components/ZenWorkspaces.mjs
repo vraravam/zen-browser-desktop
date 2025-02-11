@@ -1480,7 +1480,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     }
     // Find first suitable tab
     else {
-      tabToSelect = Array.from(visibleTabs).find((tab) => !tab.pinned);
+      tabToSelect = Array.from(visibleTabs).find((tab) => this._shouldShowTab(tab, window.uuid, containerId, workspaces));
     }
 
     const previousSelectedTab = gBrowser.selectedTab;
