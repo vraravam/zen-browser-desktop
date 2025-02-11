@@ -574,7 +574,7 @@
             DOMContentLoaded: {},
           },
         },
-        matches: ["https://*/*"],
+        matches: ['https://*/*'],
       });
     }
   }
