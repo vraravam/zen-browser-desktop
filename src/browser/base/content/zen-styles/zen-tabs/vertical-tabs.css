@@ -1143,3 +1143,14 @@
 #zen-essentials-container .tabbrowser-tab.drag-over-after {
   box-shadow: -3px 0 6px -2px var(--toolbarbutton-active-background, rgba(0, 255, 0, 0.2));
 }
+
+/* Renaming tab */
+.tab-label-container-editing {
+  display: none !important;
+}
+
+#tab-label-input {
+  white-space: nowrap;
+  overflow-x: scroll;
+  margin: 0;
+}
