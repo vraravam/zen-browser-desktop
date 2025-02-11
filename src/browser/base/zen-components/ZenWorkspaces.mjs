@@ -384,7 +384,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     let rawDirection = moveForward ? 1 : -1;
     if (this._swipeState.direction) {
       let direction = this.naturalScroll ? -1 : 1;
-      this.changeWorkspaceShortcut(rawDirection * direction);
+      this.changeWorkspaceShortcut(rawDirection * direction, true);
     } else {
       this._cancelSwipeAnimation();
     }
@@ -1412,7 +1412,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     this._animateTabs({ uuid: currentWorkspace }, true);
   }
 
-  async _performWorkspaceChange(window, { onInit = false, alwaysChange = false, explicitAnimationDirection = undefined } = {}) {
+  async _performWorkspaceChange(window, { onInit = false, alwaysChange = false, whileScrolling = false } = {}) {
     const previousWorkspace = await this.getActiveWorkspace();
     alwaysChange = alwaysChange || onInit;
 
@@ -1429,7 +1429,9 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     gBrowser.verticalPinnedTabsContainer = this.pinnedTabsContainer;
     gBrowser.tabContainer.verticalPinnedTabsContainer = this.pinnedTabsContainer;
     this.tabContainer._invalidateCachedTabs();
-    await this._organizeWorkspaceStripLocations(previousWorkspace);
+    if (!whileScrolling) {
+      await this._organizeWorkspaceStripLocations(previousWorkspace);
+    }
 
     // First pass: Handle tab visibility and workspace ID assignment
     this._processTabVisibility(window.uuid, containerId, workspaces);
@@ -1459,8 +1461,8 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       const selector = `.zen-workspace-tabs-section[zen-workspace-id="${otherWorkspace.uuid}"]`;
       const newTransform = -(workspaceIndex - workspaces.workspaces.indexOf(otherWorkspace)) * 100;
       for (const container of document.querySelectorAll(selector)) {
-        container.style.transform = `translateX(calc(${newTransform}% + ${offsetPixels}px))`;
-        container.style.opacity = !newTransform;
+        container.style.transform = `translateX(${newTransform + offsetPixels / 2}%)`;
+        container.style.opacity = offsetPixels ? 1 : !newTransform;
       }
       if (!justMove) {
         const pinnedContainerId = '#vertical-pinned-tabs-container ';
@@ -1508,14 +1510,18 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       const elementWorkspaceIndex = workspaces.workspaces.findIndex((w) => w.uuid === elementWorkspaceId);
       const offset = -(newWorkspaceIndex - elementWorkspaceIndex) * 100;
       const newTransform = `translateX(${offset}%)`;
+      const isCurrent = offset === 0;
       if (shouldAnimate) {
+        if (isCurrent) {
+          element.style.opacity = 1;
+        }
         animations.push(
           gZenUIManager.motion.animate(
             element,
             {
               transform: existingTransform ? [existingTransform, newTransform] : newTransform,
               // -0 to convert to number
-              opacity: [!!offset - 0, !offset - 0],
+              opacity: !isCurrent ? [!!offset - 0, !offset - 0] : [1, 1],
             },
             {
               type: 'spring',
@@ -1532,6 +1538,10 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       }
     }
     await Promise.all(animations);
+    if (this._beforeSelectedTab) {
+      this._beforeSelectedTab._visuallySelected = false;
+      this._beforeSelectedTab = null;
+    }
     this._animatingChange = false;
   }
 
@@ -1614,6 +1624,10 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       gBrowser.selectedTab = newTab;
       this._lastSelectedWorkspaceTabs[window.uuid] = newTab;
     }
+    // Always make sure we always unselect the tab from the old workspace
+    currentSelectedTab._selected = false;
+    currentSelectedTab._visuallySelected = true; // we do want to animate the tab deselection
+    this._beforeSelectedTab = currentSelectedTab;
   }
 
   async _updateWorkspaceState(window, onInit) {
@@ -1880,7 +1894,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     this._emojis = null;
   }
 
-  async changeWorkspaceShortcut(offset = 1) {
+  async changeWorkspaceShortcut(offset = 1, whileScrolling = false) {
     // Cycle through workspaces
     let workspaces = await this._workspaces();
     let activeWorkspace = await this.getActiveWorkspace();
@@ -1897,7 +1911,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     }
 
     let nextWorkspace = workspaces.workspaces[targetIndex];
-    await this.changeWorkspace(nextWorkspace, { explicitAnimationDirection: offset > 0 ? 'right' : 'left' });
+    await this.changeWorkspace(nextWorkspace, { whileScrolling });
   }
 
   _initializeWorkspaceTabContextMenus() {
