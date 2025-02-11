@@ -149,11 +149,7 @@ var gZenUIManager = {
   },
 
   get newtabButton() {
-    if (this._newtabButton) {
-      return this._newtabButton;
-    }
-    this._newtabButton = document.getElementById('tabs-newtab-button');
-    return this._newtabButton;
+    return ZenWorkspaces.activeWorkspaceStrip.querySelector('#tabs-newtab-button');
   },
 
   _prevUrlbarLabel: null,

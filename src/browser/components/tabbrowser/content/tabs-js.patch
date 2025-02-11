@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabs.js b/browser/components/tabbrowser/content/tabs.js
-index 8aeb244ffca9f48661805f5b7d860b5896055562..bffa5e0be62e73f380adf558c5df3441bde7b604 100644
+index 8aeb244ffca9f48661805f5b7d860b5896055562..ef532d6b5d311cab5bc573c2d0aae6ceab5c1dcf 100644
 --- a/browser/components/tabbrowser/content/tabs.js
 +++ b/browser/components/tabbrowser/content/tabs.js
 @@ -94,7 +94,7 @@
@@ -101,7 +101,16 @@ index 8aeb244ffca9f48661805f5b7d860b5896055562..bffa5e0be62e73f380adf558c5df3441
        ) {
          delete draggedTab._dragData;
          return;
-@@ -1512,9 +1525,19 @@
+@@ -1498,7 +1511,7 @@
+       if (this.#allTabs) {
+         return this.#allTabs;
+       }
+-      let children = Array.from(this.arrowScrollbox.children);
++      let children = Array.from(ZenWorkspaces.tabboxChildren);
+       // remove arrowScrollbox periphery element
+       children.pop();
+ 
+@@ -1512,14 +1525,24 @@
        }
  
        this.#allTabs = [
@@ -122,6 +131,21 @@ index 8aeb244ffca9f48661805f5b7d860b5896055562..bffa5e0be62e73f380adf558c5df3441
        return this.#allTabs;
      }
  
+     get allGroups() {
+-      let children = Array.from(this.arrowScrollbox.children);
++      let children = Array.from(ZenWorkspaces.tabboxChildren);
+       return children.filter(node => node.tagName == "tab-group");
+     }
+ 
+@@ -1577,7 +1600,7 @@
+       let verticalPinnedTabsContainer = document.getElementById(
+         "vertical-pinned-tabs-container"
+       );
+-      let children = Array.from(this.arrowScrollbox.children);
++      let children = Array.from(ZenWorkspaces.tabboxChildren);
+ 
+       let focusableItems = [];
+       for (let child of children) {
 @@ -1593,6 +1616,7 @@
        }
  
