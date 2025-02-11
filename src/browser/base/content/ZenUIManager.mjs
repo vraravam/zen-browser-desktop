@@ -148,9 +148,18 @@ var gZenUIManager = {
     this.__currentPopupTrackElement = null;
   },
 
+  get newtabButton() {
+    if (this._newtabButton) {
+      return this._newtabButton;
+    }
+    this._newtabButton = document.getElementById('tabs-newtab-button');
+    return this._newtabButton;
+  },
+
   _prevUrlbarLabel: null,
   _lastSearch: '',
   _clearTimeout: null,
+  _lastTab: null,
 
   handleNewTab(werePassedURL, searchClipboard, where) {
     const shouldOpenURLBar =
@@ -159,9 +168,12 @@ var gZenUIManager = {
       if (this._clearTimeout) {
         clearTimeout(this._clearTimeout);
       }
+      this._lastTab = gBrowser.selectedTab;
+      this._lastTab._visuallySelected = false;
       this._prevUrlbarLabel = gURLBar._untrimmedValue;
       gURLBar._zenHandleUrlbarClose = this.handleUrlbarClose.bind(this);
       gURLBar.setAttribute('zen-newtab', true);
+      this.newtabButton.setAttribute('in-urlbar', true);
       document.getElementById('Browser:OpenLocation').doCommand();
       gURLBar.search(this._lastSearch);
       return true;
@@ -177,6 +189,9 @@ var gZenUIManager = {
   handleUrlbarClose(onSwitch) {
     gURLBar._zenHandleUrlbarClose = null;
     gURLBar.removeAttribute('zen-newtab');
+    this._lastTab._visuallySelected = true;
+    this._lastTab = null;
+    this.newtabButton.removeAttribute('in-urlbar');
     if (onSwitch) {
       this.clearUrlbarData();
     } else {
