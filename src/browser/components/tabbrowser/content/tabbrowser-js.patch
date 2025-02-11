@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabbrowser.js b/browser/components/tabbrowser/content/tabbrowser.js
-index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..4faba37097f376b57c7376e320f46e9cd3aacffe 100644
+index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7232414e2 100644
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -406,11 +406,52 @@
@@ -102,17 +102,17 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..4faba37097f376b57c7376e320f46e9c
          oldTab.updateLastAccessed();
          // if this is the foreground window, update the last-seen timestamps.
          if (this.ownerGlobal == BrowserWindowTracker.getTopWindow()) {
-@@ -1462,6 +1509,9 @@
-       }
- 
-       let activeEl = document.activeElement;
-+      if (gURLBar._zenHandleUrlbarClose) {
-+        gURLBar._zenHandleUrlbarClose(true);
-+      }
-       // If focus is on the old tab, move it to the new tab.
-       if (activeEl == oldTab) {
-         newTab.focus();
-@@ -1785,7 +1835,7 @@
+@@ -1477,6 +1511,9 @@
+           newBrowser &&
+           gURLBar.getBrowserState(newBrowser).urlbarFocused &&
+           gURLBar.focused;
++        if (gURLBar._zenHandleUrlbarClose) {
++          gURLBar._zenHandleUrlbarClose(true);
++        }
+         if (!keepFocusOnUrlBar) {
+           // Clear focus so that _adjustFocusAfterTabSwitch can detect if
+           // some element has been focused and respect that.
+@@ -1785,7 +1822,7 @@
      }
  
      _setTabLabel(aTab, aLabel, { beforeTabOpen, isContentTitle, isURL } = {}) {
@@ -121,7 +121,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..4faba37097f376b57c7376e320f46e9c
          return false;
        }
  
-@@ -2387,7 +2437,7 @@
+@@ -2387,7 +2424,7 @@
  
        let panel = this.getPanel(browser);
        let uniqueId = this._generateUniquePanelID();

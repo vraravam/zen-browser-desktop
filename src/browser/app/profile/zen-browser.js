@@ -80,6 +80,7 @@ pref('zen.welcome-screen.seen', false);
 
 pref('zen.tabs.vertical', true);
 pref('zen.tabs.vertical.right-side', false);
+pref('zen.tabs.rename-tabs', true);
 pref('zen.theme.accent-color', "#ffb787");
 pref('zen.theme.content-element-separation', 6); // In pixels
 pref('zen.theme.pill-button', false);
