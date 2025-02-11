@@ -282,7 +282,7 @@ var gZenCompactModeManager = {
         ? [
             {
               element: this.sidebar,
-            screenEdge: this.sidebarIsOnRight ? 'right' : 'left',
+              screenEdge: this.sidebarIsOnRight ? 'right' : 'left',
               keepHoverDuration: 100,
             },
           ]
