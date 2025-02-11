@@ -1,5 +1,5 @@
 diff --git a/browser/themes/shared/tabbrowser/tabs.css b/browser/themes/shared/tabbrowser/tabs.css
-index 96f930638c04c7ddcc8dc1a7fe4dce8b12a325e6..64487674de1afb711258a36757508cd9b741fcd9 100644
+index 96f930638c04c7ddcc8dc1a7fe4dce8b12a325e6..9e11e715ade485c33ba4c8f719b41002f3008dde 100644
 --- a/browser/themes/shared/tabbrowser/tabs.css
 +++ b/browser/themes/shared/tabbrowser/tabs.css
 @@ -33,7 +33,7 @@
@@ -64,6 +64,15 @@ index 96f930638c04c7ddcc8dc1a7fe4dce8b12a325e6..64487674de1afb711258a36757508cd9
        direction: rtl;
        mask-image: linear-gradient(to right, transparent, black var(--tab-label-mask-size));
      }
+@@ -1135,7 +1133,7 @@
+   }
+ }
+ 
+-#tabbrowser-arrowscrollbox[orient="vertical"] > #tabbrowser-arrowscrollbox-periphery > #tabs-newtab-button,
++#tabbrowser-arrowscrollbox[orient="vertical"] #tabbrowser-arrowscrollbox-periphery > #tabs-newtab-button,
+ #vertical-tabs-newtab-button {
+   appearance: none;
+   min-height: var(--tab-min-height);
 @@ -1146,7 +1144,7 @@
    margin-inline: var(--tab-inner-inline-margin);
  
@@ -73,6 +82,15 @@ index 96f930638c04c7ddcc8dc1a7fe4dce8b12a325e6..64487674de1afb711258a36757508cd9
    }
  
    &:hover {
+@@ -1170,7 +1168,7 @@
+  * flex container. #tabs-newtab-button is a child of the arrowscrollbox where
+  * we don't want a gap (between tabs), so we have to add some margin.
+  */
+-#tabbrowser-arrowscrollbox[orient="vertical"] > #tabbrowser-arrowscrollbox-periphery > #tabs-newtab-button {
++#tabbrowser-arrowscrollbox[orient="vertical"] #tabbrowser-arrowscrollbox-periphery > #tabs-newtab-button {
+   margin-block: var(--tab-block-margin);
+ }
+ 
 @@ -1194,7 +1192,6 @@
  }
  

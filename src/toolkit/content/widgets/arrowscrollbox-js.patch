@@ -1,25 +1,7 @@
 diff --git a/toolkit/content/widgets/arrowscrollbox.js b/toolkit/content/widgets/arrowscrollbox.js
-index 328c770d275ebbaada8a44438eaf738b1a62d985..070439e26bfe6a2299aa4b82ee4c434e143e1a20 100644
+index 328c770d275ebbaada8a44438eaf738b1a62d985..95460108c6356408170b8a4a40d55a8f0621756b 100644
 --- a/toolkit/content/widgets/arrowscrollbox.js
 +++ b/toolkit/content/widgets/arrowscrollbox.js
-@@ -15,7 +15,7 @@
-     static get inheritedAttributes() {
-       return {
-         "#scrollbutton-up": "disabled=scrolledtostart",
--        scrollbox: "orient,align,pack,dir,smoothscroll",
-+        scrollbox: "align,pack,dir,smoothscroll",
-         "#scrollbutton-down": "disabled=scrolledtoend",
-       };
-     }
-@@ -26,7 +26,7 @@
-       <html:link rel="stylesheet" href="chrome://global/skin/arrowscrollbox.css"/>
-       <toolbarbutton id="scrollbutton-up" part="scrollbutton-up" keyNav="false" data-l10n-id="overflow-scroll-button-backwards"/>
-       <spacer part="overflow-start-indicator"/>
--      <scrollbox part="scrollbox" flex="1">
-+      <scrollbox part="scrollbox" orient="horizontal" flex="1">
-         <html:slot/>
-       </scrollbox>
-       <spacer part="overflow-end-indicator"/>
 @@ -98,6 +98,7 @@
  
        let slot = this.shadowRoot.querySelector("slot");

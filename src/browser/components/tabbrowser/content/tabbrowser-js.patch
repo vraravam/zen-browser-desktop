@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabbrowser.js b/browser/components/tabbrowser/content/tabbrowser.js
-index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..f7c02c14498b4ec5fcf5521480c88abac25a2283 100644
+index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c90119b4b248887fd8612beb9aac83c6eeb57088 100644
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -406,11 +406,39 @@
@@ -49,7 +49,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..f7c02c14498b4ec5fcf5521480c88aba
        if (this.tabContainer.verticalMode) {
          this._handleTabMove(aTab, () =>
 -          this.verticalPinnedTabsContainer.appendChild(aTab)
-+          aTab.hasAttribute("zen-essential") ? document.getElementById("zen-essentials-container").appendChild(aTab) : this.verticalPinnedTabsContainer.appendChild(aTab)
++          aTab.hasAttribute("zen-essential") ? document.getElementById("zen-essentials-container").appendChild(aTab) : this.verticalPinnedTabsContainer.insertBefore(aTab, this.verticalPinnedTabsContainer.lastChild)
          );
        } else {
 -        this.moveTabTo(aTab, this.pinnedTabCount, { forceStandaloneTab: true });
