@@ -157,6 +157,8 @@
   --zen-themed-toolbar-bg: light-dark(var(--zen-branding-bg), #161616);
   --zen-themed-toolbar-bg-transparent: light-dark(var(--zen-branding-bg), #161616);
 
+  --zen-workspace-indicator-height: 45px;
+
   @media (-moz-windows-mica) or (-moz-platform: macos) {
     background: transparent;
     --zen-themed-toolbar-bg-transparency: 0;

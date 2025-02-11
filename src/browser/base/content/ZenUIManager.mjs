@@ -149,11 +149,7 @@ var gZenUIManager = {
   },
 
   get newtabButton() {
-    if (this._newtabButton) {
-      return this._newtabButton;
-    }
-    this._newtabButton = document.getElementById('tabs-newtab-button');
-    return this._newtabButton;
+    return ZenWorkspaces.activeWorkspaceStrip.querySelector('#tabs-newtab-button');
   },
 
   _prevUrlbarLabel: null,
@@ -417,6 +413,8 @@ var gZenVerticalTabsManager = {
 
       gBrowser.tabContainer.setAttribute('orient', isVerticalTabs ? 'vertical' : 'horizontal');
       gBrowser.tabContainer.arrowScrollbox.setAttribute('orient', isVerticalTabs ? 'vertical' : 'horizontal');
+      // on purpose, we set the orient to horizontal, because the arrowScrollbox is vertical
+      gBrowser.tabContainer.arrowScrollbox.scrollbox.setAttribute('orient', isVerticalTabs ? 'horizontal' : 'vertical');
 
       const buttonsTarget = document.getElementById('zen-sidebar-top-buttons-customization-target');
       if (isRightSide) {

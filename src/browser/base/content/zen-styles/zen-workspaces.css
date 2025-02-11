@@ -446,11 +446,20 @@
 }
 
 /* Mark workspaces indicator */
-#zen-current-workspace-indicator {
+#zen-current-workspace-indicator-container {
+  margin-bottom: var(--zen-workspace-indicator-height);
+}
+
+.zen-current-workspace-indicator {
   padding: 15px calc(4px + var(--tab-inline-padding));
   font-weight: 600;
-  align-items: center;
-  position: relative;
+  position: absolute;
+  max-height: var(--zen-workspace-indicator-height);
+  min-height: var(--zen-workspace-indicator-height);
+  gap: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-direction: row !important;
 
   &::before {
     border-radius: var(--border-radius-medium);
@@ -459,11 +468,11 @@
     pointer-events: none;
     content: '';
     position: absolute;
-    top: 6px;
+    top: 4px;
     left: 2px;
     z-index: -1;
     width: calc(100% - 4px);
-    height: calc(100% - 12px);
+    height: calc(100% - 10px);
   }
 
   &:hover,
@@ -473,38 +482,23 @@
     }
   }
 
-  & #zen-current-workspace-indicator-icon {
-    font-size: 14px;
+  & .zen-current-workspace-indicator-icon {
+    font-size: 12px;
   }
 
-  #zen-current-workspace-indicator-name {
+  .zen-current-workspace-indicator-name {
     font-size: 13px;
     opacity: 0.5;
-
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
     display: block;
-
-    position: absolute;
-    max-width: calc(100% - var(--zen-toolbox-padding) * 4);
-  }
-
-  & #zen-current-workspace-indicator-icon {
-    min-height: 16px;
-  }
-
-  & #zen-current-workspace-indicator-icon:not([hidden]) + #zen-current-workspace-indicator-name {
-    padding-left: 24px;
   }
 }
 
 @media not (-moz-bool-pref: 'zen.workspaces.show-workspace-indicator') {
-  #zen-current-workspace-indicator {
+  #zen-current-workspace-indicator-container {
     display: none !important;
   }
 }
 
-#zen-current-workspace-indicator[hidden='true'] {
+#zen-current-workspace-indicator-container[hidden='true'] {
   display: none !important;
 }
