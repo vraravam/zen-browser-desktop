@@ -276,19 +276,20 @@ var gZenCompactModeManager = {
   },
 
   get hoverableElements() {
-    const panels = [];
-    if (Services.prefs.getBoolPref('zen.view.compact.show-sidebar-on-hover', true)) {
-      panels.push({
-        element: this.sidebar,
-        screenEdge: this.sidebarIsOnRight ? 'right' : 'left',
-        keepHoverDuration: 100,
-      });
-    }
-    panels.push({
-      element: document.getElementById('zen-appcontent-navbar-container'),
-      screenEdge: 'top',
-    });
-    return panels;
+    const showSidebarOnHover = Services.prefs.getBoolPref('zen.view.compact.show-sidebar-on-hover', true);
+    return showSidebarOnHover
+      ? [
+          {
+            element: this.sidebar,
+            screenEdge: this.sidebarIsOnRight ? 'right' : 'left',
+            keepHoverDuration: 100,
+          },
+          {
+            element: document.getElementById('zen-appcontent-navbar-container'),
+            screenEdge: 'top',
+          },
+        ]
+      : [];
   },
 
   flashSidebar(duration = lazyCompactMode.COMPACT_MODE_FLASH_DURATION) {
