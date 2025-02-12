@@ -371,6 +371,7 @@
   overflow-x: clip;
   height: 100%;
   scrollbar-width: thin;
+  position: relative;
 }
 
 #vertical-pinned-tabs-container {
@@ -378,7 +379,8 @@
   display: flex !important;
   flex-direction: column;
   min-height: fit-content !important;
-  overflow: visible;
+  overflow-x: clip;
+  overflow-y: visible;
   max-height: unset !important;
 
   & .tabbrowser-tab:not(:hover) .tab-background:not([selected]):not([multiselected]) {

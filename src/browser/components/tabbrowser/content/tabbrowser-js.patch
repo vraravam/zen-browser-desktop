@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabbrowser.js b/browser/components/tabbrowser/content/tabbrowser.js
-index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..cbeb4472fdc7dc12c2a45a0c578d166c1cac1b6b 100644
+index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c90119b4b248887fd8612beb9aac83c6eeb57088 100644
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -406,11 +406,39 @@
@@ -57,12 +57,8 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..cbeb4472fdc7dc12c2a45a0c578d166c
        }
        aTab.setAttribute("pinned", "true");
        this._updateTabBarForPinnedTabs();
-@@ -828,10 +856,10 @@
-           // the moving of a tab from the vertical pinned tabs container
-           // and back into arrowscrollbox.
-           aTab.removeAttribute("pinned");
--          this.tabContainer.arrowScrollbox.prepend(aTab);
-+          ZenWorkspaces.activeWorkspaceStrip.prepend(aTab);
+@@ -831,7 +859,7 @@
+           this.tabContainer.arrowScrollbox.prepend(aTab);
          });
        } else {
 -        this.moveTabTo(aTab, this.pinnedTabCount - 1, {
