@@ -1724,7 +1724,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   updateTabsContainers() {
-    this.onPinnedTabsResize([this.pinnedTabsContainer]);
+    this.onPinnedTabsResize([{ target: this.pinnedTabsContainer }]);
   }
 
   updateShouldHideSeparator(arrowScrollbox, pinnedContainer) {
