@@ -495,14 +495,10 @@ var gZenLooksAndFeel = {
     this._initializeColorPicker(this._getInitialAccentColor());
     window.zenPageAccentColorChanged = this._handleAccentColorChange.bind(this);
     gZenMarketplaceManager.init();
-    var onPreferColorSchemeChange = this.onPreferColorSchemeChange.bind(this);
-    window.matchMedia('(prefers-color-scheme: dark)').addListener(onPreferColorSchemeChange);
     for (const pref of [kZenExtendedSidebar, kZenSingleToolbar]) {
       Services.prefs.addObserver(pref, this);
     }
-    this.onPreferColorSchemeChange();
     window.addEventListener('unload', () => {
-      window.matchMedia('(prefers-color-scheme: dark)').removeListener(onPreferColorSchemeChange);
       for (const pref of [kZenExtendedSidebar, kZenSingleToolbar]) {
         Services.prefs.removeObserver(pref, this);
       }
@@ -546,16 +542,6 @@ var gZenLooksAndFeel = {
         Services.prefs.setBoolPref(kZenExtendedSidebar, layout.getAttribute('layout') != 'collapsed');
         Services.prefs.setBoolPref(kZenSingleToolbar, layout.getAttribute('layout') == 'single');
       });
-    }
-  },
-
-  onPreferColorSchemeChange(event) {
-    const darkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    let elem = document.getElementById('ZenDarkThemeStyles');
-    if (darkTheme) {
-      elem.removeAttribute('hidden');
-    } else {
-      elem.setAttribute('hidden', 'true');
     }
   },
 

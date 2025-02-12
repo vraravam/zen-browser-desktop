@@ -1,12 +1,12 @@
 diff --git a/browser/components/tabbrowser/content/tab.js b/browser/components/tabbrowser/content/tab.js
-index d41c486c02a6f09dcff5741a59ad8b617294c481..0328460c7eb45d8ffb9de4f9b8d4a7bdd7a5b7b3 100644
+index d41c486c02a6f09dcff5741a59ad8b617294c481..abaccd1935fc117924c44dd22cae0b322fc6a0c4 100644
 --- a/browser/components/tabbrowser/content/tab.js
 +++ b/browser/components/tabbrowser/content/tab.js
 @@ -37,6 +37,7 @@
              </hbox>
            </vbox>
            <image class="tab-close-button close-icon" role="button" data-l10n-id="tabbrowser-close-tabs-button" data-l10n-args='{"tabCount": 1}' keyNav="false"/>
-+          <image class="tab-reset-button reset-icon" role="button" data-l10n-id="tabbrowser-reset-tabs-button" data-l10n-args='{"tabCount": 1}' keyNav="false"/>
++          <image class="tab-reset-button reset-icon" role="button" data-l10n-id="tabbrowser-unload-tab-button" data-l10n-args='{"tabCount": 1}' keyNav="false"/>
          </hbox>
        </stack>
        `;

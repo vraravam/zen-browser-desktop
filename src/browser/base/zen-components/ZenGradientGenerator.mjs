@@ -614,7 +614,7 @@
                 // Reactivate the transition after the animation
                 appWrapper.removeAttribute('post-animating');
               }, 100);
-            }, 500);
+            }, 200);
           });
         }
 

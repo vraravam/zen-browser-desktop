@@ -119,6 +119,7 @@ pref('zen.view.compact.animate-sidebar', true);
 
 pref('zen.urlbar.replace-newtab', true);
 pref('zen.urlbar.behavior', 'floating-on-type'); // default, floating-on-type, float
+pref('zen.urlbar.wait-to-clear', 45000); // in ms (default 45s)
 
 #ifdef XP_MACOSX
 // Disable for macos in the meantime until @HarryHeres finds a solution for hight DPI screens
@@ -168,7 +169,7 @@ pref('zen.tab-unloader.excluded-urls', "example.com,example.org");
 
 pref('zen.pinned-tab-manager.debug', false);
 pref('zen.pinned-tab-manager.restore-pinned-tabs-to-pinned-url', false);
-pref('zen.pinned-tab-manager.close-shortcut-behavior', 'switch');
+pref('zen.pinned-tab-manager.close-shortcut-behavior', 'unload-switch');
 
 // TODO: Check this out!
 pref("browser.profiles.enabled", false);
@@ -377,6 +378,7 @@ pref("browser.urlbar.quicksuggest.enabled", false);
 pref("browser.urlbar.suggest.quicksuggest.sponsored", false);
 pref("browser.urlbar.suggest.quicksuggest.nonsponsored", false);
 pref("browser.urlbar.groupLabels.enabled", false);
+pref("browser.urlbar.keepPanelOpenDuringImeComposition", true); // IMPORTANT: Fixes closing the urlbar when on some languages
 pref("browser.formfill.enable", false);
 pref("security.insecure_connection_text.enabled", true);
 pref("security.insecure_connection_text.pbmode.enabled", true);

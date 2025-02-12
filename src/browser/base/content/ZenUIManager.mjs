@@ -8,6 +8,7 @@ var gZenUIManager = {
     document.addEventListener('popuphidden', this.onPopupHidden.bind(this));
     XPCOMUtils.defineLazyPreferenceGetter(this, 'sidebarHeightThrottle', 'zen.view.sidebar-height-throttle', 500);
     XPCOMUtils.defineLazyPreferenceGetter(this, 'contentElementSeparation', 'zen.theme.content-element-separation', 0);
+    XPCOMUtils.defineLazyPreferenceGetter(this, 'urlbarWaitToClear', 'zen.urlbar.wait-to-clear', 0);
 
     ChromeUtils.defineLazyGetter(this, 'motion', () => {
       return ChromeUtils.importESModule('chrome://browser/content/zen-vendor/motion.min.mjs', { global: 'current' });
@@ -147,16 +148,28 @@ var gZenUIManager = {
     this.__currentPopupTrackElement = null;
   },
 
+  get newtabButton() {
+    return ZenWorkspaces.activeWorkspaceStrip.querySelector('#tabs-newtab-button');
+  },
+
   _prevUrlbarLabel: null,
   _lastSearch: '',
+  _clearTimeout: null,
+  _lastTab: null,
 
   handleNewTab(werePassedURL, searchClipboard, where) {
     const shouldOpenURLBar =
       Services.prefs.getBoolPref('zen.urlbar.replace-newtab') && !werePassedURL && !searchClipboard && where === 'tab';
     if (shouldOpenURLBar) {
+      if (this._clearTimeout) {
+        clearTimeout(this._clearTimeout);
+      }
+      this._lastTab = gBrowser.selectedTab;
+      this._lastTab._visuallySelected = false;
       this._prevUrlbarLabel = gURLBar._untrimmedValue;
       gURLBar._zenHandleUrlbarClose = this.handleUrlbarClose.bind(this);
       gURLBar.setAttribute('zen-newtab', true);
+      this.newtabButton.setAttribute('in-urlbar', true);
       document.getElementById('Browser:OpenLocation').doCommand();
       gURLBar.search(this._lastSearch);
       return true;
@@ -164,16 +177,26 @@ var gZenUIManager = {
     return false;
   },
 
+  clearUrlbarData() {
+    this._prevUrlbarLabel = null;
+    this._lastSearch = '';
+  },
+
   handleUrlbarClose(onSwitch) {
     gURLBar._zenHandleUrlbarClose = null;
     gURLBar.removeAttribute('zen-newtab');
+    this._lastTab._visuallySelected = true;
+    this._lastTab = null;
+    this.newtabButton.removeAttribute('in-urlbar');
     if (onSwitch) {
-      this._prevUrlbarLabel = null;
-      this._lastSearch = '';
+      this.clearUrlbarData();
     } else {
       this._lastSearch = gURLBar._untrimmedValue;
+      this._clearTimeout = setTimeout(() => {
+        this.clearUrlbarData();
+      }, this.urlbarWaitToClear);
     }
-    gURLBar.setURI(this._prevUrlbarLabel, false, false, false, true);
+    gURLBar.setURI(this._prevUrlbarLabel, onSwitch, false, false, !onSwitch);
     gURLBar.handleRevert();
     if (gURLBar.focused) {
       gURLBar.view.close({ elementPicked: onSwitch });
@@ -392,6 +415,8 @@ var gZenVerticalTabsManager = {
 
       gBrowser.tabContainer.setAttribute('orient', isVerticalTabs ? 'vertical' : 'horizontal');
       gBrowser.tabContainer.arrowScrollbox.setAttribute('orient', isVerticalTabs ? 'vertical' : 'horizontal');
+      // on purpose, we set the orient to horizontal, because the arrowScrollbox is vertical
+      gBrowser.tabContainer.arrowScrollbox.scrollbox.setAttribute('orient', isVerticalTabs ? 'horizontal' : 'vertical');
 
       const buttonsTarget = document.getElementById('zen-sidebar-top-buttons-customization-target');
       if (isRightSide) {

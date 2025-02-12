@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabbrowser.js b/browser/components/tabbrowser/content/tabbrowser.js
-index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7232414e2 100644
+index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..efd8feef44ab820666e37cfe5aa75df60a2a6e35 100644
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -406,11 +406,39 @@
@@ -44,15 +44,28 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7
        }
        return i;
      }
-@@ -807,7 +835,7 @@
+@@ -807,10 +835,10 @@
        this.showTab(aTab);
        if (this.tabContainer.verticalMode) {
          this._handleTabMove(aTab, () =>
 -          this.verticalPinnedTabsContainer.appendChild(aTab)
-+          aTab.hasAttribute("zen-essential") ? document.getElementById("zen-essentials-container").appendChild(aTab) : this.verticalPinnedTabsContainer.appendChild(aTab)
++          aTab.hasAttribute("zen-essential") ? document.getElementById("zen-essentials-container").appendChild(aTab) : this.verticalPinnedTabsContainer.insertBefore(aTab, this.verticalPinnedTabsContainer.lastChild)
          );
        } else {
-         this.moveTabTo(aTab, this.pinnedTabCount, { forceStandaloneTab: true });
+-        this.moveTabTo(aTab, this.pinnedTabCount, { forceStandaloneTab: true });
++        this.moveTabTo(aTab, this._numVisiblePinTabs, { forceStandaloneTab: true });
+       }
+       aTab.setAttribute("pinned", "true");
+       this._updateTabBarForPinnedTabs();
+@@ -831,7 +859,7 @@
+           this.tabContainer.arrowScrollbox.prepend(aTab);
+         });
+       } else {
+-        this.moveTabTo(aTab, this.pinnedTabCount - 1, {
++        this.moveTabTo(aTab, this._numVisiblePinTabs - 1, {
+           forceStandaloneTab: true,
+         });
+         aTab.removeAttribute("pinned");
 @@ -1055,6 +1083,8 @@
  
        let LOCAL_PROTOCOLS = ["chrome:", "about:", "resource:", "data:"];
@@ -80,16 +93,16 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7
          oldTab.updateLastAccessed();
          // if this is the foreground window, update the last-seen timestamps.
          if (this.ownerGlobal == BrowserWindowTracker.getTopWindow()) {
-@@ -1477,6 +1511,9 @@
-           newBrowser &&
-           gURLBar.getBrowserState(newBrowser).urlbarFocused &&
-           gURLBar.focused;
-+        if (gURLBar._zenHandleUrlbarClose) {
-+          gURLBar._zenHandleUrlbarClose(true);
-+        }
-         if (!keepFocusOnUrlBar) {
-           // Clear focus so that _adjustFocusAfterTabSwitch can detect if
-           // some element has been focused and respect that.
+@@ -1462,6 +1496,9 @@
+       }
+ 
+       let activeEl = document.activeElement;
++      if (gURLBar._zenHandleUrlbarClose) {
++        gURLBar._zenHandleUrlbarClose(true);
++      }
+       // If focus is on the old tab, move it to the new tab.
+       if (activeEl == oldTab) {
+         newTab.focus();
 @@ -1785,7 +1822,7 @@
      }
  
@@ -212,16 +225,36 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7
            if (select) {
              tabToSelect = tab;
            }
+@@ -3464,8 +3552,8 @@
+           // inserted in the DOM. If the tab is not yet in the DOM,
+           // just insert it in the right place from the start.
+           if (!tab.parentNode) {
+-            tab._tPos = this.pinnedTabCount;
+-            this.tabContainer.insertBefore(tab, this.tabs[this.pinnedTabCount]);
++            tab._tPos = this._numVisiblePinTabs;
++            this.tabContainer.insertBefore(tab, this.tabs[this._numVisiblePinTabs]);
+             tab.toggleAttribute("pinned", true);
+             this.tabContainer._invalidateCachedTabs();
+             // Then ensure all the tab open/pinning information is sent.
 @@ -3729,7 +3817,7 @@
        // Ensure we have an index if one was not provided.
        if (typeof index != "number") {
          // Move the new tab after another tab if needed, to the end otherwise.
 -        index = Infinity;
-+        index = Services.prefs.getBoolPref("zen.view.show-newtab-button-top") ? this.pinnedTabCount : Infinity;
++        index = Services.prefs.getBoolPref("zen.view.show-newtab-button-top") ? this._numVisiblePinTabs : Infinity;
          if (
            !bulkOrderedOpen &&
            ((openerTab &&
-@@ -3780,7 +3868,7 @@
+@@ -3773,14 +3861,14 @@
+       // Ensure index is within bounds.
+       if (tab.pinned) {
+         index = Math.max(index, 0);
+-        index = Math.min(index, this.pinnedTabCount);
++        index = Math.min(index, this._numVisiblePinTabs);
+       } else {
+-        index = Math.max(index, this.pinnedTabCount);
++        index = Math.max(index, this._numVisiblePinTabs);
+         index = Math.min(index, this.tabs.length);
        }
  
        /** @type {MozTabbrowserTab|undefined} */
@@ -310,6 +343,18 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7
          aTab.selected ||
          aTab.closing ||
          // Tabs that are sharing the screen, microphone or camera cannot be hidden.
+@@ -5706,9 +5805,9 @@
+ 
+       // Don't allow mixing pinned and unpinned tabs.
+       if (aTab.pinned) {
+-        aIndex = Math.min(aIndex, this.pinnedTabCount - 1);
++        aIndex = Math.min(aIndex, this._numVisiblePinTabs - 1);
+       } else {
+-        aIndex = Math.max(aIndex, this.pinnedTabCount);
++        aIndex = Math.max(aIndex, this._numVisiblePinTabs);
+       }
+       if (aTab._tPos == aIndex) {
+         return;
 @@ -5727,6 +5826,9 @@
            this.tabContainer.insertBefore(aTab, neighbor);
          }
@@ -320,6 +365,15 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7
      }
  
      moveTabToGroup(aTab, aGroup) {
+@@ -5802,7 +5904,7 @@
+         createLazyBrowser,
+       };
+ 
+-      let numPinned = this.pinnedTabCount;
++      let numPinned = this._numVisiblePinTabs;
+       if (aIndex < numPinned || (aTab.pinned && aIndex == numPinned)) {
+         params.pinned = true;
+       }
 @@ -7443,6 +7545,7 @@
              aWebProgress.isTopLevel
            ) {

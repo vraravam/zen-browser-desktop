@@ -157,6 +157,8 @@
   --zen-themed-toolbar-bg: light-dark(var(--zen-branding-bg), #161616);
   --zen-themed-toolbar-bg-transparent: light-dark(var(--zen-branding-bg), #161616);
 
+  --zen-workspace-indicator-height: 45px;
+
   @media (-moz-windows-mica) or (-moz-platform: macos) {
     background: transparent;
     --zen-themed-toolbar-bg-transparency: 0;
@@ -169,7 +171,6 @@
   --toolbar-field-background-color: var(--zen-colors-input-bg) !important;
   --arrowpanel-background: var(--zen-dialog-background) !important;
 
-  --tab-selected-shadow: none !important;
   --zen-big-shadow: 0 0 9.73px 0px light-dark(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.25));
 
   /* Nativity */
@@ -213,7 +214,7 @@
     --zen-colors-primary-foreground: color-mix(in srgb, var(--zen-primary-color) 80%, white 20%);
 
     --zen-colors-input-bg: color-mix(in srgb, var(--zen-primary-color) 1%, var(--zen-dark-color-mix-base) 99%);
-    --zen-colors-border: color-mix(in srgb, var(--zen-colors-secondary) 20%, rgb(53, 53, 53) 80%);
+    --zen-colors-border: color-mix(in srgb, var(--zen-colors-secondary) 20%, rgb(79, 79, 79) 80%);
     --zen-colors-border-contrast: color-mix(in srgb, var(--zen-colors-secondary) 10%, rgba(255, 255, 255, 0.11) 90%);
 
     --zen-dialog-background: var(--zen-dark-color-mix-base);
