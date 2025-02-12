@@ -509,6 +509,8 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       this._initializeWorkspaceTabContextMenus();
       await this.workspaceBookmarks();
       window.addEventListener('TabBrowserInserted', this.onTabBrowserInserted.bind(this));
+      window.addEventListener('TabOpen', this.updateTabsContainers.bind(this));
+      window.addEventListener('TabClose', this.updateTabsContainers.bind(this));
       let workspaces = await this._workspaces();
       let activeWorkspace = null;
       if (workspaces.workspaces.length === 0) {
@@ -1721,6 +1723,19 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     return workspaceData;
   }
 
+  updateTabsContainers() {
+    this.onPinnedTabsResize([this.pinnedTabsContainer]);
+  }
+
+  updateShouldHideSeparator(arrowScrollbox, pinnedContainer) {
+    const shouldHideSeparator = pinnedContainer.children.length === 1 || arrowScrollbox.children.length === 1;
+    if (shouldHideSeparator) {
+      pinnedContainer.setAttribute('hide-separator', 'true');
+    } else {
+      pinnedContainer.removeAttribute('hide-separator');
+    }
+  }
+
   onPinnedTabsResize(entries) {
     if (!this.workspaceEnabled) {
       return;
@@ -1731,6 +1746,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
         `#tabbrowser-arrowscrollbox .zen-workspace-tabs-section[zen-workspace-id="${workspaceId}"]`
       );
       this._updateMarginTopPinnedTabs(arrowScrollbox, entry.target);
+      this.updateShouldHideSeparator(arrowScrollbox, entry.target);
     }
   }
 

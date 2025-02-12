@@ -126,8 +126,7 @@
   width: 98%;
   transition: margin 0.2s ease-in-out, background 0.2s ease-in-out, max-height 0.2s ease-in-out;
 
-  #vertical-pinned-tabs-container .zen-workspace-tabs-section[active]:not(:has(tab:not([hidden]))) &,
-  #tabbrowser-tabs:not(:has(#tabbrowser-arrowscrollbox .zen-workspace-tabs-section[active] tab:not([hidden]))) & {
+  #vertical-pinned-tabs-container .zen-workspace-tabs-section[hide-separator] & {
     max-height: 0;
     margin: 0 auto;
   }
