@@ -369,7 +369,7 @@
 #zen-browser-tabs-wrapper {
   min-height: fit-content;
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: clip;
   height: 100%;
   scrollbar-width: thin;
 }

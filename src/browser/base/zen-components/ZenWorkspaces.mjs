@@ -359,7 +359,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     event.preventDefault();
     event.stopPropagation();
 
-    const delta = event.delta * 500;
+    const delta = event.delta * 300;
     this._swipeState.lastDelta = delta;
 
     if (Math.abs(delta) > 1) {
@@ -1625,9 +1625,11 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       this._lastSelectedWorkspaceTabs[window.uuid] = newTab;
     }
     // Always make sure we always unselect the tab from the old workspace
-    currentSelectedTab._selected = false;
-    currentSelectedTab._visuallySelected = true; // we do want to animate the tab deselection
-    this._beforeSelectedTab = currentSelectedTab;
+    if (currentSelectedTab && currentSelectedTab !== tabToSelect) {
+      currentSelectedTab._selected = false;
+      currentSelectedTab._visuallySelected = true; // we do want to animate the tab deselection
+      this._beforeSelectedTab = currentSelectedTab;
+    }
   }
 
   async _updateWorkspaceState(window, onInit) {
@@ -1639,7 +1641,6 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
     // Update workspace UI
     await this._updateWorkspacesChangeContextMenu();
-    document.getElementById('tabbrowser-tabs')._positionPinnedTabs();
     gZenUIManager.updateTabsToolbar();
     await this._propagateWorkspaceData({ clearCache: false });
 
