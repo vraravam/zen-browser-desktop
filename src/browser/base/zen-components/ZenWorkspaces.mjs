@@ -1703,9 +1703,9 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     };
     this._prepareNewWorkspace(window);
     const perifery = document.querySelector('#tabbrowser-arrowscrollbox-periphery[hidden]');
-    preifery?.removeAttribute('hidden');
+    perifery?.removeAttribute('hidden');
     this._createWorkspaceTabsSection(window, [], perifery);
-    preifery.setAttribute('hidden', 'true');
+    perifery.setAttribute('hidden', 'true');
     return window;
   }
 
