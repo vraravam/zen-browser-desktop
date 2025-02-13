@@ -1500,7 +1500,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     }
   }
 
-  async _animateTabs(newWorkspace, shouldAnimate) {
+  async _animateTabs(newWorkspace, shouldAnimate, tabToSelect = null) {
     this._animatingChange = true;
     const animations = [];
     const workspaces = await this._workspaces();
@@ -1534,11 +1534,18 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       }
       if (offset === 0) {
         element.setAttribute('active', 'true');
+        if (tabToSelect) {
+          gBrowser.selectedTab = tabToSelect;
+          tabToSelect._visuallySelected = false;
+        }
       } else {
         element.removeAttribute('active');
       }
     }
     await Promise.all(animations);
+    if (tabToSelect) {
+      tabToSelect._visuallySelected = false;
+    }
     this._animatingChange = false;
   }
 
@@ -1618,7 +1625,6 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       tabToSelect = newTab;
     }
     tabToSelect._visuallySelected = true;
-    this._lastSelectedWorkspaceTabs[window.uuid] = tabToSelect;
 
     // Always make sure we always unselect the tab from the old workspace
     if (currentSelectedTab && currentSelectedTab !== tabToSelect) {
@@ -1641,8 +1647,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
     gZenThemePicker.onWorkspaceChange(window);
 
-    await this._animateTabs(window, !onInit && !this._animatingChange);
-    gBrowser.selectedTab = tabToSelect;
+    await this._animateTabs(window, !onInit && !this._animatingChange, tabToSelect);
 
     // Notify listeners
     if (this._changeListeners?.length) {
