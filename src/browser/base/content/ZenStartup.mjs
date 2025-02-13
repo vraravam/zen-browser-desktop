@@ -38,6 +38,8 @@
         gZenVerticalTabsManager.init();
         gZenUIManager.init();
 
+        this._checkForWelcomePage();
+
         document.l10n.setAttributes(document.getElementById('tabs-newtab-button'), 'tabs-toolbar-new-tab');
       } catch (e) {
         console.error('ZenThemeModifier: Error initializing browser layout', e);
@@ -119,6 +121,17 @@
       gURLBar._initPasteAndGo();
       gURLBar._initStripOnShare();
     },
+
+    _checkForWelcomePage() {
+      if (!Services.prefs.getBoolPref('zen.welcome-screen.seen', false) && Services.prefs.getBoolPref('zen.welcome-screen.enabled', true)) {
+        //Services.prefs.setBoolPref('zen.welcome-screen.seen', true);
+        console.log('ZenStartup: Show welcome page');
+        Services.scriptloader.loadSubScript(
+          "chrome://browser/content/zen-components/ZenWelcome.mjs",
+          window
+        );
+      }
+    }
   };
 
   ZenStartup.init();

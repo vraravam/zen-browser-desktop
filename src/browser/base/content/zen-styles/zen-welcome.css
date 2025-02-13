@@ -1,0 +1,33 @@
+
+#zen-welcome,
+#zen-welcome-start {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#zen-welcome-start {
+  flex-direction: column;
+
+  #zen-welcome-start-button {
+    opacity: 0;
+    list-style-image: url(chrome://browser/skin/zen-icons/forward.svg);
+    position: absolute;
+    bottom: 10%;
+  }
+
+  #zen-welcome-title {
+    text-align: center;
+    font-size: 5rem;
+    line-height: 1.1;
+    max-width: 50%;
+    font-weight: 500;
+
+    & > span {
+      display: block;
+      opacity: 0;
+    }
+  }
+}
