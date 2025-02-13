@@ -1627,7 +1627,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     return tabToSelect;
   }
 
-  async _updateWorkspaceState(window, onInit) {
+  async _updateWorkspaceState(window, onInit, tabToSelect) {
     // Update document state
     document.documentElement.setAttribute('zen-workspace-id', window.uuid);
 
@@ -1639,14 +1639,17 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     gZenUIManager.updateTabsToolbar();
     await this._propagateWorkspaceData({ clearCache: false });
 
+    gZenThemePicker.onWorkspaceChange(window);
+
+    await this._animateTabs(window, !onInit && !this._animatingChange);
+    gBrowser.selectedTab = tabToSelect;
+
     // Notify listeners
     if (this._changeListeners?.length) {
       for (const listener of this._changeListeners) {
         await listener(window, onInit);
       }
     }
-
-    await this._animateTabs(window, !onInit && !this._animatingChange);
 
     // Reset bookmarks
     this._invalidateBookmarkContainers();
