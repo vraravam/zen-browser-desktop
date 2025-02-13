@@ -1,0 +1,21 @@
+diff --git a/widget/windows/nsWindow.cpp b/widget/windows/nsWindow.cpp
+index b735e78b1c2f3e0d85a5224311cdc746007c7eac..50f3c6e40b11220b71a8a3811305661887bb4360 100644
+--- a/widget/windows/nsWindow.cpp
++++ b/widget/windows/nsWindow.cpp
+@@ -165,6 +165,7 @@
+ #include "mozilla/StaticPrefs_layout.h"
+ #include "mozilla/StaticPrefs_ui.h"
+ #include "mozilla/StaticPrefs_widget.h"
++#include "mozilla/StaticPrefs_zen.h"
+ #include "nsNativeAppSupportWin.h"
+ 
+ #include "nsIGfxInfo.h"
+@@ -1071,7 +1072,7 @@ nsresult nsWindow::Create(nsIWidget* aParent, const LayoutDeviceIntRect& aRect,
+ 
+   if (WinUtils::MicaEnabled() && !IsPopup()) {
+     // Enable Mica Alt Material if available.
+-    const DWM_SYSTEMBACKDROP_TYPE tabbedWindow = DWMSBT_TABBEDWINDOW;
++    const DWM_SYSTEMBACKDROP_TYPE tabbedWindow = StaticPrefs::zen_widget_windows_acrylic_AtStartup() ? DWMSBT_TRANSIENTWINDOW : DWMSBT_TABBEDWINDOW;
+     DwmSetWindowAttribute(mWnd, DWMWA_SYSTEMBACKDROP_TYPE, &tabbedWindow,
+                           sizeof tabbedWindow);
+   }

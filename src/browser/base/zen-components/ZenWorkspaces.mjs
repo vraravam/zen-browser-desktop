@@ -1308,7 +1308,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     }
     tab.setAttribute('zen-workspace-id', workspaceID);
     const parent = tab.pinned ? '#zen-browser-tabs-pinned ' : '#zen-browser-tabs ';
-    const container = document.querySelector(parent + '.zen-browser-tabs-container');
+    const container = document.querySelector(parent + '.zen-workspace-tabs-section');
     if (container) {
       container.insertBefore(tab, container.firstChild);
     }
@@ -2035,5 +2035,44 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
     // Return true only if the bookmark is in another workspace and not in the active one
     return isInOtherWorkspace && !isInActiveWorkspace;
+  }
+
+  // Session restore functions
+  get allStoredTabs() {
+    if (!this._hasInitializedTabsStrip) {
+      const children = Array.from(this.tabboxChildren);
+      children.pop(); // Remove the last child which is the new tab button
+      return children;
+    }
+
+    const tabs = [];
+    // we need to go through each tab in each container
+    const essentialsContainer = document.getElementById('zen-essentials-container');
+    const pinnedContainers = document.querySelectorAll('#vertical-pinned-tabs-container .zen-workspace-tabs-section');
+    const normalContainers = document.querySelectorAll('#tabbrowser-arrowscrollbox .zen-workspace-tabs-section');
+    const containers = [essentialsContainer, ...pinnedContainers, ...normalContainers];
+    for (const container of containers) {
+      for (const tab of container.children) {
+        if (tab.tagName === 'tab' || tab.tagName == 'tab-group') {
+          tabs.push(tab);
+        }
+      }
+    }
+    return tabs;
+  }
+
+  get pinnedTabCount() {
+    return this.pinnedTabsContainer.children.length - 1;
+  }
+
+  get normalTabCount() {
+    return this.tabboxChildren.length - 1;
+  }
+
+  get allWorkspaceTabs() {
+    const currentWorkspace = this.activeWorkspace;
+    return this.allStoredTabs.filter(
+      (tab) => tab.hasAttribute('zen-essential') || tab.getAttribute('zen-workspace-id') === currentWorkspace
+    );
   }
 })();
