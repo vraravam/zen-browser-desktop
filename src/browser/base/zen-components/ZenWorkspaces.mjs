@@ -1440,11 +1440,10 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
     // Second pass: Handle tab selection
     this.tabContainer._invalidateCachedTabs();
-    await this._handleTabSelection(window, onInit, containerId, workspaces, previousWorkspace.uuid);
-    this.tabContainer._updateVerticalPinnedTabs();
+    const tabToSelect = await this._handleTabSelection(window, onInit, containerId, workspaces, previousWorkspace.uuid);
 
     // Update UI and state
-    await this._updateWorkspaceState(window, onInit);
+    await this._updateWorkspaceState(window, onInit, tabToSelect);
   }
 
   _updateMarginTopPinnedTabs(arrowscrollbox, pinnedContainer) {
@@ -1540,10 +1539,6 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       }
     }
     await Promise.all(animations);
-    if (this._beforeSelectedTab) {
-      this._beforeSelectedTab._visuallySelected = false;
-      this._beforeSelectedTab = null;
-    }
     this._animatingChange = false;
   }
 
@@ -1617,21 +1612,19 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     }
 
     // If we found a tab to select, select it
-    if (tabToSelect) {
-      gBrowser.selectedTab = tabToSelect;
-      this._lastSelectedWorkspaceTabs[window.uuid] = tabToSelect;
-    } else if (!onInit) {
+    if (!onInit && !tabToSelect) {
       // Create new tab if needed and no suitable tab was found
       const newTab = this._createNewTabForWorkspace(window);
-      gBrowser.selectedTab = newTab;
-      this._lastSelectedWorkspaceTabs[window.uuid] = newTab;
+      tabToSelect = newTab;
     }
+    tabToSelect._visuallySelected = true;
+    this._lastSelectedWorkspaceTabs[window.uuid] = tabToSelect;
+
     // Always make sure we always unselect the tab from the old workspace
     if (currentSelectedTab && currentSelectedTab !== tabToSelect) {
       currentSelectedTab._selected = false;
-      currentSelectedTab._visuallySelected = true; // we do want to animate the tab deselection
-      this._beforeSelectedTab = currentSelectedTab;
     }
+    return tabToSelect;
   }
 
   async _updateWorkspaceState(window, onInit) {
@@ -1659,7 +1652,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     this._invalidateBookmarkContainers();
 
     // Update workspace indicator
-    await this.updateWorkspaceIndicator();
+    await this.updateWorkspaceIndicator(window, this.workspaceIndicator);
   }
 
   _invalidateBookmarkContainers() {
