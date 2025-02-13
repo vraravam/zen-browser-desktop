@@ -27,6 +27,7 @@ var gZenUIManager = {
 
     SessionStore.promiseAllWindowsRestored.then(() => {
       this._hasLoadedDOM = true;
+      this.updateTabsToolbar();
     });
 
     window.addEventListener('TabClose', this.onTabClose.bind(this));
