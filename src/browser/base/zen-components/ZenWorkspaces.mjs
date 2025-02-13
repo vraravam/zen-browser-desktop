@@ -1544,7 +1544,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     }
     await Promise.all(animations);
     if (tabToSelect) {
-      tabToSelect._visuallySelected = false;
+      tabToSelect._visuallySelected = true;
     }
     this._animatingChange = false;
   }
@@ -1592,7 +1592,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     }
 
     // Show if tab belongs to current workspace
-    return true;
+    return tabWorkspaceId === workspaceUuid;
   }
 
   async _handleTabSelection(window, onInit, containerId, workspaces, previousWorkspaceId) {
