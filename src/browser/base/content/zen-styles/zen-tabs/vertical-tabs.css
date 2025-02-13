@@ -368,9 +368,12 @@
 #zen-browser-tabs-wrapper {
   min-height: fit-content;
   overflow-y: auto;
-  overflow-x: clip !important; /* might break custom css with new design, so let's force it */
   height: 100%;
   scrollbar-width: thin;
+}
+
+#zen-browser-tabs-container {
+  overflow-x: clip !important; /* might break custom css with new design, so let's force it */
   position: relative;
 }
 

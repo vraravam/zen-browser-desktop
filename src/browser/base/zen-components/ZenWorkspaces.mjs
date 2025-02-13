@@ -1464,13 +1464,11 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       for (const container of document.querySelectorAll(selector)) {
         container.style.transform = `translateX(${newTransform + offsetPixels / 2}%)`;
         container.style.opacity = offsetPixels ? 1 : !newTransform;
-      }
-      if (!justMove) {
-        const pinnedContainerId = '#vertical-pinned-tabs-container ';
-        const arrowScrollboxId = '#tabbrowser-arrowscrollbox ';
-        const pinnedContainer = document.querySelector(pinnedContainerId + selector);
-        const arrowScrollbox = document.querySelector(arrowScrollboxId + selector);
-        this._updateMarginTopPinnedTabs(arrowScrollbox, pinnedContainer);
+        if (!offsetPixels && !container.hasAttribute('active')) {
+          container.style.position = 'fixed';
+        } else {
+          container.style.removeProperty('position');
+        }
       }
     }
   }
@@ -1513,6 +1511,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       const newTransform = `translateX(${offset}%)`;
       const isCurrent = offset === 0;
       if (shouldAnimate) {
+        element.style.removeProperty('position');
         if (isCurrent) {
           element.style.opacity = 1;
         }
@@ -1534,7 +1533,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       }
       if (offset === 0) {
         element.setAttribute('active', 'true');
-        if (tabToSelect) {
+        if (tabToSelect != gBrowser.selectedTab) {
           gBrowser.selectedTab = tabToSelect;
           tabToSelect._visuallySelected = false;
         }
@@ -1647,7 +1646,10 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
     gZenThemePicker.onWorkspaceChange(window);
 
+    document.getElementById('zen-browser-tabs-wrapper').style.scrollbarWidth = 'none';
     await this._animateTabs(window, !onInit && !this._animatingChange, tabToSelect);
+    await this._organizeWorkspaceStripLocations(window, true);
+    document.getElementById('zen-browser-tabs-wrapper').style.scrollbarWidth = '';
 
     // Notify listeners
     if (this._changeListeners?.length) {
