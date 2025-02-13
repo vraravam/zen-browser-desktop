@@ -249,7 +249,6 @@ var gZenVerticalTabsManager = {
       document.documentElement.setAttribute('zen-window-buttons-reversed', true);
     }
 
-    this._tabEdited = null;
     this._renameTabHalt = this.renameTabHalt.bind(this);
     gBrowser.tabContainer.addEventListener('dblclick', this.renameTabStart.bind(this));
   },
@@ -634,7 +633,7 @@ var gZenVerticalTabsManager = {
 
       // Check if name is blank, reset if so
       if (newName) {
-        this._tabEdited.label = newName;
+        gBrowser._setTabLabel(this._tabEdited, newName);
         this._tabEdited.setAttribute('zen-has-static-label', 'true');
       } else {
         this._tabEdited.removeAttribute('zen-has-static-label');
@@ -646,11 +645,7 @@ var gZenVerticalTabsManager = {
 
       this._tabEdited = null;
     } else if (event.key === 'Escape') {
-      let label = this._tabEdited.querySelector('.tab-label-container-editing');
-      this._tabEdited.querySelector('.tab-editor-container').remove();
-
-      label.classList.remove('tab-label-container-editing');
-      this._tabEdited = null;
+      event.target.blur();
     }
   },
 
@@ -658,7 +653,8 @@ var gZenVerticalTabsManager = {
     if (
       this._tabEdited ||
       !Services.prefs.getBoolPref('zen.tabs.rename-tabs') ||
-      Services.prefs.getBoolPref('browser.tabs.closeTabByDblclick')
+      Services.prefs.getBoolPref('browser.tabs.closeTabByDblclick') ||
+      !gZenVerticalTabsManager._prefsSidebarExpanded
     )
       return;
     this._tabEdited = event.target.closest('.tabbrowser-tab');
