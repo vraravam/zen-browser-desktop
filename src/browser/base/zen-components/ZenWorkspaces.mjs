@@ -526,7 +526,6 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
           this.activeWorkspace = activeWorkspace?.uuid;
         }
       }
-      await this.initializeTabsStripSections();
       try {
         if (activeWorkspace) {
           window.gZenThemePicker = new ZenThemePicker();
@@ -535,6 +534,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       } catch (e) {
         console.error('ZenWorkspaces: Error initializing theme picker', e);
       }
+      await this.initializeTabsStripSections();
     }
   }
 

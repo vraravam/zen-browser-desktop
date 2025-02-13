@@ -94,8 +94,8 @@
       // Detect overflow and underflow
       const observer = new ResizeObserver((_) => {
         const tabContainer = gBrowser.tabContainer;
-        const isVertical = tabContainer.getAttribute('orient') === 'vertical';
-        let contentSize = tabsWrapper.getBoundingClientRect()[isVertical ? 'height' : 'width'];
+        // const isVertical = tabContainer.getAttribute('orient') === 'vertical';
+        // let contentSize = tabsWrapper.getBoundingClientRect()[isVertical ? 'height' : 'width'];
         // NOTE: This should be contentSize > scrollClientSize, but due
         // to how Gecko internally rounds in those cases, we allow for some
         // minor differences (the internal Gecko layout size is 1/60th of a
