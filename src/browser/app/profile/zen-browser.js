@@ -127,6 +127,10 @@ pref('zen.view.experimental-rounded-view', false);
 pref('zen.view.experimental-rounded-view', true);
 #endif
 
+#ifdef XP_WIN
+pref('zen.widget.windows.acrylic', true);
+#endif
+
 // Glance
 pref('zen.glance.enabled', true);
 pref('zen.glance.hold-duration', 300); // in ms
