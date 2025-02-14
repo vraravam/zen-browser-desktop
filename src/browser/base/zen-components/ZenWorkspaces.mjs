@@ -232,6 +232,9 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   _organizeTabsToWorkspaceSections(workspace, section, pinnedSection, tabs) {
     const workspaceTabs = Array.from(tabs).filter((tab) => tab.getAttribute('zen-workspace-id') === workspace.uuid);
     for (const tab of workspaceTabs) {
+      if (tab.hasAttribute('zen-essential')) {
+        continue; // Ignore essentials as they need to be in their own section
+      }
       // remove tab from list
       tabs.splice(tabs.indexOf(tab), 1);
       if (tab.pinned) {

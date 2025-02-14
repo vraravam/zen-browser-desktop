@@ -14,7 +14,7 @@ var gZenUIManager = {
       return ChromeUtils.importESModule('chrome://browser/content/zen-vendor/motion.min.mjs', { global: 'current' });
     });
 
-    new ResizeObserver(gZenCommonActions.throttle(this.updateTabsToolbar.bind(this), this.sidebarHeightThrottle)).observe(
+    new ResizeObserver(this.updateTabsToolbar.bind(this)).observe(
       document.getElementById('TabsToolbar')
     );
 
@@ -241,7 +241,7 @@ var gZenVerticalTabsManager = {
     window.addEventListener('customizationstarting', this._preCustomize.bind(this));
     window.addEventListener('aftercustomization', this._postCustomize.bind(this));
 
-    window.addEventListener('MozAfterPaint', updateEvent, { once: true });
+    this._updateEvent();
 
     if (!this.isWindowsStyledButtons) {
       document.documentElement.setAttribute('zen-window-buttons-reversed', true);
@@ -570,6 +570,7 @@ var gZenVerticalTabsManager = {
     } catch (e) {
       console.error(e);
     }
+    gZenUIManager.updateTabsToolbar();
     this._isUpdating = false;
   },
 

@@ -249,6 +249,7 @@
       }
 
       gBrowser._updateTabBarForPinnedTabs();
+      gZenUIManager.updateTabsToolbar();
     }
 
     _onPinnedTabEvent(action, event) {
