@@ -19,7 +19,7 @@
       <html:div id="zen-welcome">
         <html:div id="zen-welcome-start">
           <html:h1 class="zen-branding-title" id="zen-welcome-title"></html:h1>
-          <button id="zen-welcome-start-button">
+          <button class="footer-button primary" id="zen-welcome-start-button">
           </button>
         </html:div>
       </html:div>

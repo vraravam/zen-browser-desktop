@@ -11,11 +11,17 @@
 #zen-welcome-start {
   flex-direction: column;
 
+  --zen-primary-color: light-dark(black, white);
+
   #zen-welcome-start-button {
     opacity: 0;
     list-style-image: url(chrome://browser/skin/zen-icons/forward.svg);
     position: absolute;
     bottom: 10%;
+
+    .button-icon {
+      filter: invert(1);
+    }
   }
 
   #zen-welcome-title {

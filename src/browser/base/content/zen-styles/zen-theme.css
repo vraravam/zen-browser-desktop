@@ -46,20 +46,20 @@
 
   --in-content-primary-button-background: color-mix(
     in srgb,
-    var(--zen-primary-color) 10%,
-    var(--zen-branding-bg) 90%
+    var(--zen-primary-color) 30%,
+    var(--zen-branding-bg-reverse) 70%
   ) !important;
   --in-content-primary-button-background-hover: color-mix(
     in srgb,
-    var(--zen-primary-color) 15%,
-    var(--zen-branding-bg) 85%
+    var(--zen-primary-color) 35%,
+    var(--zen-branding-bg-reverse) 65%
   ) !important;
   --in-content-primary-button-background-active: color-mix(
     in srgb,
-    var(--zen-primary-color) 20%,
-    var(--zen-branding-bg) 80%
+    var(--zen-primary-color) 40%,
+    var(--zen-branding-bg-reverse) 60%
   ) !important;
-  --button-text-color-primary: var(--zen-branding-bg-reverse) !important;
+  --button-text-color-primary: var(--zen-branding-bg) !important;
   --in-content-primary-button-text-color: var(--zen-colors-primary-foreground) !important;
   --in-content-primary-button-border-color: transparent !important;
   --in-content-primary-button-border-hover: transparent !important;
