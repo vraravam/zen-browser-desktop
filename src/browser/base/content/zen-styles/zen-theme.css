@@ -60,7 +60,7 @@
     var(--zen-branding-bg-reverse) 60%
   ) !important;
   --button-text-color-primary: var(--zen-branding-bg) !important;
-  --in-content-primary-button-text-color: var(--zen-colors-primary-foreground) !important;
+  --in-content-primary-button-text-color: var(--zen-branding-bg) !important;
   --in-content-primary-button-border-color: transparent !important;
   --in-content-primary-button-border-hover: transparent !important;
   --in-content-primary-button-border-active: var(--zen-colors-border) !important;
