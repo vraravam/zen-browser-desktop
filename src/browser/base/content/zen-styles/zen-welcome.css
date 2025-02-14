@@ -10,6 +10,7 @@
 
 #zen-welcome-start {
   flex-direction: column;
+  -moz-window-dragging: drag;
 
   --zen-primary-color: light-dark(black, white);
 
