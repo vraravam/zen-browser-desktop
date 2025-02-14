@@ -100,9 +100,7 @@
       );
     }
 
-    async fadeInContent(page) {
-      const contentElement = document.getElementById('zen-welcome-page-content');
-      contentElement.innerHTML = page.content;
+    async fadeInContent() {
       await animate(
         '#zen-welcome-page-content > *',
         { opacity: [0, 1], scale: [0.9, 1], filter: ['blur(2px)', 'blur(0px)'] },
@@ -157,8 +155,8 @@
       }
       await this.fadeInTitles(currentPage);
       await this.fadeInButtons(currentPage);
-      await this.fadeInContent(currentPage);
       currentPage.fadeIn();
+      await this.fadeInContent();
     }
 
     finish() {
@@ -197,14 +195,20 @@
             },
           },
         ],
-        content: `
-          <checkbox
-            class="clearingItemCheckbox"
-            data-l10n-id="item-history-form-data-downloads"
-            id="zen-welcome-set-default-browser"
-          />
-        `,
-        fadeIn() {},
+        fadeIn() {
+          const xul = `
+            <html:label for="zen-welcome-set-default-browser">
+              <html:input type="radio" id="zen-welcome-set-default-browser" name="zen-welcome-set-default-browser"></html:input>
+              <html:span data-l10n-id="zen-welcome-set-default-browser"></html:span>
+            </html:label>
+            <html:label for="zen-welcome-dont-set-default-browser">
+              <html:input checked="true" type="radio" id="zen-welcome-dont-set-default-browser" name="zen-welcome-set-default-browser"></html:input>
+              <html:span data-l10n-id="zen-welcome-dont-set-default-browser"></html:span>
+            </html:label>
+          `;
+          const fragment = window.MozXULElement.parseXULToFragment(xul);
+          document.getElementById('zen-welcome-page-content').appendChild(fragment);
+        },
         fadeOut() {},
       },
     ];
