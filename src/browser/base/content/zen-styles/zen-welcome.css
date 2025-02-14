@@ -54,10 +54,11 @@
     box-shadow: var(--zen-big-shadow);
     flex-direction: column;
     justify-content: space-between;
-    padding: 2rem;
+    padding: 3%;
     width: 33%;
     height: 100%;
     backdrop-filter: blur(10px);
+    overflow: hidden;
   }
 
   #zen-welcome-page-sidebar-buttons {
