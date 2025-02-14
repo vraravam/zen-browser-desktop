@@ -615,68 +615,70 @@
       document.getElementById('context_zen-pinned-tab-separator').hidden = !isVisible;
     }
 
-    moveToAnotherTabContainerIfNecessary(event, draggedTab) {
+    moveToAnotherTabContainerIfNecessary(event, movingTabs) {
       const pinnedTabsTarget =
         event.target.closest('#vertical-pinned-tabs-container') || event.target.closest('.zen-current-workspace-indicator');
       const essentialTabsTarget = event.target.closest('#zen-essentials-container');
       const tabsTarget = event.target.closest('#tabbrowser-arrowscrollbox');
 
-      let moved = false;
       let isVertical = this.expandedSidebarMode;
-      let isRegularTabs = false;
-      // Check for pinned tabs container
-      if (pinnedTabsTarget) {
-        if (!draggedTab.pinned) {
-          gBrowser.pinTab(draggedTab);
-          moved = true;
-        } else if (draggedTab.hasAttribute('zen-essential')) {
-          this.removeEssentials(draggedTab);
-          gBrowser.pinTab(draggedTab);
-          moved = true;
-        }
-      }
-      // Check for essentials container
-      else if (essentialTabsTarget) {
-        if (!draggedTab.hasAttribute('zen-essential')) {
-          this.addToEssentials(draggedTab);
-          moved = true;
-          isVertical = false;
-        }
-      }
-      // Check for normal tabs container
-      else if (tabsTarget || event.target.id === 'zen-tabs-wrapper') {
-        if (draggedTab.pinned && !draggedTab.hasAttribute('zen-essential')) {
-          gBrowser.unpinTab(draggedTab);
-          moved = true;
-          isRegularTabs = true;
-        } else if (draggedTab.hasAttribute('zen-essential')) {
-          this.removeEssentials(draggedTab);
-          moved = true;
-          isRegularTabs = true;
-        }
-      }
-
-      // If the tab was moved, adjust its position relative to the target tab
-      if (moved) {
-        const targetTab = event.target.closest('.tabbrowser-tab');
-        if (targetTab) {
-          const rect = targetTab.getBoundingClientRect();
-          let newIndex = targetTab._tPos;
-
-          if (isVertical) {
-            const middleY = targetTab.screenY + rect.height / 2;
-            if (!isRegularTabs && event.screenY > middleY) {
-              newIndex++;
-            } else if (isRegularTabs && event.screenY < middleY) {
-              newIndex--;
-            }
-          } else {
-            const middleX = targetTab.screenX + rect.width / 2;
-            if (event.screenX > middleX) {
-              newIndex++;
-            }
+      let moved = false;
+      for (const draggedTab of movingTabs) {
+        let isRegularTabs = false;
+        // Check for pinned tabs container
+        if (pinnedTabsTarget) {
+          if (!draggedTab.pinned) {
+            gBrowser.pinTab(draggedTab);
+            moved = true;
+          } else if (draggedTab.hasAttribute('zen-essential')) {
+            this.removeEssentials(draggedTab);
+            gBrowser.pinTab(draggedTab);
+            moved = true;
           }
-          gBrowser.moveTabTo(draggedTab, newIndex);
+        }
+        // Check for essentials container
+        else if (essentialTabsTarget) {
+          if (!draggedTab.hasAttribute('zen-essential')) {
+            this.addToEssentials(draggedTab);
+            moved = true;
+            isVertical = false;
+          }
+        }
+        // Check for normal tabs container
+        else if (tabsTarget || event.target.id === 'zen-tabs-wrapper') {
+          if (draggedTab.pinned && !draggedTab.hasAttribute('zen-essential')) {
+            gBrowser.unpinTab(draggedTab);
+            moved = true;
+            isRegularTabs = true;
+          } else if (draggedTab.hasAttribute('zen-essential')) {
+            this.removeEssentials(draggedTab);
+            moved = true;
+            isRegularTabs = true;
+          }
+        }
+
+        // If the tab was moved, adjust its position relative to the target tab
+        if (moved) {
+          const targetTab = event.target.closest('.tabbrowser-tab');
+          if (targetTab) {
+            const rect = targetTab.getBoundingClientRect();
+            let newIndex = targetTab._tPos;
+
+            if (isVertical) {
+              const middleY = targetTab.screenY + rect.height / 2;
+              if (!isRegularTabs && event.screenY > middleY) {
+                newIndex++;
+              } else if (isRegularTabs && event.screenY < middleY) {
+                newIndex--;
+              }
+            } else {
+              const middleX = targetTab.screenX + rect.width / 2;
+              if (event.screenX > middleX) {
+                newIndex++;
+              }
+            }
+            gBrowser.moveTabTo(draggedTab, newIndex);
+          }
         }
       }
 

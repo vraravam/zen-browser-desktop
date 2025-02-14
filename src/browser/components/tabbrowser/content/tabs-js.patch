@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabs.js b/browser/components/tabbrowser/content/tabs.js
-index 8aeb244ffca9f48661805f5b7d860b5896055562..3d323615040dcb5e379519878fb7874d5b28de81 100644
+index 8aeb244ffca9f48661805f5b7d860b5896055562..393458caa425e0a980223cd3800ea0ef33542c84 100644
 --- a/browser/components/tabbrowser/content/tabs.js
 +++ b/browser/components/tabbrowser/content/tabs.js
 @@ -94,7 +94,7 @@
@@ -52,7 +52,7 @@ index 8aeb244ffca9f48661805f5b7d860b5896055562..3d323615040dcb5e379519878fb7874d
        this._tabDropIndicator.hidden = true;
        event.stopPropagation();
 +      if (draggedTab && dropEffect == "move") {
-+        let moved = gZenPinnedTabManager.moveToAnotherTabContainerIfNecessary(event, draggedTab);
++        let moved = gZenPinnedTabManager.moveToAnotherTabContainerIfNecessary(event, movingTabs);
 +
 +        if (moved) {
 +          this._finishMoveTogetherSelectedTabs(draggedTab);
