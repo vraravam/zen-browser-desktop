@@ -147,8 +147,8 @@ var gZenUIManager = {
     this.__currentPopupTrackElement = null;
   },
 
-  get newtabButton() {
-    return ZenWorkspaces.activeWorkspaceStrip.querySelector('#tabs-newtab-button');
+  get newtabButtons() {
+    return document.querySelectorAll('#tabs-newtab-button');
   },
 
   _prevUrlbarLabel: null,
@@ -168,7 +168,9 @@ var gZenUIManager = {
       this._prevUrlbarLabel = gURLBar._untrimmedValue;
       gURLBar._zenHandleUrlbarClose = this.handleUrlbarClose.bind(this);
       gURLBar.setAttribute('zen-newtab', true);
-      this.newtabButton.setAttribute('in-urlbar', true);
+      for (const button of this.newtabButtons) {
+        button.setAttribute('in-urlbar', true);
+      }
       document.getElementById('Browser:OpenLocation').doCommand();
       gURLBar.search(this._lastSearch);
       return true;
@@ -186,7 +188,9 @@ var gZenUIManager = {
     gURLBar.removeAttribute('zen-newtab');
     this._lastTab._visuallySelected = true;
     this._lastTab = null;
-    this.newtabButton.removeAttribute('in-urlbar');
+    for (const button of this.newtabButtons) {
+      button.removeAttribute('in-urlbar');
+    }
     if (onSwitch) {
       this.clearUrlbarData();
     } else {
