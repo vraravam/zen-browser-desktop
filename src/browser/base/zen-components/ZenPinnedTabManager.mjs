@@ -238,6 +238,7 @@
           );
           contaienr.insertBefore(newTab, contaienr.lastChild);
         }
+        gBrowser.tabContainer._invalidateCachedTabs();
 
         newTab.initialize();
       }
