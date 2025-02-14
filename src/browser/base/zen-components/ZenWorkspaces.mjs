@@ -84,10 +84,14 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       await this.delayedStartup();
     }
     await this.promiseSectionsInitialized;
-    window.addEventListener('MozAfterPaint', async () => {
-      await SessionStore.promiseAllWindowsRestored;
-      await this.afterLoadInit();
-    }, { once: true });
+    window.addEventListener(
+      'MozAfterPaint',
+      async () => {
+        await SessionStore.promiseAllWindowsRestored;
+        await this.afterLoadInit();
+      },
+      { once: true }
+    );
   }
 
   async afterLoadInit() {
@@ -1356,7 +1360,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     let tab = gZenUIManager.openAndChangeToTab(BROWSER_NEW_TAB_URL);
 
     if (window.uuid) {
-      tab.setAttribute("zen-workspace-id", window.uuid)
+      tab.setAttribute('zen-workspace-id', window.uuid);
     }
 
     return tab;
