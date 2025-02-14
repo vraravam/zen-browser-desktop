@@ -1495,9 +1495,9 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
         container.style.transform = `translateX(${newTransform + offsetPixels / 2}%)`;
         container.style.opacity = offsetPixels ? 1 : !newTransform;
         if (!offsetPixels && !container.hasAttribute('active')) {
-          container.style.position = 'fixed';
+          container.setAttribute('hidden', 'true');
         } else {
-          container.style.removeProperty('position');
+          container.removeAttribute('hidden');
         }
       }
     }
@@ -1541,7 +1541,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       const newTransform = `translateX(${offset}%)`;
       const isCurrent = offset === 0;
       if (shouldAnimate) {
-        element.style.removeProperty('position');
+        element.removeAttribute('hidden');
         if (isCurrent) {
           element.style.opacity = 1;
         }
