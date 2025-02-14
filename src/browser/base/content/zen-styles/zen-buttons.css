@@ -34,7 +34,7 @@ xul|button:is(.expander-down) {
 .footer-button {
   transition: scale 0.2s;
   &:active {
-    scale: scale(0.98);
+    scale: 0.98;
   }
 }
 

@@ -51,6 +51,7 @@
     init() {
       document.getElementById('zen-welcome-pages').style.display = 'flex';
       document.getElementById('zen-welcome-start').remove();
+      window.maximize();
       animate('#zen-welcome-pages', { opacity: [0, 1] });
     }
 
