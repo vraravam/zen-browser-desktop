@@ -210,7 +210,7 @@
       button,
       { opacity: [0, 1], y: [30, 0], filter: ['blur(2px)', 'blur(0px)'] },
       {
-        delay: 0.6,
+        delay: 0.1,
         type: 'spring',
         stiffness: 300,
         damping: 20,
