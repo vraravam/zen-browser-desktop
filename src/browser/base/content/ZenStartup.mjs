@@ -87,7 +87,7 @@
     _initSidebarScrolling() {
       // Disable smooth scroll
       const canSmoothScroll = Services.prefs.getBoolPref('zen.startup.smooth-scroll-in-tabs', false);
-      const tabsWrapper = document.getElementById('zen-browser-tabs-wrapper');
+      const tabsWrapper = document.getElementById('zen-tabs-wrapper');
       gBrowser.tabContainer.addEventListener('wheel', (event) => {
         if (canSmoothScroll) return;
         event.preventDefault(); // Prevent the smooth scroll behavior

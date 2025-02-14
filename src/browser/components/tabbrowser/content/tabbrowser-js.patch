@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabbrowser.js b/browser/components/tabbrowser/content/tabbrowser.js
-index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..364bd46b5244c13139dec5a7f9401dbef2582976 100644
+index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..bdebb5eeb16c1c7b9fd0d0266d5fa7b5e12e95a1 100644
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -406,11 +406,39 @@
@@ -321,7 +321,16 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..364bd46b5244c13139dec5a7f9401dbe
  
          if (closeWindow) {
            // We've already called beforeunload on all the relevant tabs if we get here,
-@@ -5465,10 +5558,10 @@
+@@ -4812,6 +4905,8 @@
+         this.tabs[i]._tPos = i;
+       }
+ 
++      ZenWorkspaces.updateTabsContainers();
++
+       if (!this._windowIsClosing) {
+         if (wasPinned) {
+           this.tabContainer._positionPinnedTabs();
+@@ -5465,10 +5560,10 @@
        SessionStore.deleteCustomTabValue(aTab, "hiddenBy");
      }
  
@@ -334,7 +343,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..364bd46b5244c13139dec5a7f9401dbe
          aTab.selected ||
          aTab.closing ||
          // Tabs that are sharing the screen, microphone or camera cannot be hidden.
-@@ -5706,9 +5799,9 @@
+@@ -5706,9 +5801,9 @@
  
        // Don't allow mixing pinned and unpinned tabs.
        if (aTab.pinned) {
@@ -346,7 +355,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..364bd46b5244c13139dec5a7f9401dbe
        }
        if (aTab._tPos == aIndex) {
          return;
-@@ -5727,6 +5820,9 @@
+@@ -5727,6 +5822,9 @@
            this.tabContainer.insertBefore(aTab, neighbor);
          }
        });
@@ -356,7 +365,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..364bd46b5244c13139dec5a7f9401dbe
      }
  
      moveTabToGroup(aTab, aGroup) {
-@@ -5802,7 +5898,7 @@
+@@ -5802,7 +5900,7 @@
          createLazyBrowser,
        };
  
@@ -365,7 +374,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..364bd46b5244c13139dec5a7f9401dbe
        if (aIndex < numPinned || (aTab.pinned && aIndex == numPinned)) {
          params.pinned = true;
        }
-@@ -7443,6 +7539,7 @@
+@@ -7443,6 +7541,7 @@
              aWebProgress.isTopLevel
            ) {
              this.mTab.setAttribute("busy", "true");
@@ -373,7 +382,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..364bd46b5244c13139dec5a7f9401dbe
              gBrowser._tabAttrModified(this.mTab, ["busy"]);
              this.mTab._notselectedsinceload = !this.mTab.selected;
              gBrowser.syncThrobberAnimations(this.mTab);
-@@ -8411,7 +8508,7 @@ var TabContextMenu = {
+@@ -8411,7 +8510,7 @@ var TabContextMenu = {
      );
      contextUnpinSelectedTabs.hidden =
        !this.contextTab.pinned || !multiselectionContext;
@@ -382,7 +391,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..364bd46b5244c13139dec5a7f9401dbe
      // Move Tab items
      let contextMoveTabOptions = document.getElementById(
        "context_moveTabOptions"
-@@ -8444,7 +8541,7 @@ var TabContextMenu = {
+@@ -8444,7 +8543,7 @@ var TabContextMenu = {
      let contextMoveTabToStart = document.getElementById("context_moveToStart");
      let isFirstTab =
        tabsToMove[0] == visibleTabs[0] ||
@@ -391,7 +400,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..364bd46b5244c13139dec5a7f9401dbe
      contextMoveTabToStart.disabled = isFirstTab && allSelectedTabsAdjacent;
  
      document.getElementById("context_openTabInWindow").disabled =
-@@ -8677,6 +8774,7 @@ var TabContextMenu = {
+@@ -8677,6 +8776,7 @@ var TabContextMenu = {
      if (this.contextTab.multiselected) {
        gBrowser.removeMultiSelectedTabs();
      } else {

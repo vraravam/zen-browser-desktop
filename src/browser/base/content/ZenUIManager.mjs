@@ -63,7 +63,7 @@ var gZenUIManager = {
     if (this._tabsWrapper) {
       return this._tabsWrapper;
     }
-    this._tabsWrapper = document.getElementById('zen-browser-tabs-wrapper');
+    this._tabsWrapper = document.getElementById('zen-tabs-wrapper');
     return this._tabsWrapper;
   },
 
@@ -241,9 +241,7 @@ var gZenVerticalTabsManager = {
     window.addEventListener('customizationstarting', this._preCustomize.bind(this));
     window.addEventListener('aftercustomization', this._postCustomize.bind(this));
 
-    window.addEventListener('DOMContentLoaded', updateEvent, { once: true });
-
-    const tabs = document.getElementById('tabbrowser-tabs');
+    window.addEventListener('MozAfterPaint', updateEvent, { once: true });
 
     if (!this.isWindowsStyledButtons) {
       document.documentElement.setAttribute('zen-window-buttons-reversed', true);

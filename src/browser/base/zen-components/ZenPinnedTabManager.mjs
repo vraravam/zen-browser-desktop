@@ -69,7 +69,9 @@
         return;
       }
 
-      await this._refreshPinnedTabs(newWorkspace, { init: onInit });
+      if (onInit) {
+        await this._refreshPinnedTabs(newWorkspace, { init: onInit });
+      }
     }
 
     log(message) {
@@ -152,7 +154,7 @@
       const pinsToCreate = new Set(pins.map((p) => p.uuid));
 
       // First pass: identify existing tabs and remove those without pins
-      for (let tab of gBrowser.tabs) {
+      for (let tab of ZenWorkspaces.allStoredTabs) {
         const pinId = tab.getAttribute('zen-pin-id');
         if (!pinId) {
           continue;
@@ -176,10 +178,6 @@
       for (let pin of pins) {
         if (!pinsToCreate.has(pin.uuid)) {
           continue; // Skip pins that already have tabs
-        }
-
-        if (!this._shouldShowPin(pin, currentWorkspace, workspaces)) {
-          continue; // Skip pins not relevant to current workspace
         }
 
         let params = {
@@ -234,6 +232,12 @@
 
         this.log(`Created new pinned tab for pin ${pin.uuid} (isEssential: ${pin.isEssential})`);
         gBrowser.pinTab(newTab);
+        if (!pin.isEssential) {
+          const contaienr = document.querySelector(
+            `#vertical-pinned-tabs-container .zen-workspace-tabs-section[zen-workspace-id="${pin.workspaceUuid}"]`
+          );
+          contaienr.insertBefore(newTab, contaienr.lastChild);
+        }
 
         newTab.initialize();
       }
@@ -244,43 +248,6 @@
       }
 
       gBrowser._updateTabBarForPinnedTabs();
-    }
-
-    _shouldShowPin(pin, currentWorkspace, workspaces) {
-      const isEssential = pin.isEssential;
-      const pinWorkspaceUuid = pin.workspaceUuid;
-      const pinContextId = pin.containerTabId ? pin.containerTabId.toString() : '0';
-      const workspaceContextId = currentWorkspace.containerTabId?.toString() || '0';
-      const containerSpecificEssentials = ZenWorkspaces.containerSpecificEssentials;
-
-      // Handle essential pins
-      if (isEssential) {
-        if (!containerSpecificEssentials) {
-          return true; // Show all essential pins when containerSpecificEssentials is false
-        }
-
-        if (workspaceContextId !== '0') {
-          // In workspaces with default container: Show essentials that match the container
-          return pinContextId === workspaceContextId;
-        } else {
-          // In workspaces without a default container: Show essentials that aren't in container-specific workspaces
-          // or have userContextId="0" or no userContextId
-          return (
-            !pinContextId ||
-            pinContextId === '0' ||
-            !workspaces.workspaces.some((workspace) => workspace.containerTabId === parseInt(pinContextId, 10))
-          );
-        }
-      }
-
-      // For non-essential pins
-      if (!pinWorkspaceUuid) {
-        // Pins without a workspace belong to all workspaces (if that's your desired behavior)
-        return true;
-      }
-
-      // Show if pin belongs to current workspace
-      return pinWorkspaceUuid === currentWorkspace.uuid;
     }
 
     _onPinnedTabEvent(action, event) {
@@ -675,7 +642,7 @@
         }
       }
       // Check for normal tabs container
-      else if (tabsTarget || event.target.id === 'zen-browser-tabs-wrapper') {
+      else if (tabsTarget || event.target.id === 'zen-tabs-wrapper') {
         if (draggedTab.pinned && !draggedTab.hasAttribute('zen-essential')) {
           gBrowser.unpinTab(draggedTab);
           moved = true;

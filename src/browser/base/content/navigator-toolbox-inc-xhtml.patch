@@ -1,5 +1,5 @@
 diff --git a/browser/base/content/navigator-toolbox.inc.xhtml b/browser/base/content/navigator-toolbox.inc.xhtml
-index a0a382643a2f74b6d789f3641ef300eed202d5e9..fd60aceee18e22d40c7d86506408803e3f4ffd45 100644
+index a0a382643a2f74b6d789f3641ef300eed202d5e9..7a2be5fe6cdecb771ce3326008085ae402a465de 100644
 --- a/browser/base/content/navigator-toolbox.inc.xhtml
 +++ b/browser/base/content/navigator-toolbox.inc.xhtml
 @@ -2,7 +2,7 @@
@@ -46,7 +46,7 @@ index a0a382643a2f74b6d789f3641ef300eed202d5e9..fd60aceee18e22d40c7d86506408803e
                stopwatchid="FX_TAB_CLICK_MS">
 +<html:div id="zen-essentials-container" skipintoolbarset="true"></html:div>
 +<hbox id="zen-current-workspace-indicator-container"></hbox>
-+<html:div id="zen-browser-tabs-wrapper">
++<html:div id="zen-tabs-wrapper">
 +<html:div id="zen-browser-tabs-container">
            <hbox class="tab-drop-indicator" hidden="true"/>
  # If the name (tabbrowser-arrowscrollbox) or structure of this changes
