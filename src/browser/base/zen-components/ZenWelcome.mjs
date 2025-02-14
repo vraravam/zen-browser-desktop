@@ -210,7 +210,7 @@
       button,
       { opacity: [0, 1], y: [30, 0], filter: ['blur(2px)', 'blur(0px)'] },
       {
-        delay: 0.4,
+        delay: 0.6,
         type: 'spring',
         stiffness: 300,
         damping: 20,
@@ -225,7 +225,7 @@
           type: 'spring',
           ease: [0.755, 0.05, 0.855, 0.06],
           bounce: 0.4,
-          delay: getMotion().stagger(0.4, { startDelay: 0.15 }),
+          delay: getMotion().stagger(0.4),
         }
       );
       new ZenWelcomePages(getWelcomePages());
