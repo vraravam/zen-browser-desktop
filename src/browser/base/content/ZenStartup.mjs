@@ -123,15 +123,15 @@
     },
 
     _checkForWelcomePage() {
-      if (!Services.prefs.getBoolPref('zen.welcome-screen.seen', false) && Services.prefs.getBoolPref('zen.welcome-screen.enabled', true)) {
+      if (
+        !Services.prefs.getBoolPref('zen.welcome-screen.seen', false) &&
+        Services.prefs.getBoolPref('zen.welcome-screen.enabled', true)
+      ) {
         //Services.prefs.setBoolPref('zen.welcome-screen.seen', true);
         console.log('ZenStartup: Show welcome page');
-        Services.scriptloader.loadSubScript(
-          "chrome://browser/content/zen-components/ZenWelcome.mjs",
-          window
-        );
+        Services.scriptloader.loadSubScript('chrome://browser/content/zen-components/ZenWelcome.mjs', window);
       }
-    }
+    },
   };
 
   ZenStartup.init();

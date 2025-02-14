@@ -22,28 +22,202 @@
           <button class="footer-button primary" id="zen-welcome-start-button">
           </button>
         </html:div>
+        <hbox id="zen-welcome-pages">
+          <vbox id="zen-welcome-page-sidebar">
+            <vbox id="zen-welcome-page-sidebar-content">
+            </vbox>
+            <vbox id="zen-welcome-page-sidebar-buttons">
+            </vbox>
+          </vbox>
+          <html:div id="zen-welcome-page-content">
+          </html:div>
+        </hbox>
       </html:div>
     `;
     const fragment = window.MozXULElement.parseXULToFragment(XUL);
     document.getElementById('browser').appendChild(fragment);
-    window.MozXULElement.insertFTLIfNeeded("browser/zen-welcome.ftl");
+    window.MozXULElement.insertFTLIfNeeded('browser/zen-welcome.ftl');
+  }
+
+  class ZenWelcomePages {
+    constructor(pages) {
+      this._currentPage = -1;
+      this._pages = pages;
+      this.init();
+      this.next();
+    }
+
+    init() {
+      document.getElementById('zen-welcome-pages').style.display = 'flex';
+      document.getElementById('zen-welcome-start').style.display = 'none';
+    }
+
+    async fadeInTitles(page) {
+      const [title1, description1] = document.l10n.formatValues(page.content);
+      const titleElement = document.getElementById('zen-welcome-page-content-title');
+      titleElement.innerHTML = `<html:h1>${title1}</html:h1><html:p>${description1}</html:p>`;
+      await animate(
+        '#zen-welcome-page-content-title h1, #zen-welcome-page-content-title p',
+        { opacity: [0, 1], x: [100, 0], filter: ['blur(2px)', 'blur(0px)'] },
+        {
+          delay: getMotion().stagger(0.6, { startDelay: 0.2 }),
+          type: 'spring',
+          stiffness: 300,
+          damping: 20,
+          mass: 1.7,
+        }
+      );
+    }
+
+    async fadeInButtons(page) {
+      const buttons = document.getElementById('zen-welcome-page-sidebar-buttons');
+      let i = 0;
+      for (const button of page.buttons) {
+        const buttonElement = document.createXULElement('button');
+        document.l10n.setAttributes(buttonElement, button.l10n);
+        if (i++ === 0) {
+          buttonElement.classList.add('primary');
+        }
+        buttonElement.addEventListener('click', async () => {
+          const shouldSkip = await button.onclick();
+          if (shouldSkip) {
+            this.next();
+          }
+        });
+        buttons.appendChild(buttonElement);
+      }
+      await animate(
+        '#zen-welcome-page-sidebar-buttons button',
+        { opacity: [0, 1], x: [100, 0], filter: ['blur(2px)', 'blur(0px)'] },
+        {
+          delay: getMotion().stagger(0.6, { startDelay: 0.2 }),
+          type: 'spring',
+          stiffness: 300,
+          damping: 20,
+          mass: 1.7,
+        }
+      );
+    }
+
+    async fadeOutButtons() {
+      await animate(
+        '#zen-welcome-page-sidebar-buttons button',
+        { opacity: [1, 0], x: [0, 100], filter: ['blur(0px)', 'blur(2px)'] },
+        {
+          type: 'spring',
+          stiffness: 300,
+          damping: 20,
+          mass: 1.7,
+        }
+      );
+      document.getElementById('zen-welcome-page-sidebar-buttons').innerHTML = '';
+    }
+
+    async fadeOutTitles() {
+      await animate(
+        '#zen-welcome-page-content-title h1, #zen-welcome-page-content-title p',
+        { opacity: [1, 0], x: [0, 100], filter: ['blur(0px)', 'blur(2px)'] },
+        {
+          type: 'spring',
+          stiffness: 300,
+          damping: 20,
+          mass: 1.7,
+        }
+      );
+    }
+
+    async next() {
+      if (this._currentPage !== -1) {
+        const previousPage = this._pages[this._currentPage];
+        await this.fadeOutTitles();
+        await this.fadeOutButtons();
+        previousPage.fadeOut();
+      }
+      this._currentPage++;
+      const currentPage = this._pages.shift();
+      if (!currentPage) {
+        return;
+      }
+      await this.fadeInTitles(currentPage);
+      await this.fadeInButtons(currentPage);
+      currentPage.fadeIn();
+    }
+  }
+
+  function getWelcomePages() {
+    return [
+      {
+        content: [
+          {
+            id: 'zen-welcome-import-title',
+          },
+          {
+            id: 'zen-welcome-import-description',
+          },
+        ],
+        buttons: [
+          {
+            l10n: 'zen-welcome-import-button',
+            onclick: async () => {
+              // Import bookmarks
+              return false;
+            },
+          },
+          {
+            l10n: 'zen-welcome-skip-button',
+            onclick: async () => {
+              return true;
+            },
+          },
+        ],
+        fadeIn() {},
+        fadeOut() {},
+      },
+    ];
   }
 
   async function animateInitialStage() {
-    const [title1, title2] = await document.l10n.formatValues([{id:'zen-welcome-title-line1'}, {id:'zen-welcome-title-line2'}]);
+    const [title1, title2] = await document.l10n.formatValues([
+      { id: 'zen-welcome-title-line1' },
+      { id: 'zen-welcome-title-line2' },
+    ]);
     const titleElement = document.getElementById('zen-welcome-title');
     titleElement.innerHTML = `<html:span>${title1}</html:span><html:span>${title2}</html:span>`;
-    await animate("#zen-welcome-title span", { opacity: [0, 1], y: [100, 0] }, {
-      delay: getMotion().stagger(0.6),
-      type: 'spring',
-      ease: 'ease-out',
-      bounce: 0,
-    });
-    await animate("#zen-welcome-start-button", { opacity: [0, 1], y: [100, 0] }, {
-      delay: 0.5,
-      type: 'spring',
-      ease: 'ease-in-out',
-      bounce: 0.4,
+    await animate(
+      '#zen-welcome-title span',
+      { opacity: [0, 1], y: [30, 0], filter: ['blur(2px)', 'blur(0px)'] },
+      {
+        delay: getMotion().stagger(0.6, { startDelay: 0.2 }),
+        type: 'spring',
+        stiffness: 300,
+        damping: 20,
+        mass: 1.7,
+      }
+    );
+    const button = document.getElementById('zen-welcome-start-button');
+    await animate(
+      button,
+      { opacity: [0, 1], y: [30, 0], filter: ['blur(2px)', 'blur(0px)'] },
+      {
+        delay: 0.4,
+        type: 'spring',
+        stiffness: 300,
+        damping: 20,
+        mass: 1.7,
+      }
+    );
+    button.addEventListener('click', async () => {
+      await animate(
+        '#zen-welcome-title span, #zen-welcome-start-button',
+        { opacity: [1, 0], y: [0, -10], filter: ['blur(0px)', 'blur(2px)'] },
+        {
+          type: 'spring',
+          ease: [0.755, 0.05, 0.855, 0.06],
+          bounce: 0.4,
+          delay: getMotion().stagger(0.4, { startDelay: 0.3 }),
+        }
+      );
+      new ZenWelcomePages(getWelcomePages());
     });
   }
 
