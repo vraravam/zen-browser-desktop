@@ -14,9 +14,7 @@ var gZenUIManager = {
       return ChromeUtils.importESModule('chrome://browser/content/zen-vendor/motion.min.mjs', { global: 'current' });
     });
 
-    new ResizeObserver(this.updateTabsToolbar.bind(this)).observe(
-      document.getElementById('TabsToolbar')
-    );
+    new ResizeObserver(this.updateTabsToolbar.bind(this)).observe(document.getElementById('TabsToolbar'));
 
     new ResizeObserver(
       gZenCommonActions.throttle(
