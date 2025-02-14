@@ -64,9 +64,9 @@
         '#zen-welcome-page-sidebar-content > *',
         { opacity: [0, 1], x: [50, 0], filter: ['blur(2px)', 'blur(0px)'] },
         {
-          delay: getMotion().stagger(0.1, { startDelay: 0.3 }),
+          delay: getMotion().stagger(0.05, { startDelay: 0.3 }),
           type: 'spring',
-          bounce: 0.3,
+          bounce: 0.2,
         }
       );
     }
@@ -95,7 +95,7 @@
         {
           delay: getMotion().stagger(0.1),
           type: 'spring',
-          bounce: 0.3,
+          bounce: 0.2,
         }
       );
     }
@@ -103,12 +103,12 @@
     async fadeOutButtons() {
       await animate(
         '#zen-welcome-page-sidebar-buttons button',
-        { opacity: [1, 0], x: [0, 100], filter: ['blur(0px)', 'blur(2px)'] },
+        { opacity: [1, 0], x: [0, -60], filter: ['blur(0px)', 'blur(2px)'] },
         {
           type: 'spring',
           stiffness: 300,
           damping: 20,
-          mass: 1.7,
+          mass: 1.4,
         }
       );
       document.getElementById('zen-welcome-page-sidebar-buttons').innerHTML = '';
@@ -117,12 +117,12 @@
     async fadeOutTitles() {
       await animate(
         '#zen-welcome-page-content-title h1, #zen-welcome-page-content-title p',
-        { opacity: [1, 0], x: [0, 100], filter: ['blur(0px)', 'blur(2px)'] },
+        { opacity: [1, 0], x: [0, -60], filter: ['blur(0px)', 'blur(2px)'] },
         {
           type: 'spring',
           stiffness: 300,
           damping: 20,
-          mass: 1.7,
+          mass: 1.4,
         }
       );
     }
