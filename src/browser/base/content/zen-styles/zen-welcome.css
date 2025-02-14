@@ -50,12 +50,11 @@
   display: none;
 
   #zen-welcome-page-sidebar {
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: var(--zen-big-shadow);
+    background: rgba(255, 255, 255, 0.07);
     flex-direction: column;
     justify-content: space-between;
-    padding: 3%;
-    width: 33%;
+    padding: 3.5rem;
+    width: 40%;
     height: 100%;
     backdrop-filter: blur(10px);
     overflow: hidden;
@@ -68,19 +67,24 @@
 
   #zen-welcome-page-sidebar-content {
     & h1 {
-      font-size: 2rem;
+      font-size: 2.2rem;
       font-weight: 600;
       margin-bottom: 1rem;
     }
 
     & p {
-      font-size: 1.2rem;
-      margin: 0;
+      font-size: 1.1rem;
+      margin: 0 0 1.1rem 0;
       opacity: .6;
+    }
+
+    & > * {
+      opacity: 0;
     }
   }
 
   & button {
     justify-content: center;
+    opacity: 0;
   }
 }

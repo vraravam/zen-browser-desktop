@@ -55,18 +55,17 @@
     }
 
     async fadeInTitles(page) {
-      const [title1, description1] = await document.l10n.formatValues(page.content);
+      const [title1, description1, description2] = await document.l10n.formatValues(page.content);
       const titleElement = document.getElementById('zen-welcome-page-sidebar-content');
-      titleElement.innerHTML = `<html:h1>${title1}</html:h1><html:p>${description1}</html:p>`;
+      titleElement.innerHTML = `<html:h1>${title1}</html:h1><html:p>${description1}</html:p>`
+        + (description2 ? `<html:p>${description2}</html:p>` : '');
       await animate(
         '#zen-welcome-page-sidebar-content > *',
         { opacity: [0, 1], x: [50, 0], filter: ['blur(2px)', 'blur(0px)'] },
         {
-          delay: getMotion().stagger(0.6, { startDelay: 0.2 }),
+          delay: getMotion().stagger(0.1, { startDelay: 0.3 }),
           type: 'spring',
-          stiffness: 300,
-          damping: 20,
-          mass: 1.7,
+          bounce: 0.3,
         }
       );
     }
@@ -93,11 +92,9 @@
         '#zen-welcome-page-sidebar-buttons button',
         { opacity: [0, 1], x: [50, 0], filter: ['blur(2px)', 'blur(0px)'] },
         {
-          delay: getMotion().stagger(0.2),
+          delay: getMotion().stagger(0.1),
           type: 'spring',
-          stiffness: 300,
-          damping: 20,
-          mass: 1.7,
+          bounce: 0.3,
         }
       );
     }
@@ -137,7 +134,7 @@
         previousPage.fadeOut();
       }
       this._currentPage++;
-      const currentPage = this._pages.shift();
+      const currentPage = this._pages[this._currentPage];
       if (!currentPage) {
         this.finish();
         return;
@@ -160,14 +157,19 @@
             id: 'zen-welcome-import-title',
           },
           {
-            id: 'zen-welcome-import-description',
+            id: 'zen-welcome-import-description-1',
           },
+          {
+            id: 'zen-welcome-import-description-2',
+          }
         ],
         buttons: [
           {
             l10n: 'zen-welcome-import-button',
             onclick: async () => {
-              // Import bookmarks
+              MigrationUtils.showMigrationWizard(window, {
+                zenBlocking: true,
+              });
               return false;
             },
           },
