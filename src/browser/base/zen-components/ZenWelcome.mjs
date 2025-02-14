@@ -56,7 +56,7 @@
     }
 
     async fadeInTitles(page) {
-      const [title1, description1, description2] = await document.l10n.formatValues(page.content);
+      const [title1, description1, description2] = await document.l10n.formatValues(page.text);
       const titleElement = document.getElementById('zen-welcome-page-sidebar-content');
       titleElement.innerHTML = `<html:h1>${title1}</html:h1><html:p>${description1}</html:p>`
         + (description2 ? `<html:p>${description2}</html:p>` : '');
@@ -100,6 +100,20 @@
       );
     }
 
+    async fadeInContent(page) {
+      const contentElement = document.getElementById('zen-welcome-page-content');
+      contentElement.innerHTML = page.content;
+      await animate(
+        '#zen-welcome-page-content > *',
+        { opacity: [0, 1], scale: [0.9, 1], filter: ['blur(2px)', 'blur(0px)'] },
+        {
+          delay: getMotion().stagger(0.05, { startDelay: 0.3 }),
+          type: 'spring',
+          bounce: 0.2,
+        }
+      );
+    }
+
     async fadeOutButtons() {
       await animate(
         '#zen-welcome-page-sidebar-buttons button',
@@ -112,6 +126,7 @@
         }
       );
       document.getElementById('zen-welcome-page-sidebar-buttons').innerHTML = '';
+      document.getElementById('zen-welcome-page-sidebar-content').innerHTML = '';
     }
 
     async fadeOutTitles() {
@@ -142,6 +157,7 @@
       }
       await this.fadeInTitles(currentPage);
       await this.fadeInButtons(currentPage);
+      await this.fadeInContent(currentPage);
       currentPage.fadeIn();
     }
 
@@ -153,7 +169,7 @@
   function getWelcomePages() {
     return [
       {
-        content: [
+        text: [
           {
             id: 'zen-welcome-import-title',
           },
@@ -181,6 +197,13 @@
             },
           },
         ],
+        content: `
+          <checkbox
+            class="clearingItemCheckbox"
+            data-l10n-id="item-history-form-data-downloads"
+            id="zen-welcome-set-default-browser"
+          />
+        `,
         fadeIn() {},
         fadeOut() {},
       },
