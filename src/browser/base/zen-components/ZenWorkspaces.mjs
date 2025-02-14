@@ -544,14 +544,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
         activeWorkspace = await this.createAndSaveWorkspace('Default Workspace', true, '🏠');
       } else {
         activeWorkspace = await this.getActiveWorkspace();
-        if (!activeWorkspace) {
-          activeWorkspace = workspaces.workspaces.find((workspace) => workspace.default);
-          this.activeWorkspace = activeWorkspace?.uuid;
-        }
-        if (!activeWorkspace) {
-          activeWorkspace = workspaces.workspaces[0];
-          this.activeWorkspace = activeWorkspace?.uuid;
-        }
+        this.activeWorkspace = activeWorkspace?.uuid;
       }
       try {
         if (activeWorkspace) {
@@ -777,7 +770,8 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
   async getActiveWorkspace() {
     const workspaces = await this._workspaces();
-    return workspaces.workspaces.find((workspace) => workspace.uuid === this.activeWorkspace) ?? workspaces.workspaces[0];
+    return workspaces.workspaces.find((workspace) => workspace.uuid === this.activeWorkspace) ??
+      workspaces.workspaces.find((workspace) => workspace.default) ?? workspaces.workspaces[0];
   }
   // Workspaces dialog UI management
 
