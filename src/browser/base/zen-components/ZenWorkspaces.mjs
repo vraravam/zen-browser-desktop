@@ -1673,10 +1673,10 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
     gZenThemePicker.onWorkspaceChange(window);
 
-    document.getElementById('zen-browser-tabs-wrapper').style.scrollbarWidth = 'none';
+    document.getElementById('zen-tabs-wrapper').style.scrollbarWidth = 'none';
     await this._animateTabs(window, !onInit && !this._animatingChange, tabToSelect);
     await this._organizeWorkspaceStripLocations(window, true);
-    document.getElementById('zen-browser-tabs-wrapper').style.scrollbarWidth = '';
+    document.getElementById('zen-tabs-wrapper').style.scrollbarWidth = '';
 
     // Notify listeners
     if (this._changeListeners?.length) {

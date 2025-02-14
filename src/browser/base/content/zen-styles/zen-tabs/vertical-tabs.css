@@ -365,7 +365,7 @@
   }
 }
 
-#zen-browser-tabs-wrapper {
+#zen-tabs-wrapper {
   min-height: fit-content;
   overflow-y: auto;
   height: 100%;

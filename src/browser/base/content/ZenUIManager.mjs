@@ -63,7 +63,7 @@ var gZenUIManager = {
     if (this._tabsWrapper) {
       return this._tabsWrapper;
     }
-    this._tabsWrapper = document.getElementById('zen-browser-tabs-wrapper');
+    this._tabsWrapper = document.getElementById('zen-tabs-wrapper');
     return this._tabsWrapper;
   },
 
