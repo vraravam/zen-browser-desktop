@@ -6,10 +6,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
 
-  & + #zen-sidebar-splitter {
-    display: none;
-  }
+:root[zen-welcome-stage] #zen-sidebar-splitter {
+  display: none;
 }
 
 #zen-welcome-start {
@@ -44,6 +44,7 @@
 }
 
 #zen-welcome-pages {
+  opacity: 0;
   justify-content: start;
   align-items: start;
   display: none;
@@ -62,5 +63,23 @@
   #zen-welcome-page-sidebar-buttons {
     flex-direction: column;
     gap: 5px;
+  }
+
+  #zen-welcome-page-sidebar-content {
+    & h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    & p {
+      font-size: 1.2rem;
+      margin: 0;
+      opacity: .6;
+    }
+  }
+
+  & button {
+    justify-content: center;
   }
 }

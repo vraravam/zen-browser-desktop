@@ -15,6 +15,7 @@
   }
 
   function initializeZenWelcome() {
+    document.documentElement.setAttribute('zen-welcome-stage', 'true');
     const XUL = `
       <html:div id="zen-welcome">
         <html:div id="zen-welcome-start">
@@ -49,16 +50,17 @@
 
     init() {
       document.getElementById('zen-welcome-pages').style.display = 'flex';
-      document.getElementById('zen-welcome-start').style.display = 'none';
+      document.getElementById('zen-welcome-start').remove();
+      animate('#zen-welcome-pages', { opacity: [0, 1] });
     }
 
     async fadeInTitles(page) {
-      const [title1, description1] = document.l10n.formatValues(page.content);
-      const titleElement = document.getElementById('zen-welcome-page-content-title');
+      const [title1, description1] = await document.l10n.formatValues(page.content);
+      const titleElement = document.getElementById('zen-welcome-page-sidebar-content');
       titleElement.innerHTML = `<html:h1>${title1}</html:h1><html:p>${description1}</html:p>`;
       await animate(
-        '#zen-welcome-page-content-title h1, #zen-welcome-page-content-title p',
-        { opacity: [0, 1], x: [100, 0], filter: ['blur(2px)', 'blur(0px)'] },
+        '#zen-welcome-page-sidebar-content > *',
+        { opacity: [0, 1], x: [50, 0], filter: ['blur(2px)', 'blur(0px)'] },
         {
           delay: getMotion().stagger(0.6, { startDelay: 0.2 }),
           type: 'spring',
@@ -78,6 +80,7 @@
         if (i++ === 0) {
           buttonElement.classList.add('primary');
         }
+        buttonElement.classList.add('footer-button');
         buttonElement.addEventListener('click', async () => {
           const shouldSkip = await button.onclick();
           if (shouldSkip) {
@@ -88,9 +91,9 @@
       }
       await animate(
         '#zen-welcome-page-sidebar-buttons button',
-        { opacity: [0, 1], x: [100, 0], filter: ['blur(2px)', 'blur(0px)'] },
+        { opacity: [0, 1], x: [50, 0], filter: ['blur(2px)', 'blur(0px)'] },
         {
-          delay: getMotion().stagger(0.6, { startDelay: 0.2 }),
+          delay: getMotion().stagger(0.2),
           type: 'spring',
           stiffness: 300,
           damping: 20,
@@ -136,11 +139,16 @@
       this._currentPage++;
       const currentPage = this._pages.shift();
       if (!currentPage) {
+        this.finish();
         return;
       }
       await this.fadeInTitles(currentPage);
       await this.fadeInButtons(currentPage);
       currentPage.fadeIn();
+    }
+
+    finish() {
+      document.documentElement.removeAttribute('zen-welcome-stage');
     }
   }
 
