@@ -773,8 +773,11 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
   async getActiveWorkspace() {
     const workspaces = await this._workspaces();
-    return workspaces.workspaces.find((workspace) => workspace.uuid === this.activeWorkspace) ??
-      workspaces.workspaces.find((workspace) => workspace.default) ?? workspaces.workspaces[0];
+    return (
+      workspaces.workspaces.find((workspace) => workspace.uuid === this.activeWorkspace) ??
+      workspaces.workspaces.find((workspace) => workspace.default) ??
+      workspaces.workspaces[0]
+    );
   }
   // Workspaces dialog UI management
 
@@ -1857,7 +1860,8 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       gBrowser.tabContainer._invalidateCachedTabs();
     }
     // Return the number of essentials INSIDE the pinned tabs container so we can correctly change their parent
-    return Array.from(this.pinnedTabsContainer.children).filter((child) => child.getAttribute('zen-essential') === 'true').length;
+    return Array.from(this.pinnedTabsContainer.children).filter((child) => child.getAttribute('zen-essential') === 'true')
+      .length;
   }
 
   // Context menu management
