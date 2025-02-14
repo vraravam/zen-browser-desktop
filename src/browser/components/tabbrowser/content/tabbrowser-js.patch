@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabbrowser.js b/browser/components/tabbrowser/content/tabbrowser.js
-index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..bdebb5eeb16c1c7b9fd0d0266d5fa7b5e12e95a1 100644
+index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..5db2380df21f4b25a6c03bfa457b62093051cc9a 100644
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -406,11 +406,39 @@
@@ -9,7 +9,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..bdebb5eeb16c1c7b9fd0d0266d5fa7b5
 +    get _numVisiblePinTabs() {
 +      let i = 0;
 +      for (let tab of this.tabs) {
-+        if (!tab.pinned) {
++        if (!tab.pinned && !tab.hasAttribute("zen-glance-tab")) {
 +          break;
 +        }
 +        if (!tab.hidden) {
@@ -22,7 +22,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..bdebb5eeb16c1c7b9fd0d0266d5fa7b5
 +    get _numZenEssentials() {
 +      let i = 0;
 +      for (let tab of this.tabs) {
-+        if (!tab.hasAttribute("zen-essential")) {
++        if (!tab.hasAttribute("zen-essential") && !tab.hasAttribute("zen-glance-tab")) {
 +          break;
 +        }
 +        if (!tab.hidden) {
@@ -37,14 +37,14 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..bdebb5eeb16c1c7b9fd0d0266d5fa7b5
 -        if (!this.tabs[i].pinned) {
 +      let i = 0;
 +      for (let tab of this.tabs) {
-+        if (!tab.pinned) {
++        if (!tab.pinned && !tab.hasAttribute("zen-glance-tab")) {
            break;
          }
 +        i++;
        }
        return i;
      }
-@@ -807,10 +835,10 @@
+@@ -807,7 +835,7 @@
        this.showTab(aTab);
        if (this.tabContainer.verticalMode) {
          this._handleTabMove(aTab, () =>
@@ -52,12 +52,8 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..bdebb5eeb16c1c7b9fd0d0266d5fa7b5
 +          aTab.hasAttribute("zen-essential") ? document.getElementById("zen-essentials-container").appendChild(aTab) : this.verticalPinnedTabsContainer.insertBefore(aTab, this.verticalPinnedTabsContainer.lastChild)
          );
        } else {
--        this.moveTabTo(aTab, this.pinnedTabCount, { forceStandaloneTab: true });
-+        this.moveTabTo(aTab, this._numVisiblePinTabs, { forceStandaloneTab: true });
-       }
-       aTab.setAttribute("pinned", "true");
-       this._updateTabBarForPinnedTabs();
-@@ -828,10 +856,10 @@
+         this.moveTabTo(aTab, this.pinnedTabCount, { forceStandaloneTab: true });
+@@ -828,7 +856,7 @@
            // the moving of a tab from the vertical pinned tabs container
            // and back into arrowscrollbox.
            aTab.removeAttribute("pinned");
@@ -65,11 +61,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..bdebb5eeb16c1c7b9fd0d0266d5fa7b5
 +          ZenWorkspaces.activeWorkspaceStrip.prepend(aTab);
          });
        } else {
--        this.moveTabTo(aTab, this.pinnedTabCount - 1, {
-+        this.moveTabTo(aTab, this._numVisiblePinTabs - 1, {
-           forceStandaloneTab: true,
-         });
-         aTab.removeAttribute("pinned");
+         this.moveTabTo(aTab, this.pinnedTabCount - 1, {
 @@ -1055,6 +1083,8 @@
  
        let LOCAL_PROTOCOLS = ["chrome:", "about:", "resource:", "data:"];
@@ -232,20 +224,11 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..bdebb5eeb16c1c7b9fd0d0266d5fa7b5
        if (typeof index != "number") {
          // Move the new tab after another tab if needed, to the end otherwise.
 -        index = Infinity;
-+        index = Services.prefs.getBoolPref("zen.view.show-newtab-button-top") ? this._numVisiblePinTabs : Infinity;
++        index = Services.prefs.getBoolPref("zen.view.show-newtab-button-top") ? this.pinnedTabCount : Infinity;
          if (
            !bulkOrderedOpen &&
            ((openerTab &&
-@@ -3773,14 +3855,14 @@
-       // Ensure index is within bounds.
-       if (tab.pinned) {
-         index = Math.max(index, 0);
--        index = Math.min(index, this.pinnedTabCount);
-+        index = Math.min(index, this._numVisiblePinTabs);
-       } else {
--        index = Math.max(index, this.pinnedTabCount);
-+        index = Math.max(index, this._numVisiblePinTabs);
-         index = Math.min(index, this.tabs.length);
+@@ -3780,7 +3862,7 @@
        }
  
        /** @type {MozTabbrowserTab|undefined} */
