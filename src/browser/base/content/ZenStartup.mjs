@@ -3,11 +3,9 @@
   var ZenStartup = {
     init() {
       this.openWatermark();
-      window.SessionStore.promiseInitialized.then(() => {
-        this._changeSidebarLocation();
-        this._zenInitBrowserLayout();
-        this._initSearchBar();
-      });
+      this._changeSidebarLocation();
+      this._zenInitBrowserLayout();
+      this._initSearchBar();
     },
 
     _zenInitBrowserLayout() {

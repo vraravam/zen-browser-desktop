@@ -14,9 +14,7 @@ var gZenUIManager = {
       return ChromeUtils.importESModule('chrome://browser/content/zen-vendor/motion.min.mjs', { global: 'current' });
     });
 
-    new ResizeObserver(gZenCommonActions.throttle(this.updateTabsToolbar.bind(this), this.sidebarHeightThrottle)).observe(
-      document.getElementById('TabsToolbar')
-    );
+    new ResizeObserver(this.updateTabsToolbar.bind(this)).observe(document.getElementById('TabsToolbar'));
 
     new ResizeObserver(
       gZenCommonActions.throttle(
@@ -149,8 +147,8 @@ var gZenUIManager = {
     this.__currentPopupTrackElement = null;
   },
 
-  get newtabButton() {
-    return ZenWorkspaces.activeWorkspaceStrip.querySelector('#tabs-newtab-button');
+  get newtabButtons() {
+    return document.querySelectorAll('#tabs-newtab-button');
   },
 
   _prevUrlbarLabel: null,
@@ -170,7 +168,9 @@ var gZenUIManager = {
       this._prevUrlbarLabel = gURLBar._untrimmedValue;
       gURLBar._zenHandleUrlbarClose = this.handleUrlbarClose.bind(this);
       gURLBar.setAttribute('zen-newtab', true);
-      this.newtabButton.setAttribute('in-urlbar', true);
+      for (const button of this.newtabButtons) {
+        button.setAttribute('in-urlbar', true);
+      }
       document.getElementById('Browser:OpenLocation').doCommand();
       gURLBar.search(this._lastSearch);
       return true;
@@ -188,7 +188,9 @@ var gZenUIManager = {
     gURLBar.removeAttribute('zen-newtab');
     this._lastTab._visuallySelected = true;
     this._lastTab = null;
-    this.newtabButton.removeAttribute('in-urlbar');
+    for (const button of this.newtabButtons) {
+      button.removeAttribute('in-urlbar');
+    }
     if (onSwitch) {
       this.clearUrlbarData();
     } else {
@@ -241,7 +243,7 @@ var gZenVerticalTabsManager = {
     window.addEventListener('customizationstarting', this._preCustomize.bind(this));
     window.addEventListener('aftercustomization', this._postCustomize.bind(this));
 
-    window.addEventListener('MozAfterPaint', updateEvent, { once: true });
+    this._updateEvent();
 
     if (!this.isWindowsStyledButtons) {
       document.documentElement.setAttribute('zen-window-buttons-reversed', true);
@@ -570,6 +572,7 @@ var gZenVerticalTabsManager = {
     } catch (e) {
       console.error(e);
     }
+    gZenUIManager.updateTabsToolbar();
     this._isUpdating = false;
   },
 

@@ -238,6 +238,7 @@
           );
           contaienr.insertBefore(newTab, contaienr.lastChild);
         }
+        gBrowser.tabContainer._invalidateCachedTabs();
 
         newTab.initialize();
       }
@@ -248,6 +249,7 @@
       }
 
       gBrowser._updateTabBarForPinnedTabs();
+      gZenUIManager.updateTabsToolbar();
     }
 
     _onPinnedTabEvent(action, event) {
