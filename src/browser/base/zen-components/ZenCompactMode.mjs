@@ -292,6 +292,9 @@ var gZenCompactModeManager = {
         element: document.getElementById('zen-appcontent-navbar-container'),
         screenEdge: 'top',
       },
+      {
+        element: gZenVerticalTabsManager.actualWindowButtons,
+      }
     ];
   },
 
@@ -336,8 +339,9 @@ var gZenCompactModeManager = {
       target.addEventListener('mouseleave', (event) => {
         // If on Mac, ignore mouseleave in the area of window buttons
         if (AppConstants.platform == 'macosx') {
-          const MAC_WINDOW_BUTTONS_X_BORDER = 75;
-          const MAC_WINDOW_BUTTONS_Y_BORDER = 40;
+          const buttonRect = gZenVerticalTabsManager.actualWindowButtons.getBoundingClientRect();
+          const MAC_WINDOW_BUTTONS_X_BORDER = buttonRect.width + buttonRect.x;
+          const MAC_WINDOW_BUTTONS_Y_BORDER = buttonRect.height + buttonRect.y;
           if (event.clientX < MAC_WINDOW_BUTTONS_X_BORDER && event.clientY < MAC_WINDOW_BUTTONS_Y_BORDER) {
             return;
           }
