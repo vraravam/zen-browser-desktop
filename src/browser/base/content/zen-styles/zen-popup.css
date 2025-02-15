@@ -349,3 +349,30 @@ menuitem {
 #editBMPanel_workspaceList input[type='checkbox'] {
   margin-right: 8px;
 }
+
+/* Section: Toast notifications */
+
+#zen-toast-container {
+  position: fixed;
+  top: calc(var(--zen-element-separation) * 2);
+  right: calc(var(--zen-element-separation) * 2);
+  z-index: 1000;
+  gap: 1rem;
+
+  & .zen-toast {
+    padding: 0.9rem 0.8rem;
+    border-radius: 12px;
+    background-color: var(--button-primary-bgcolor);
+    color: var(--button-primary-color);
+    box-shadow: var(--zen-big-shadow);
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    gap: 2px;
+    width: fit-content;
+
+    & .description {
+      opacity: 0.6;
+    }
+  }
+}
