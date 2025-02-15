@@ -73,6 +73,10 @@
           filter: grayscale(0);
           opacity: 1;
         }
+
+        &:hover {
+          background-color: var(--zen-toolbar-element-bg);
+        }
       }
     }
   }
