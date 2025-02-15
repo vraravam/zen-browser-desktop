@@ -3,11 +3,9 @@
   var ZenStartup = {
     init() {
       this.openWatermark();
-      window.SessionStore.promiseInitialized.then(() => {
-        this._changeSidebarLocation();
-        this._zenInitBrowserLayout();
-        this._initSearchBar();
-      });
+      this._changeSidebarLocation();
+      this._zenInitBrowserLayout();
+      this._initSearchBar();
     },
 
     _zenInitBrowserLayout() {
@@ -85,7 +83,7 @@
     _initSidebarScrolling() {
       // Disable smooth scroll
       const canSmoothScroll = Services.prefs.getBoolPref('zen.startup.smooth-scroll-in-tabs', false);
-      const tabsWrapper = document.getElementById('zen-browser-tabs-wrapper');
+      const tabsWrapper = document.getElementById('zen-tabs-wrapper');
       gBrowser.tabContainer.addEventListener('wheel', (event) => {
         if (canSmoothScroll) return;
         event.preventDefault(); // Prevent the smooth scroll behavior
@@ -94,8 +92,8 @@
       // Detect overflow and underflow
       const observer = new ResizeObserver((_) => {
         const tabContainer = gBrowser.tabContainer;
-        const isVertical = tabContainer.getAttribute('orient') === 'vertical';
-        let contentSize = tabsWrapper.getBoundingClientRect()[isVertical ? 'height' : 'width'];
+        // const isVertical = tabContainer.getAttribute('orient') === 'vertical';
+        // let contentSize = tabsWrapper.getBoundingClientRect()[isVertical ? 'height' : 'width'];
         // NOTE: This should be contentSize > scrollClientSize, but due
         // to how Gecko internally rounds in those cases, we allow for some
         // minor differences (the internal Gecko layout size is 1/60th of a

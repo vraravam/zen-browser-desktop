@@ -80,6 +80,7 @@ pref('zen.welcome-screen.seen', false);
 
 pref('zen.tabs.vertical', true);
 pref('zen.tabs.vertical.right-side', false);
+pref('zen.tabs.rename-tabs', true);
 pref('zen.theme.accent-color', "#ffb787");
 pref('zen.theme.content-element-separation', 6); // In pixels
 pref('zen.theme.pill-button', false);
@@ -125,6 +126,10 @@ pref('zen.urlbar.wait-to-clear', 45000); // in ms (default 45s)
 pref('zen.view.experimental-rounded-view', false);
 #else
 pref('zen.view.experimental-rounded-view', true);
+#endif
+
+#ifdef XP_WIN
+pref('zen.widget.windows.acrylic', true);
 #endif
 
 // Glance
@@ -425,7 +430,7 @@ pref("browser.aboutwelcome.enabled", false);
 
 // ---- Experimental settings to try make zen faster
 pref("gfx.canvas.accelerated.cache-items", 32768);
-pref("gfx.canvas.accelerated.cache-size", 4096);
+pref("gfx.canvas.accelerated.cache-size", 256);
 pref("gfx.content.skia-font-cache-size", 80);
 
 pref("media.memory_cache_max_size", 1048576);

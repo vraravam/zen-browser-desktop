@@ -456,7 +456,8 @@
   position: absolute;
   max-height: var(--zen-workspace-indicator-height);
   min-height: var(--zen-workspace-indicator-height);
-  gap: 5px;
+  gap: 12px;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   flex-direction: row !important;
