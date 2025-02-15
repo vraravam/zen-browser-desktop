@@ -1139,6 +1139,17 @@
   box-shadow: -3px 0 6px -2px var(--toolbarbutton-active-background, rgba(0, 255, 0, 0.2));
 }
 
+/* Renaming tabs */
+.tab-label-container-editing {
+  display: none !important;
+}
+
+#tab-label-input {
+  white-space: nowrap;
+  overflow-x: scroll;
+  margin: 0;
+}
+
 /* Section: tab workspaces stylings */
 .zen-workspace-tabs-section {
   position: absolute;

@@ -248,6 +248,9 @@ var gZenVerticalTabsManager = {
     if (!this.isWindowsStyledButtons) {
       document.documentElement.setAttribute('zen-window-buttons-reversed', true);
     }
+
+    this._renameTabHalt = this.renameTabHalt.bind(this);
+    gBrowser.tabContainer.addEventListener('dblclick', this.renameTabStart.bind(this));
   },
 
   toggleExpand() {
@@ -612,5 +615,73 @@ var gZenVerticalTabsManager = {
       return this._topButtonsSeparatorElement.before(child);
     }
     target.appendChild(child);
+  },
+
+  renameTabKeydown(event) {
+    if (event.key === 'Enter') {
+      let label = this._tabEdited.querySelector('.tab-label-container-editing');
+      let input = this._tabEdited.querySelector('#tab-label-input');
+      let newName = input.value.trim();
+
+      // Check if name is blank, reset if so
+      if (newName) {
+        gBrowser._setTabLabel(this._tabEdited, newName);
+        this._tabEdited.setAttribute('zen-has-static-label', 'true');
+      } else {
+        this._tabEdited.removeAttribute('zen-has-static-label');
+        gBrowser.setTabTitle(this._tabEdited);
+      }
+
+      this._tabEdited.querySelector('.tab-editor-container').remove();
+      label.classList.remove('tab-label-container-editing');
+
+      this._tabEdited = null;
+    } else if (event.key === 'Escape') {
+      event.target.blur();
+    }
+  },
+
+  renameTabStart(event) {
+    if (
+      this._tabEdited ||
+      !Services.prefs.getBoolPref('zen.tabs.rename-tabs') ||
+      Services.prefs.getBoolPref('browser.tabs.closeTabByDblclick') ||
+      !gZenVerticalTabsManager._prefsSidebarExpanded
+    )
+      return;
+    this._tabEdited = event.target.closest('.tabbrowser-tab');
+    if (!this._tabEdited || !this._tabEdited.pinned || this._tabEdited.hasAttribute('zen-essential')) {
+      this._tabEdited = null;
+      return;
+    }
+    const label = this._tabEdited.querySelector('.tab-label-container');
+    label.classList.add('tab-label-container-editing');
+
+    const container = window.MozXULElement.parseXULToFragment(`
+      <vbox class="tab-label-container tab-editor-container" flex="1" align="start" pack="center"></vbox>
+    `);
+    label.after(container);
+    const containerHtml = this._tabEdited.querySelector('.tab-editor-container');
+    const input = document.createElement('input');
+    input.id = 'tab-label-input';
+    input.value = this._tabEdited.label;
+    input.addEventListener('keydown', this.renameTabKeydown.bind(this));
+
+    containerHtml.appendChild(input);
+    input.focus();
+    input.select();
+
+    input.addEventListener('blur', this._renameTabHalt);
+  },
+
+  renameTabHalt(event) {
+    if (document.activeElement === event.target || !this._tabEdited) {
+      return;
+    }
+    this._tabEdited.querySelector('.tab-editor-container').remove();
+    const label = this._tabEdited.querySelector('.tab-label-container-editing');
+    label.classList.remove('tab-label-container-editing');
+
+    this._tabEdited = null;
   },
 };
