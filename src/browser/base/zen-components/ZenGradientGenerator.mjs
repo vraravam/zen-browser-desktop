@@ -6,7 +6,7 @@
 
     currentOpacity = 0.5;
     currentRotation = 45;
-
+    dots = [];
     numberOfDots = 0;
 
     constructor() {
@@ -330,6 +330,70 @@
       this.customColorInput.value = '';
       await this.updateCurrentWorkspace();
     }
+
+    spawnDot() {
+
+    }
+
+    calculateCompliments(primaryDot, dots, colorHarmonyType) {
+      const colorHarmonies = {
+        complementary: [180],
+        splitComplementary: [150, 210],
+        analogous: [30, 330],
+        triadic: [120, 240],
+      };
+
+      function getColorHarmony(colorHarmonyType) {
+        return colorHarmonies[colorHarmonyType] || null;
+      }
+
+      // rule: if the data will be inputed into an argument it should be stored as an object else not
+      function getAngleFromPosition(position, centerPosition) {
+        let deltaX = position.x - centerPosition.x;
+        let deltaY = position.y - centerPosition.y;
+        let angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+        return (angle + 360) % 360;
+      }
+      
+      const dotPad = this.panel.querySelector('.zen-theme-picker-gradient');
+      const rect = dotPad.getBoundingClientRect();
+      const padding = 90;
+
+      // Calculate the center of the color wheel
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const radius = (rect.width - padding) / 2;
+      const centerPosition = { x: rect.width / 2, y: rect.height / 2 };
+
+      const harmonyAngles = getColorHarmony(colorHarmonyType);
+      if (harmonyAngles.length === 0) return [];
+
+      primaryDot = this.dots.find((dot) => {dot.Element === primaryDot});
+      if (!primaryDot) return [];
+      const baseAngle = getAngleFromPosition(primaryDot.position, centerPosition)
+
+      dots.sort((a, b) => a.ID - b.ID); 
+
+      let updatedDots = [];
+      
+      harmonyAngles.forEach((angleOffset, index) => {
+        const dot = dots[index + 1]; // Skip the primary dot
+        if (!dot) return;
+    
+        let newAngle = (baseAngle + angleOffset) % 360;
+        let radian = (newAngle * Math.PI) / 180;
+    
+        let newPosition = {
+          x: centerPosition.x + radius * Math.cos(radian),
+          y: centerPosition.y + radius * Math.sin(radian),
+        };
+
+        updatedDots.push({ dot, newPosition });
+      });
+    
+      return updatedDots;
+    }
+
 
     onThemePickerClick(event) {
       event.preventDefault();
