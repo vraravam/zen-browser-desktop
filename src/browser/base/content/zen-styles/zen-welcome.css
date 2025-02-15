@@ -111,7 +111,7 @@
       opacity: 0;
       transition: scale 0.1s;
       padding: 1.5rem 1.1rem;
-      border-radius: .6rem;
+      border-radius: 0.6rem;
       width: 50%;
       gap: 0.8rem;
       display: flex;

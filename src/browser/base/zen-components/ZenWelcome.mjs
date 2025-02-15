@@ -1,4 +1,3 @@
-
 {
   function clearBrowserElements() {
     for (const element of document.getElementById('browser').children) {
@@ -58,8 +57,9 @@
     async fadeInTitles(page) {
       const [title1, description1, description2] = await document.l10n.formatValues(page.text);
       const titleElement = document.getElementById('zen-welcome-page-sidebar-content');
-      titleElement.innerHTML = `<html:h1>${title1}</html:h1><html:p>${description1}</html:p>`
-        + (description2 ? `<html:p>${description2}</html:p>` : '');
+      titleElement.innerHTML =
+        `<html:h1>${title1}</html:h1><html:p>${description1}</html:p>` +
+        (description2 ? `<html:p>${description2}</html:p>` : '');
       await animate(
         '#zen-welcome-page-sidebar-content > *',
         { opacity: [0, 1], x: [100, 0], filter: ['blur(2px)', 'blur(0px)'] },
@@ -146,7 +146,7 @@
           delay: getMotion().stagger(0.05, { startDelay: 0.3 }),
           type: 'spring',
           bounce: 0,
-          duration: 0.2
+          duration: 0.2,
         }
       );
     }
@@ -154,11 +154,7 @@
     async next() {
       if (this._currentPage !== -1) {
         const previousPage = this._pages[this._currentPage];
-        await Promise.all([
-            this.fadeOutTitles(),
-          this.fadeOutButtons(),
-          this.fadeOutContent(),
-        ]);
+        await Promise.all([this.fadeOutTitles(), this.fadeOutButtons(), this.fadeOutContent()]);
         document.getElementById('zen-welcome-page-content').innerHTML = '';
         previousPage.fadeOut();
       }
@@ -168,10 +164,7 @@
         this.finish();
         return;
       }
-      await Promise.all([
-        this.fadeInTitles(currentPage),
-        this.fadeInButtons(currentPage),
-      ]);
+      await Promise.all([this.fadeInTitles(currentPage), this.fadeInButtons(currentPage)]);
       currentPage.fadeIn();
       await this.fadeInContent();
     }
@@ -193,7 +186,7 @@
           },
           {
             id: 'zen-welcome-import-description-2',
-          }
+          },
         ],
         buttons: [
           {
@@ -245,8 +238,7 @@
             },
           },
         ],
-        fadeIn() {
-        },
+        fadeIn() {},
         fadeOut() {},
       },
     ];
