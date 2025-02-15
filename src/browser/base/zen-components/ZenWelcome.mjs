@@ -51,7 +51,7 @@
       document.getElementById('zen-welcome-pages').style.display = 'flex';
       document.getElementById('zen-welcome-start').remove();
       window.maximize();
-      animate('#zen-welcome-pages', { opacity: [0, 1] });
+      animate('#zen-welcome-pages', { opacity: [0, 1] }, { delay: 0.1 });
     }
 
     async fadeInTitles(page) {
@@ -169,8 +169,33 @@
       await this.fadeInContent();
     }
 
-    finish() {
+    async finish() {
+      await animate('#zen-welcome-page-content', { x: [0, '100%'] }, { duration: 0.2 });
+      document.getElementById('zen-welcome-page-content').remove();
+      await this.animHeart();
+      await animate('#zen-welcome-pages', { scale: [1, 1.01, 0], opacity: [1, 0.7, 0] }, { duration: 0.4 });
+      document.getElementById('zen-welcome').remove();
       document.documentElement.removeAttribute('zen-welcome-stage');
+      for (const element of document.getElementById('browser').children) {
+        element.style.removeProperty('display');
+      }
+    }
+
+    async animHeart() {
+      const heart = document.createElement('div');
+      heart.id = 'zen-welcome-heart';
+      heart.textContent = '❤️';
+      const sidebar = document.getElementById('zen-welcome-page-sidebar');
+      sidebar.style.width = '100%';
+      sidebar.appendChild(heart);
+      await animate(
+        '#zen-welcome-heart',
+        { opacity: [0, 1, 1, 1, 0], scale: [0.5, 1, 1.2, 1, 1.2] },
+        {
+          duration: 1.6,
+          ease: 'cubic-bezier(0.23, 1, 0.32, 1)',
+        }
+      );
     }
   }
 
@@ -253,25 +278,25 @@
     titleElement.innerHTML = `<html:span>${title1}</html:span><html:span>${title2}</html:span>`;
     await animate(
       '#zen-welcome-title span',
-      { opacity: [0, 1], y: [30, 0], filter: ['blur(2px)', 'blur(0px)'] },
+      { opacity: [0, 1], y: [20, 0], filter: ['blur(2px)', 'blur(0px)'] },
       {
         delay: getMotion().stagger(0.6, { startDelay: 0.2 }),
         type: 'spring',
         stiffness: 300,
         damping: 20,
-        mass: 1.7,
+        mass: 1.8,
       }
     );
     const button = document.getElementById('zen-welcome-start-button');
     await animate(
       button,
-      { opacity: [0, 1], y: [30, 0], filter: ['blur(2px)', 'blur(0px)'] },
+      { opacity: [0, 1], y: [20, 0], filter: ['blur(2px)', 'blur(0px)'] },
       {
         delay: 0.1,
         type: 'spring',
         stiffness: 300,
         damping: 20,
-        mass: 1.7,
+        mass: 1.8,
       }
     );
     button.addEventListener('click', async () => {
