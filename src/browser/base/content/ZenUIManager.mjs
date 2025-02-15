@@ -635,11 +635,15 @@ var gZenVerticalTabsManager = {
       }
 
       // Maybe add some confetti here?!?
-      gZenUIManager.motion.animate(this._tabEdited, {
-        scale: [1, 0.98, 1],
-      }, {
-        duration: 0.25,
-      });
+      gZenUIManager.motion.animate(
+        this._tabEdited,
+        {
+          scale: [1, 0.98, 1],
+        },
+        {
+          duration: 0.25,
+        }
+      );
 
       this._tabEdited.querySelector('.tab-editor-container').remove();
       label.classList.remove('tab-label-container-editing');
