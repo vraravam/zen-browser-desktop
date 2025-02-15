@@ -62,7 +62,7 @@
         + (description2 ? `<html:p>${description2}</html:p>` : '');
       await animate(
         '#zen-welcome-page-sidebar-content > *',
-        { opacity: [0, 1], x: [50, 0], filter: ['blur(2px)', 'blur(0px)'] },
+        { opacity: [0, 1], x: [100, 0], filter: ['blur(2px)', 'blur(0px)'] },
         {
           delay: getMotion().stagger(0.05, { startDelay: 0.3 }),
           type: 'spring',
@@ -91,7 +91,7 @@
       }
       await animate(
         '#zen-welcome-page-sidebar-buttons button',
-        { opacity: [0, 1], x: [50, 0], filter: ['blur(2px)', 'blur(0px)'] },
+        { opacity: [0, 1], x: [100, 0], filter: ['blur(2px)', 'blur(0px)'] },
         {
           delay: getMotion().stagger(0.1, { startDelay: 0.4 }),
           type: 'spring',
@@ -115,7 +115,7 @@
     async fadeOutButtons() {
       await animate(
         '#zen-welcome-page-sidebar-buttons button',
-        { opacity: [1, 0], x: [0, -50], filter: ['blur(0px)', 'blur(2px)'] },
+        { opacity: [1, 0], x: [0, -100], filter: ['blur(0px)', 'blur(2px)'] },
         {
           type: 'spring',
           bounce: 0,
@@ -129,7 +129,7 @@
     async fadeOutTitles() {
       await animate(
         '#zen-welcome-page-sidebar-content > *',
-        { opacity: [1, 0], x: [0, -50], filter: ['blur(0px)', 'blur(2px)'] },
+        { opacity: [1, 0], x: [0, -100], filter: ['blur(0px)', 'blur(2px)'] },
         {
           delay: getMotion().stagger(0.05, { startDelay: 0.3 }),
           type: 'spring',
