@@ -1,4 +1,3 @@
-//this is a test 1
 {
   class ZenThemePicker extends ZenMultiWindowFeature {
     static GRADIENT_IMAGE_URL = 'chrome://browser/content/zen-images/gradient.png';
