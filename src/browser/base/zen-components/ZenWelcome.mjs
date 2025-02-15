@@ -93,7 +93,7 @@
         '#zen-welcome-page-sidebar-buttons button',
         { opacity: [0, 1], x: [50, 0], filter: ['blur(2px)', 'blur(0px)'] },
         {
-          delay: getMotion().stagger(0.1),
+          delay: getMotion().stagger(0.1, { startDelay: 0.4 }),
           type: 'spring',
           bounce: 0.2,
         }
@@ -105,7 +105,7 @@
         '#zen-welcome-page-content > *',
         { opacity: [0, 1], scale: [0.9, 1], filter: ['blur(2px)', 'blur(0px)'] },
         {
-          delay: getMotion().stagger(0.05, { startDelay: 0.3 }),
+          delay: getMotion().stagger(0.1, { startDelay: 0.3 }),
           type: 'spring',
           bounce: 0.2,
         }
@@ -115,12 +115,11 @@
     async fadeOutButtons() {
       await animate(
         '#zen-welcome-page-sidebar-buttons button',
-        { opacity: [1, 0], x: [0, -60], filter: ['blur(0px)', 'blur(2px)'] },
+        { opacity: [1, 0], x: [0, -50], filter: ['blur(0px)', 'blur(2px)'] },
         {
           type: 'spring',
-          stiffness: 300,
-          damping: 20,
-          mass: 1.4,
+          bounce: 0,
+          delay: getMotion().stagger(0.1, { startDelay: 0.4 }),
         }
       );
       document.getElementById('zen-welcome-page-sidebar-buttons').innerHTML = '';
@@ -129,13 +128,25 @@
 
     async fadeOutTitles() {
       await animate(
-        '#zen-welcome-page-content-title h1, #zen-welcome-page-content-title p',
-        { opacity: [1, 0], x: [0, -60], filter: ['blur(0px)', 'blur(2px)'] },
+        '#zen-welcome-page-sidebar-content > *',
+        { opacity: [1, 0], x: [0, -50], filter: ['blur(0px)', 'blur(2px)'] },
         {
+          delay: getMotion().stagger(0.05, { startDelay: 0.3 }),
           type: 'spring',
-          stiffness: 300,
-          damping: 20,
-          mass: 1.4,
+          bounce: 0,
+        }
+      );
+    }
+
+    async fadeOutContent() {
+      await animate(
+        '#zen-welcome-page-content > *',
+        { opacity: [1, 0], scale: [1, 0.9], filter: ['blur(0px)', 'blur(2px)'] },
+        {
+          delay: getMotion().stagger(0.05, { startDelay: 0.3 }),
+          type: 'spring',
+          bounce: 0,
+          duration: 0.2
         }
       );
     }
@@ -143,8 +154,12 @@
     async next() {
       if (this._currentPage !== -1) {
         const previousPage = this._pages[this._currentPage];
-        await this.fadeOutTitles();
-        await this.fadeOutButtons();
+        await Promise.all([
+            this.fadeOutTitles(),
+          this.fadeOutButtons(),
+          this.fadeOutContent(),
+        ]);
+        document.getElementById('zen-welcome-page-content').innerHTML = '';
         previousPage.fadeOut();
       }
       this._currentPage++;
@@ -153,8 +168,10 @@
         this.finish();
         return;
       }
-      await this.fadeInTitles(currentPage);
-      await this.fadeInButtons(currentPage);
+      await Promise.all([
+        this.fadeInTitles(currentPage),
+        this.fadeInButtons(currentPage),
+      ]);
       currentPage.fadeIn();
       await this.fadeInContent();
     }
@@ -208,6 +225,27 @@
           `;
           const fragment = window.MozXULElement.parseXULToFragment(xul);
           document.getElementById('zen-welcome-page-content').appendChild(fragment);
+        },
+        fadeOut() {},
+      },
+      {
+        text: [
+          {
+            id: 'zen-welcome-start-browsing-title',
+          },
+          {
+            id: 'zen-welcome-start-browsing-description-1',
+          },
+        ],
+        buttons: [
+          {
+            l10n: 'zen-welcome-start-browsing',
+            onclick: async () => {
+              return true;
+            },
+          },
+        ],
+        fadeIn() {
         },
         fadeOut() {},
       },
