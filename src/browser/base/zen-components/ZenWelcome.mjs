@@ -62,7 +62,7 @@
         (description2 ? `<html:p>${description2}</html:p>` : '');
       await animate(
         '#zen-welcome-page-sidebar-content > *',
-        { opacity: [0, 1], x: [100, 0], filter: ['blur(2px)', 'blur(0px)'] },
+        { x: ['100%', 0], filter: ['blur(2px)', 'blur(0px)'] },
         {
           delay: getMotion().stagger(0.05, { startDelay: 0.3 }),
           type: 'spring',
@@ -91,7 +91,7 @@
       }
       await animate(
         '#zen-welcome-page-sidebar-buttons button',
-        { opacity: [0, 1], x: [100, 0], filter: ['blur(2px)', 'blur(0px)'] },
+        { x: ['100%', 0], filter: ['blur(2px)', 'blur(0px)'] },
         {
           delay: getMotion().stagger(0.1, { startDelay: 0.4 }),
           type: 'spring',
@@ -115,7 +115,7 @@
     async fadeOutButtons() {
       await animate(
         '#zen-welcome-page-sidebar-buttons button',
-        { opacity: [1, 0], x: [0, -100], filter: ['blur(0px)', 'blur(2px)'] },
+        { x: [0, '-100%'], filter: ['blur(0px)', 'blur(2px)'] },
         {
           type: 'spring',
           bounce: 0,
@@ -129,7 +129,7 @@
     async fadeOutTitles() {
       await animate(
         '#zen-welcome-page-sidebar-content > *',
-        { opacity: [1, 0], x: [0, -100], filter: ['blur(0px)', 'blur(2px)'] },
+        { x: [0, '-100%'], filter: ['blur(0px)', 'blur(2px)'] },
         {
           delay: getMotion().stagger(0.05, { startDelay: 0.3 }),
           type: 'spring',
@@ -170,21 +170,22 @@
     }
 
     async finish() {
-      await animate('#zen-welcome-page-content', { x: [0, '100%'] }, { duration: 0.2 });
+      await animate('#zen-welcome-page-content', { x: [0, '100%'] }, { bounce: 0 });
       document.getElementById('zen-welcome-page-content').remove();
       await this.animHeart();
-      await animate('#zen-welcome-pages', { scale: [1, 1.01, 0], opacity: [1, 0.7, 0] }, { duration: 0.4 });
+      await animate('#zen-welcome-pages', { opacity: [1, 0] });
       document.getElementById('zen-welcome').remove();
       document.documentElement.removeAttribute('zen-welcome-stage');
       for (const element of document.getElementById('browser').children) {
+        element.style.opacity = 0;
         element.style.removeProperty('display');
       }
+      await animate('#browser > *', { opacity: [0, 1] });
     }
 
     async animHeart() {
       const heart = document.createElement('div');
       heart.id = 'zen-welcome-heart';
-      heart.textContent = '❤️';
       const sidebar = document.getElementById('zen-welcome-page-sidebar');
       sidebar.style.width = '100%';
       sidebar.appendChild(heart);
@@ -192,8 +193,8 @@
         '#zen-welcome-heart',
         { opacity: [0, 1, 1, 1, 0], scale: [0.5, 1, 1.2, 1, 1.2] },
         {
-          duration: 1.6,
-          ease: 'cubic-bezier(0.23, 1, 0.32, 1)',
+          duration: 1.8,
+          delay: 0.2,
         }
       );
     }
