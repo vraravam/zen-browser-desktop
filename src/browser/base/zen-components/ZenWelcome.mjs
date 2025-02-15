@@ -105,7 +105,7 @@
         '#zen-welcome-page-content > *',
         { opacity: [0, 1], scale: [0.9, 1], filter: ['blur(2px)', 'blur(0px)'] },
         {
-          delay: getMotion().stagger(0.1, { startDelay: 0.3 }),
+          delay: getMotion().stagger(0.1),
           type: 'spring',
           bounce: 0.2,
         }
