@@ -632,13 +632,22 @@ var gZenVerticalTabsManager = {
       let newName = input.value.trim();
 
       // Check if name is blank, reset if so
+      // Always remove, so we can always rename and if it's empty,
+      // it will reset to the original name anyway
+      this._tabEdited.removeAttribute('zen-has-static-label');
       if (newName) {
         gBrowser._setTabLabel(this._tabEdited, newName);
         this._tabEdited.setAttribute('zen-has-static-label', 'true');
       } else {
-        this._tabEdited.removeAttribute('zen-has-static-label');
         gBrowser.setTabTitle(this._tabEdited);
       }
+
+      // Maybe add some confetti here?!?
+      gZenUIManager.motion.animate(this._tabEdited, {
+        scale: [1, 0.98, 1],
+      }, {
+        duration: 0.25,
+      });
 
       this._tabEdited.querySelector('.tab-editor-container').remove();
       label.classList.remove('tab-label-container-editing');

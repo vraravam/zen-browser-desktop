@@ -1148,6 +1148,9 @@
   white-space: nowrap;
   overflow-x: scroll;
   margin: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
 /* Section: tab workspaces stylings */
