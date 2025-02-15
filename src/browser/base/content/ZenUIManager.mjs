@@ -18,6 +18,10 @@ var gZenUIManager = {
       return document.getElementById('zen-toast-container');
     });
 
+    ChromeUtils.defineLazyGetter(this, '_toastContainer', () => {
+      return document.getElementById('zen-toast-container');
+    });
+
     new ResizeObserver(this.updateTabsToolbar.bind(this)).observe(document.getElementById('TabsToolbar'));
 
     new ResizeObserver(
@@ -211,6 +215,38 @@ var gZenUIManager = {
       if (gBrowser.selectedTab.linkedBrowser && onSwitch) {
         gURLBar.getBrowserState(gBrowser.selectedTab.linkedBrowser).urlbarFocused = false;
       }
+    }
+  },
+
+  // Section: Notification messages
+  _createToastElement(messageId, options) {
+    const element = document.createXULElement('vbox');
+    const label = document.createXULElement('label');
+    document.l10n.setAttributes(label, messageId, options);
+    element.appendChild(label);
+    if (options.descriptionId) {
+      const description = document.createXULElement('label');
+      description.classList.add('description');
+      document.l10n.setAttributes(description, options.descriptionId, options);
+      element.appendChild(description);
+    }
+    element.classList.add('zen-toast');
+    return element;
+  },
+
+  async showToast(messageId, options = {}) {
+    const toast = this._createToastElement(messageId, options);
+    this._toastContainer.removeAttribute('hidden');
+    this._toastContainer.appendChild(toast);
+    await this.motion.animate(toast, { opacity: [0, 1], scale: [0.8, 1] }, { type: 'spring', duration: 0.3 });
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    await this.motion.animate(toast, { opacity: [1, 0], scale: [1, 0.9] }, { duration: 0.2, bounce: 0 });
+    const toastHeight = toast.getBoundingClientRect().height;
+    // 5 for the separation between toasts
+    await this.motion.animate(toast, { marginBottom: [0, `-${toastHeight + 5}px`] }, { duration: 0.2 });
+    toast.remove();
+    if (!this._toastContainer.hasChildNodes()) {
+      this._toastContainer.setAttribute('hidden', 'true');
     }
   },
 
@@ -659,6 +695,87 @@ var gZenVerticalTabsManager = {
       return this._topButtonsSeparatorElement.before(child);
     }
     target.appendChild(child);
+  },
+
+  renameTabKeydown(event) {
+    if (event.key === 'Enter') {
+      let label = this._tabEdited.querySelector('.tab-label-container-editing');
+      let input = this._tabEdited.querySelector('#tab-label-input');
+      let newName = input.value.trim();
+
+      // Check if name is blank, reset if so
+      // Always remove, so we can always rename and if it's empty,
+      // it will reset to the original name anyway
+      this._tabEdited.removeAttribute('zen-has-static-label');
+      if (newName) {
+        gBrowser._setTabLabel(this._tabEdited, newName);
+        this._tabEdited.setAttribute('zen-has-static-label', 'true');
+      } else {
+        gBrowser.setTabTitle(this._tabEdited);
+      }
+
+      // Maybe add some confetti here?!?
+      gZenUIManager.motion.animate(
+        this._tabEdited,
+        {
+          scale: [1, 0.98, 1],
+        },
+        {
+          duration: 0.25,
+        }
+      );
+
+      this._tabEdited.querySelector('.tab-editor-container').remove();
+      label.classList.remove('tab-label-container-editing');
+
+      this._tabEdited = null;
+    } else if (event.key === 'Escape') {
+      event.target.blur();
+    }
+  },
+
+  renameTabStart(event) {
+    if (
+      this._tabEdited ||
+      !Services.prefs.getBoolPref('zen.tabs.rename-tabs') ||
+      Services.prefs.getBoolPref('browser.tabs.closeTabByDblclick') ||
+      !gZenVerticalTabsManager._prefsSidebarExpanded
+    )
+      return;
+    this._tabEdited = event.target.closest('.tabbrowser-tab');
+    if (!this._tabEdited || !this._tabEdited.pinned || this._tabEdited.hasAttribute('zen-essential')) {
+      this._tabEdited = null;
+      return;
+    }
+    const label = this._tabEdited.querySelector('.tab-label-container');
+    label.classList.add('tab-label-container-editing');
+
+    const container = window.MozXULElement.parseXULToFragment(`
+      <vbox class="tab-label-container tab-editor-container" flex="1" align="start" pack="center"></vbox>
+    `);
+    label.after(container);
+    const containerHtml = this._tabEdited.querySelector('.tab-editor-container');
+    const input = document.createElement('input');
+    input.id = 'tab-label-input';
+    input.value = this._tabEdited.label;
+    input.addEventListener('keydown', this.renameTabKeydown.bind(this));
+
+    containerHtml.appendChild(input);
+    input.focus();
+    input.select();
+
+    input.addEventListener('blur', this._renameTabHalt);
+  },
+
+  renameTabHalt(event) {
+    if (document.activeElement === event.target || !this._tabEdited) {
+      return;
+    }
+    this._tabEdited.querySelector('.tab-editor-container').remove();
+    const label = this._tabEdited.querySelector('.tab-label-container-editing');
+    label.classList.remove('tab-label-container-editing');
+
+    this._tabEdited = null;
   },
 
   renameTabKeydown(event) {

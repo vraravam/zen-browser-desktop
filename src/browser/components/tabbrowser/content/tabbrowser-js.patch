@@ -3,6 +3,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -406,11 +406,52 @@
+@@ -406,11 +406,52 @@
        return this.tabContainer.visibleTabs;
      }
  
@@ -40,6 +41,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7
 +        }
 +        if (!tab.hidden) {
 +          i += !tab.hasAttribute("zen-glance-tab");
++          i += !tab.hasAttribute("zen-glance-tab");
 +        }
 +      }
 +      return i;
@@ -54,9 +56,11 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7
            break;
          }
 +        i += !tab.hasAttribute("zen-glance-tab");
++        i += !tab.hasAttribute("zen-glance-tab");
        }
        return i;
      }
+@@ -807,7 +848,7 @@
 @@ -807,7 +848,7 @@
        this.showTab(aTab);
        if (this.tabContainer.verticalMode) {
@@ -67,6 +71,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7
        } else {
          this.moveTabTo(aTab, this.pinnedTabCount, { forceStandaloneTab: true });
 @@ -828,7 +869,7 @@
+@@ -828,7 +869,7 @@
            // the moving of a tab from the vertical pinned tabs container
            // and back into arrowscrollbox.
            aTab.removeAttribute("pinned");
@@ -75,6 +80,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7
          });
        } else {
          this.moveTabTo(aTab, this.pinnedTabCount - 1, {
+@@ -1055,6 +1096,8 @@
 @@ -1055,6 +1096,8 @@
  
        let LOCAL_PROTOCOLS = ["chrome:", "about:", "resource:", "data:"];
@@ -85,6 +91,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7
          aIconURL &&
          !aLoadingPrincipal &&
 @@ -1065,6 +1108,9 @@
+@@ -1065,6 +1108,9 @@
          );
          return;
        }
@@ -94,6 +101,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7
  
        let browser = this.getBrowserForTab(aTab);
        browser.mIconURL = aIconURL;
+@@ -1310,6 +1356,7 @@
 @@ -1310,6 +1356,7 @@
        if (!this._previewMode) {
          newTab.recordTimeFromUnloadToReload();
@@ -131,6 +139,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7
  
        // Inject the <browser> into the DOM if necessary.
 @@ -2446,8 +2496,8 @@
+@@ -2446,8 +2496,8 @@
        // If we transitioned from one browser to two browsers, we need to set
        // hasSiblings=false on both the existing browser and the new browser.
        if (this.tabs.length == 2) {
@@ -141,6 +150,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7
        } else {
          aTab.linkedBrowser.browsingContext.hasSiblings = this.tabs.length > 1;
        }
+@@ -2679,6 +2729,12 @@
 @@ -2679,6 +2729,12 @@
          );
        }
@@ -155,6 +165,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7
          UserInteraction.start("browser.tabs.opening", "initting", window);
        }
 @@ -2742,6 +2798,12 @@
+@@ -2742,6 +2798,12 @@
            noInitialLabel,
            skipBackgroundNotify,
          });
@@ -167,6 +178,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..c29a3620f85219074b2eeef8d75b4ca7
          if (insertTab) {
            // insert the tab into the tab container in the correct position
            this._insertTabAtIndex(t, {
+@@ -2885,6 +2947,9 @@
 @@ -2885,6 +2947,9 @@
          }
        }

@@ -325,10 +325,18 @@
       top: 0px;
       right: 0px;
       --tab-collapsed-width: 34px;
+      top: 0px;
+      right: 0px;
+      --tab-collapsed-width: 34px;
       --tab-min-height: 16px;
       width: var(--tab-collapsed-width) !important;
       z-index: 1;
       pointer-events: none;
+      & .tab-background {
+        /* Solid colors because we don't want to show the background */
+        background: light-dark(rgb(249, 249, 249), rgb(63, 63, 63)) !important;
+        border: 2px solid light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.4));
+      }
       & .tab-background {
         /* Solid colors because we don't want to show the background */
         background: light-dark(rgb(249, 249, 249), rgb(63, 63, 63)) !important;
@@ -956,6 +964,7 @@
 }
 
 #zen-essentials-container > .tabbrowser-tab {
+#zen-essentials-container > .tabbrowser-tab {
   --toolbarbutton-inner-padding: 0;
   max-width: unset;
   width: 100% !important;
@@ -995,6 +1004,7 @@
   }
 
   @media (-moz-bool-pref: 'zen.theme.essentials-favicon-bg') {
+    &[visuallyselected] > .tab-stack > .tab-background {
     &[visuallyselected] > .tab-stack > .tab-background {
       &::after {
         content: "";
