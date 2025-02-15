@@ -128,6 +128,10 @@ pref('zen.view.experimental-rounded-view', false);
 pref('zen.view.experimental-rounded-view', true);
 #endif
 
+#ifdef XP_WIN
+pref('zen.widget.windows.acrylic', true);
+#endif
+
 // Glance
 pref('zen.glance.enabled', true);
 pref('zen.glance.hold-duration', 300); // in ms
@@ -426,7 +430,7 @@ pref("browser.aboutwelcome.enabled", false);
 
 // ---- Experimental settings to try make zen faster
 pref("gfx.canvas.accelerated.cache-items", 32768);
-pref("gfx.canvas.accelerated.cache-size", 4096);
+pref("gfx.canvas.accelerated.cache-size", 256);
 pref("gfx.content.skia-font-cache-size", 80);
 
 pref("media.memory_cache_max_size", 1048576);

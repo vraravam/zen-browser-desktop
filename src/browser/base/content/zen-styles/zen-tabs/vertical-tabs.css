@@ -126,8 +126,7 @@
   width: 98%;
   transition: margin 0.2s ease-in-out, background 0.2s ease-in-out, max-height 0.2s ease-in-out;
 
-  #vertical-pinned-tabs-container .zen-workspace-tabs-section[active]:not(:has(tab:not([hidden]))) &,
-  #tabbrowser-tabs:not(:has(#tabbrowser-arrowscrollbox .zen-workspace-tabs-section[active] tab:not([hidden]))) & {
+  #vertical-pinned-tabs-container .zen-workspace-tabs-section[hide-separator] & {
     max-height: 0;
     margin: 0 auto;
   }
@@ -281,10 +280,6 @@
       }
     }
 
-    &[selected] .tab-background {
-      backdrop-filter: blur(10px);
-    }
-
     @media (-moz-bool-pref: 'zen.tabs.dim-pending') {
       &[pending='true'] .tab-icon-image {
         opacity: 0.5;
@@ -327,13 +322,18 @@
     /* On essentials, glance tabs are floating */
     &[zen-essential='true'] .tabbrowser-tab {
       position: absolute;
-      top: 4px;
-      right: 4px;
-      --tab-collapsed-width: 35px;
+      top: 0px;
+      right: 0px;
+      --tab-collapsed-width: 34px;
       --tab-min-height: 16px;
       width: var(--tab-collapsed-width) !important;
       z-index: 1;
       pointer-events: none;
+      & .tab-background {
+        /* Solid colors because we don't want to show the background */
+        background: light-dark(rgb(249, 249, 249), rgb(63, 63, 63)) !important;
+        border: 2px solid light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.4));
+      }
     }
   }
 }
@@ -366,12 +366,16 @@
   }
 }
 
-#zen-browser-tabs-wrapper {
+#zen-tabs-wrapper {
   min-height: fit-content;
   overflow-y: auto;
-  overflow-x: hidden;
   height: 100%;
   scrollbar-width: thin;
+}
+
+#zen-browser-tabs-container {
+  overflow-x: clip !important; /* might break custom css with new design, so let's force it */
+  position: relative;
 }
 
 #vertical-pinned-tabs-container {
@@ -379,7 +383,8 @@
   display: flex !important;
   flex-direction: column;
   min-height: fit-content !important;
-  overflow: visible;
+  overflow-x: clip;
+  overflow-y: visible;
   max-height: unset !important;
 
   & .tabbrowser-tab:not(:hover) .tab-background:not([selected]):not([multiselected]) {
@@ -950,7 +955,7 @@
   padding: 0;
 }
 
-#zen-essentials-container .tabbrowser-tab {
+#zen-essentials-container > .tabbrowser-tab {
   --toolbarbutton-inner-padding: 0;
   max-width: unset;
   width: 100% !important;
@@ -990,7 +995,7 @@
   }
 
   @media (-moz-bool-pref: 'zen.theme.essentials-favicon-bg') {
-    &[visuallyselected] .tab-background {
+    &[visuallyselected] > .tab-stack > .tab-background {
       &::after {
         content: "";
         inset: -50%;

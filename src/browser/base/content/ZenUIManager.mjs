@@ -14,9 +14,7 @@ var gZenUIManager = {
       return ChromeUtils.importESModule('chrome://browser/content/zen-vendor/motion.min.mjs', { global: 'current' });
     });
 
-    new ResizeObserver(gZenCommonActions.throttle(this.updateTabsToolbar.bind(this), this.sidebarHeightThrottle)).observe(
-      document.getElementById('TabsToolbar')
-    );
+    new ResizeObserver(this.updateTabsToolbar.bind(this)).observe(document.getElementById('TabsToolbar'));
 
     new ResizeObserver(
       gZenCommonActions.throttle(
@@ -27,6 +25,7 @@ var gZenUIManager = {
 
     SessionStore.promiseAllWindowsRestored.then(() => {
       this._hasLoadedDOM = true;
+      this.updateTabsToolbar();
     });
 
     window.addEventListener('TabClose', this.onTabClose.bind(this));
@@ -35,7 +34,7 @@ var gZenUIManager = {
 
   updateTabsToolbar() {
     // Set tabs max-height to the "toolbar-items" height
-    const tabs = document.getElementById('zen-browser-tabs-wrapper');
+    const tabs = this.tabsWrapper;
     // Remove tabs so we can accurately calculate the height
     // without them affecting the height of the toolbar
     for (const tab of gBrowser.tabs) {
@@ -62,7 +61,7 @@ var gZenUIManager = {
     if (this._tabsWrapper) {
       return this._tabsWrapper;
     }
-    this._tabsWrapper = document.getElementById('zen-browser-tabs-wrapper');
+    this._tabsWrapper = document.getElementById('zen-tabs-wrapper');
     return this._tabsWrapper;
   },
 
@@ -148,8 +147,8 @@ var gZenUIManager = {
     this.__currentPopupTrackElement = null;
   },
 
-  get newtabButton() {
-    return ZenWorkspaces.activeWorkspaceStrip.querySelector('#tabs-newtab-button');
+  get newtabButtons() {
+    return document.querySelectorAll('#tabs-newtab-button');
   },
 
   _prevUrlbarLabel: null,
@@ -169,7 +168,9 @@ var gZenUIManager = {
       this._prevUrlbarLabel = gURLBar._untrimmedValue;
       gURLBar._zenHandleUrlbarClose = this.handleUrlbarClose.bind(this);
       gURLBar.setAttribute('zen-newtab', true);
-      this.newtabButton.setAttribute('in-urlbar', true);
+      for (const button of this.newtabButtons) {
+        button.setAttribute('in-urlbar', true);
+      }
       document.getElementById('Browser:OpenLocation').doCommand();
       gURLBar.search(this._lastSearch);
       return true;
@@ -187,7 +188,9 @@ var gZenUIManager = {
     gURLBar.removeAttribute('zen-newtab');
     this._lastTab._visuallySelected = true;
     this._lastTab = null;
-    this.newtabButton.removeAttribute('in-urlbar');
+    for (const button of this.newtabButtons) {
+      button.removeAttribute('in-urlbar');
+    }
     if (onSwitch) {
       this.clearUrlbarData();
     } else {
@@ -240,7 +243,7 @@ var gZenVerticalTabsManager = {
     window.addEventListener('customizationstarting', this._preCustomize.bind(this));
     window.addEventListener('aftercustomization', this._postCustomize.bind(this));
 
-    window.addEventListener('DOMContentLoaded', updateEvent, { once: true });
+    this._updateEvent();
 
     if (!this.isWindowsStyledButtons) {
       document.documentElement.setAttribute('zen-window-buttons-reversed', true);
@@ -415,7 +418,10 @@ var gZenVerticalTabsManager = {
       gBrowser.tabContainer.setAttribute('orient', isVerticalTabs ? 'vertical' : 'horizontal');
       gBrowser.tabContainer.arrowScrollbox.setAttribute('orient', isVerticalTabs ? 'vertical' : 'horizontal');
       // on purpose, we set the orient to horizontal, because the arrowScrollbox is vertical
-      gBrowser.tabContainer.arrowScrollbox.scrollbox.setAttribute('orient', isVerticalTabs ? 'horizontal' : 'vertical');
+      gBrowser.tabContainer.arrowScrollbox.scrollbox.setAttribute(
+        'orient',
+        isVerticalTabs && ZenWorkspaces.workspaceEnabled ? 'horizontal' : 'vertical'
+      );
 
       const buttonsTarget = document.getElementById('zen-sidebar-top-buttons-customization-target');
       if (isRightSide) {
@@ -569,6 +575,7 @@ var gZenVerticalTabsManager = {
     } catch (e) {
       console.error(e);
     }
+    gZenUIManager.updateTabsToolbar();
     this._isUpdating = false;
   },
 

@@ -37,7 +37,6 @@
       this.initCanvas();
       this.initCustomColorInput();
 
-      ZenWorkspaces.addChangeListeners(this.onWorkspaceChange.bind(this));
       window.matchMedia('(prefers-color-scheme: dark)').addListener(this.onDarkModeChange.bind(this));
     }
 

@@ -1,5 +1,5 @@
 diff --git a/browser/components/urlbar/UrlbarInput.sys.mjs b/browser/components/urlbar/UrlbarInput.sys.mjs
-index 50968dc04b527438acf30151f0c2e92f8b45097c..ea9207399b205c84d1263a4de8a63b776e36eabd 100644
+index 50968dc04b527438acf30151f0c2e92f8b45097c..f8587b68ac057bb0f829fc21f08ade6605b14c92 100644
 --- a/browser/components/urlbar/UrlbarInput.sys.mjs
 +++ b/browser/components/urlbar/UrlbarInput.sys.mjs
 @@ -67,6 +67,13 @@ XPCOMUtils.defineLazyPreferenceGetter(
@@ -20,7 +20,7 @@ index 50968dc04b527438acf30151f0c2e92f8b45097c..ea9207399b205c84d1263a4de8a63b77
      // See _on_select().  HTMLInputElement.select() dispatches a "select"
      // event but does not set the primary selection.
      this._suppressPrimaryAdjustment = true;
-+    this.document.getElementById("navigator-toolbox").setAttribute("supress-primary-adjustment", true);
++    this.document.getElementById("navigator-toolbox").setAttribute("supress-primary-adjustment", !this.document.getElementById("navigator-toolbox").hasAttribute("zen-has-hover"));
      this.inputField.select();
 +    this.document.ownerGlobal.setTimeout(() => {
 +      this.document.getElementById("navigator-toolbox").removeAttribute("supress-primary-adjustment");
@@ -44,7 +44,7 @@ index 50968dc04b527438acf30151f0c2e92f8b45097c..ea9207399b205c84d1263a4de8a63b77
        }
      }
 -
-+    this.document.getElementById("navigator-toolbox").setAttribute("supress-primary-adjustment", true);
++    this.document.getElementById("navigator-toolbox").setAttribute("supress-primary-adjustment", !this.document.getElementById("navigator-toolbox").hasAttribute("zen-has-hover"));
      this.handleNavigation({ event });
 +    this.document.ownerGlobal.setTimeout(() => {
 +      this.document.getElementById("navigator-toolbox").removeAttribute("supress-primary-adjustment");
