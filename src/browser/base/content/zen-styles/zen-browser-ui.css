@@ -152,7 +152,7 @@
   gap: var(--zen-element-separation);
 }
 
-@media not (-moz-platform: macos) { 
+@media not (-moz-platform: macos) {
   .titlebar-buttonbox-container {
     height: 100%;
   }
@@ -161,6 +161,7 @@
 @media (-moz-platform: macos) {
   .titlebar-buttonbox-container {
     margin-inline-end: 8px;
+    padding: 3px 0;
 
     & > .titlebar-buttonbox {
       margin-inline-start: var(--zen-toolbox-padding);

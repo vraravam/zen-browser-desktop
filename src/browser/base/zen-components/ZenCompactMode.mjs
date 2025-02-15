@@ -294,7 +294,7 @@ var gZenCompactModeManager = {
       },
       {
         element: gZenVerticalTabsManager.actualWindowButtons,
-      }
+      },
     ];
   },
 
@@ -343,7 +343,16 @@ var gZenCompactModeManager = {
           const MAC_WINDOW_BUTTONS_X_BORDER = buttonRect.width + buttonRect.x;
           const MAC_WINDOW_BUTTONS_Y_BORDER = buttonRect.height + buttonRect.y;
           if (event.clientX < MAC_WINDOW_BUTTONS_X_BORDER && event.clientY < MAC_WINDOW_BUTTONS_Y_BORDER) {
-            return;
+            // Also check if it has gone from the top or left if we are exiting the titlebar
+            // button area
+            if (
+              !(
+                target.classList.contains('titlebar-buttonbox-container') &&
+                (event.clientX < buttonRect.x || event.clientY < buttonRect.y)
+              )
+            ) {
+              return;
+            }
           }
         }
 
