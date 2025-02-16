@@ -518,23 +518,23 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            zen.source.tar.zst
-            zen.linux-x86_64.tar.xz
-            zen.linux-aarch64.tar.xz
-            zen-x86_64.AppImage
-            zen-x86_64.AppImage.zsync
-            zen-aarch64.AppImage
-            zen-aarch64.AppImage.zsync
-            zen.win-x86_64.zip
-            zen.win-arm64.zip
-            linux.mar
-            linux-aarch64.mar
-            windows.mar
-            windows-arm64.mar
-            macos.mar
-            zen.installer.exe
-            zen.installer-arm64.exe
-            zen.macos-universal.dmg
+            ./zen.source.tar.zst
+            ./zen.linux-x86_64.tar.xz
+            ./zen.linux-aarch64.tar.xz
+            ./zen-x86_64.AppImage
+            ./zen-x86_64.AppImage.zsync
+            ./zen-aarch64.AppImage
+            ./zen-aarch64.AppImage.zsync
+            ./zen.win-x86_64.zip
+            ./zen.win-arm64.zip
+            ./linux.mar
+            ./linux-aarch64.mar
+            ./windows.mar
+            ./windows-arm64.mar
+            ./macos.mar
+            ./zen.installer.exe
+            ./zen.installer-arm64.exe
+            ./zen.macos-universal.dmg
           tag_name: 'twilight'
           name: 'Twilight build - ${{ needs.build-data.outputs.version }} (${{ needs.build-data.outputs.build_date }} at ${{ needs.build-data.outputs.build_time }})'
           draft: false
@@ -556,23 +556,23 @@ jobs:
           generate_release_notes: false
           name: 'Release build - ${{ needs.build-data.outputs.version }} (${{ needs.build-data.outputs.build_date }})'
           files: |
-            zen.source.tar.zst
-            zen.linux-x86_64.tar.xz
-            zen.linux-aarch64.tar.xz
-            zen-x86_64.AppImage
-            zen-x86_64.AppImage.zsync
-            zen-aarch64.AppImage
-            zen-aarch64.AppImage.zsync
-            .github/workflows/object/windows-x64-signed-x86_64/zen.win-x86_64.zip
-            .github/workflows/object/windows-x64-signed-arm64/zen.win-arm64.zip
-            linux.mar
-            linux-aarch64.mar
-            .github/workflows/object/windows-x64-signed-x86_64/windows.mar
-            .github/workflows/object/windows-x64-signed-arm64/windows-arm64.mar
-            macos.mar
-            .github/workflows/object/windows-x64-signed-x86_64/zen.installer.exe
-            .github/workflows/object/windows-x64-signed-arm64/zen.installer-arm64.exe
-            zen.macos-universal.dmg
+            ./zen.source.tar.zst
+            ./zen.linux-x86_64.tar.xz
+            ./zen.linux-aarch64.tar.xz
+            ./zen-x86_64.AppImage
+            ./zen-x86_64.AppImage.zsync
+            ./zen-aarch64.AppImage
+            ./zen-aarch64.AppImage.zsync
+            ./.github/workflows/object/windows-x64-signed-x86_64/zen.win-x86_64.zip
+            ./.github/workflows/object/windows-x64-signed-arm64/zen.win-arm64.zip
+            ./linux.mar
+            ./linux-aarch64.mar
+            ./.github/workflows/object/windows-x64-signed-x86_64/windows.mar
+            ./.github/workflows/object/windows-x64-signed-arm64/windows-arm64.mar
+            ./macos.mar
+            ./.github/workflows/object/windows-x64-signed-x86_64/zen.installer.exe
+            ./.github/workflows/object/windows-x64-signed-arm64/zen.installer-arm64.exe
+            ./zen.macos-universal.dmg
 
   prepare-flatpak:
     if: ${{ inputs.create_release && inputs.update_branch == 'release' }}
