@@ -174,12 +174,11 @@
       if (event.key === 'Enter') {
         event.preventDefault();
         this.addCustomColor();
-    
+
         let colorPositions = this.calculateCompliments(this.dots);
         this.handleColorPositions(colorPositions);
       }
     }
-    
 
     initThemePicker() {
       const themePicker = this.panel.querySelector('.zen-theme-picker-gradient');
@@ -242,19 +241,19 @@
 
         const dot = document.createElement('div');
         dot.classList.add('zen-theme-picker-dot');
-        
+
         dot.style.left = `${x * 100}%`;
         dot.style.top = `${y * 100}%`;
-      
+
         dotPad.appendChild(dot);
         let id = this.dots.length;
 
         dot.style.setProperty('--zen-theme-picker-dot-color', `rgb(${r}, ${g}, ${b})`);
-        
+
         this.dots.push({
           ID: id,
           Element: dot,
-          Position: { x: parseFloat(dot.style.left), y: parseFloat(dot.style.top) }
+          Position: { x: parseFloat(dot.style.left), y: parseFloat(dot.style.top) },
         });
       }
       if (!fromWorkspace) {
@@ -307,13 +306,13 @@
 
       dot.style.left = `${relativePosition.x}px`;
       dot.style.top = `${relativePosition.y}px`;
-     
+
       dotPad.appendChild(dot);
-     
+
       let id = this.dots.length;
 
       if (primary === true) {
-        id = 0
+        id = 0;
         const existingPrimaryDot = this.dots.find((d) => d.ID === 0);
         if (existingPrimaryDot) {
           existingPrimaryDot.ID = this.dots.length;
@@ -322,12 +321,11 @@
 
       const colorFromPos = this.getColorFromPosition(relativePosition.x, relativePosition.y);
       dot.style.setProperty('--zen-theme-picker-dot-color', `rgb(${colorFromPos[0]}, ${colorFromPos[1]}, ${colorFromPos[2]})`);
-      
 
       this.dots.push({
         ID: id,
         Element: dot,
-        Position: { x: parseFloat(dot.style.left), y: parseFloat(dot.style.top) }
+        Position: { x: parseFloat(dot.style.left), y: parseFloat(dot.style.top) },
       });
     }
 
@@ -377,71 +375,76 @@
       if (!primaryDot) return [];
 
       const baseAngle = getAngleFromPosition(primaryDot.Position, centerPosition);
- 
+
       let distance = getDistanceFromCenter(primaryDot.Position, centerPosition);
 
       if (distance > radius) {
         distance = radius;
       }
 
-      dots.sort((a, b) => a.ID - b.ID); 
+      dots.sort((a, b) => a.ID - b.ID);
 
       let updatedDots = [];
       harmonyAngles.angles.forEach((angleOffset, index) => {
         let newAngle = (baseAngle + angleOffset) % 360;
         let radian = (newAngle * Math.PI) / 180;
-    
+
         let newPosition = {
           x: centerPosition.x + distance * Math.cos(radian),
           y: centerPosition.y + distance * Math.sin(radian),
         };
 
-        updatedDots.push({ID: index + 1, Position: newPosition});
+        updatedDots.push({ ID: index + 1, Position: newPosition });
       });
-    
-      return updatedDots;    
+
+      return updatedDots;
     }
-      
+
     handleColorPositions(colorPositions) {
       colorPositions.sort((a, b) => a.ID - b.ID);
 
       const existingPrimaryDot = this.dots.find((d) => d.ID === 0);
-      
+
       if (existingPrimaryDot) {
         existingPrimaryDot.Element.style.zIndex = 999;
         const colorFromPos = this.getColorFromPosition(existingPrimaryDot.Position.x, existingPrimaryDot.Position.y);
-        existingPrimaryDot.Element.style.setProperty('--zen-theme-picker-dot-color', `rgb(${colorFromPos[0]}, ${colorFromPos[1]}, ${colorFromPos[2]})`);
+        existingPrimaryDot.Element.style.setProperty(
+          '--zen-theme-picker-dot-color',
+          `rgb(${colorFromPos[0]}, ${colorFromPos[1]}, ${colorFromPos[2]})`
+        );
       }
-      colorPositions.forEach(dotPosition => {
-        const existingDot = this.dots.find(dot => dot.ID === dotPosition.ID);
-    
+      colorPositions.forEach((dotPosition) => {
+        const existingDot = this.dots.find((dot) => dot.ID === dotPosition.ID);
+
         if (existingDot) {
           existingDot.Position = dotPosition.Position;
           existingDot.Element.style.left = `${dotPosition.Position.x}px`;
           existingDot.Element.style.top = `${dotPosition.Position.y}px`;
           const colorFromPos = this.getColorFromPosition(dotPosition.Position.x, dotPosition.Position.y);
-          existingDot.Element.style.setProperty('--zen-theme-picker-dot-color', `rgb(${colorFromPos[0]}, ${colorFromPos[1]}, ${colorFromPos[2]})`);
-          
-          if (!this.dragging) {
-          gZenUIManager.motion.animate(
-            existingDot.Element,
-            {
-              left: `${dotPosition.Position.x}px`,
-              top: `${dotPosition.Position.y}px`,
-            },
-            {
-              duration: 0.4,
-              type: 'spring',
-              bounce: 0.3,
-            }
+          existingDot.Element.style.setProperty(
+            '--zen-theme-picker-dot-color',
+            `rgb(${colorFromPos[0]}, ${colorFromPos[1]}, ${colorFromPos[2]})`
           );
-        }
+
+          if (!this.dragging) {
+            gZenUIManager.motion.animate(
+              existingDot.Element,
+              {
+                left: `${dotPosition.Position.x}px`,
+                top: `${dotPosition.Position.y}px`,
+              },
+              {
+                duration: 0.4,
+                type: 'spring',
+                bounce: 0.3,
+              }
+            );
+          }
         } else {
           this.spawnDot(dotPosition.Position);
         }
       });
     }
-    
 
     onThemePickerClick(event) {
       event.preventDefault();
@@ -476,27 +479,24 @@
       if (distance > radius) {
         return;
       }
-     
+
       const relativeX = event.clientX - rect.left;
       const relativeY = event.clientY - rect.top;
-      
-      if (!clickedDot && this.dots.length < 1) {
 
+      if (!clickedDot && this.dots.length < 1) {
         if (this.dots.length === 0) {
-          this.spawnDot({x: relativeX, y: relativeY}, true);
+          this.spawnDot({ x: relativeX, y: relativeY }, true);
+        } else {
+          this.spawnDot({ x: relativeX, y: relativeY });
         }
-        else{
-          this.spawnDot({x: relativeX, y: relativeY});
-        }
-       
+
         this.updateCurrentWorkspace(true);
-      }
-      else if (!clickedDot && existingPrimaryDot) {
+      } else if (!clickedDot && existingPrimaryDot) {
         existingPrimaryDot.Element.style.left = `${relativeX}px`;
         existingPrimaryDot.Element.style.top = `${relativeY}px`;
         existingPrimaryDot.Position = {
-            x: relativeX,
-            y: relativeY
+          x: relativeX,
+          y: relativeY,
         };
 
         let colorPositions = this.calculateCompliments(this.dots, true);
@@ -513,8 +513,8 @@
             type: 'spring',
             bounce: 0.3,
           }
-      );
-    }
+        );
+      }
     }
 
     onDotMouseDown(event) {
@@ -522,7 +522,7 @@
       if (event.button === 2) {
         return;
       }
-      const draggedDot = this.dots.find(dot => dot.Element === event.target)
+      const draggedDot = this.dots.find((dot) => dot.Element === event.target);
       if (draggedDot) {
         this.dragging = true;
         this.draggedDot = event.target;
@@ -541,7 +541,7 @@
         if (!event.target.classList.contains('zen-theme-picker-dot')) {
           return;
         }
-        this.dots = this.dots.filter(dot => dot.Element !== event.target);
+        this.dots = this.dots.filter((dot) => dot.Element !== event.target);
         event.target.remove();
         let colorPositions = this.calculateCompliments(this.dots, true);
         this.handleColorPositions(colorPositions);
@@ -565,7 +565,6 @@
         return;
       }
     }
-
 
     onDotMouseMove(event) {
       if (this.dragging) {
@@ -591,17 +590,17 @@
         // set the location of the dot in pixels
         const relativeX = pixelX - rect.left;
         const relativeY = pixelY - rect.top;
-        
-        const draggedDot = this.dots.find(dot => dot.Element === this.draggedDot)
+
+        const draggedDot = this.dots.find((dot) => dot.Element === this.draggedDot);
         draggedDot.Element.style.left = `${relativeX}px`;
         draggedDot.Element.style.top = `${relativeY}px`;
         draggedDot.Position = {
-            x: relativeX,
-            y: relativeY
+          x: relativeX,
+          y: relativeY,
         };
         let colorPositions = this.calculateCompliments(this.dots, true);
         this.handleColorPositions(colorPositions);
-        
+
         this.updateCurrentWorkspace();
       }
     }
