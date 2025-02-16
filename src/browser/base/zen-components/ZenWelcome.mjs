@@ -119,7 +119,7 @@
         {
           type: 'spring',
           bounce: 0,
-          delay: getMotion().stagger(0.1, { startDelay: 0.4 }),
+          delay: getMotion().stagger(0.1, { startDelay: 0.5 }),
         }
       );
       document.getElementById('zen-welcome-page-sidebar-buttons').innerHTML = '';
@@ -193,8 +193,9 @@
         '#zen-welcome-heart',
         { opacity: [0, 1, 1, 1, 0], scale: [0.5, 1, 1.2, 1, 1.2] },
         {
-          duration: 1.8,
+          duration: 1.5,
           delay: 0.2,
+          bounce: 0
         }
       );
     }
