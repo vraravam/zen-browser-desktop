@@ -1501,7 +1501,6 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       const newTransform = -(workspaceIndex - workspaces.workspaces.indexOf(otherWorkspace)) * 100;
       for (const container of document.querySelectorAll(selector)) {
         container.style.transform = `translateX(${newTransform + offsetPixels / 2}%)`;
-        container.style.opacity = offsetPixels ? 1 : !newTransform;
         if (!offsetPixels && !container.hasAttribute('active')) {
           container.setAttribute('hidden', 'true');
         } else {
@@ -1550,16 +1549,11 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       const isCurrent = offset === 0;
       if (shouldAnimate) {
         element.removeAttribute('hidden');
-        if (isCurrent) {
-          element.style.opacity = 1;
-        }
         animations.push(
           gZenUIManager.motion.animate(
             element,
             {
               transform: existingTransform ? [existingTransform, newTransform] : newTransform,
-              // -0 to convert to number
-              opacity: !isCurrent ? [!!offset - 0, !offset - 0] : [1, 1],
             },
             {
               type: 'spring',
