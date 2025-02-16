@@ -45,6 +45,10 @@
   list-style-image: url('reload.svg') !important;
 }
 
+#PanelUI-zen-gradient-generator-color-toggle-algo {
+  list-style-image: url('palette.svg');
+}
+
 .tab-reset-button,
 #PanelUI-zen-gradient-generator-color-remove {
   list-style-image: url('unpin.svg') !important;

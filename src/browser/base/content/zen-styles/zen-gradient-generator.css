@@ -5,7 +5,7 @@
  */
 
 #PanelUI-zen-gradient-generator {
-  --panel-width: 300px;
+  --panel-width: 350px;
   --panel-padding: 10px;
   min-width: var(--panel-width);
 }
@@ -68,9 +68,6 @@
   padding-right: var(--panel-padding);
   align-items: center;
   gap: var(--panel-padding);
-  border-bottom: 1px solid color-mix(in srgb, var(--zen-colors-border) 50%, transparent 50%);
-  padding-bottom: 15px;
-  margin-bottom: 15px;
 }
 
 #zen-theme-picker-color {
@@ -225,7 +222,7 @@
     inset: 0;
     background-image: linear-gradient(to right, var(--zen-primary-color) 1px, transparent 1px),
       linear-gradient(to bottom, var(--zen-primary-color) 1px, transparent 1px);
-    background-size: 24px 24px;
+    background-size: 20px 20px;
     content: '';
     position: absolute;
     top: 0;
@@ -258,28 +255,34 @@
 
 #PanelUI-zen-gradient-generator-color-actions {
   display: flex;
-  gap: 10px;
   position: absolute;
-  bottom: 15px;
+  bottom: 20px;
   left: 50%;
+  z-index: 1;
   transform: translateX(-50%);
   & .separator,
   & button {
-    background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.1));
+    background: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
   }
 
   & button {
-    padding: 0.4rem;
-    border-radius: 5px;
+    border: none !important;
+    padding: 0.4rem !important;
+    min-width: fit-content !important;
     transition: background 0.2s;
+    & .button-text {
+      display: none;
+    }
+    appearance: none;
     &:hover {
-      background: light-dark(rgba(0,0,0,0.2), rgba(255,255,255,0.2));
+      background: light-dark(rgba(0, 0, 0, 0.2), rgba(255, 255, 255, 0.2));
     }
   }
 
   & .separator {
     width: 1px;
-    height: 20px;
+    margin: 0 0.5rem;
+    height: 30px;
   }
 }
 

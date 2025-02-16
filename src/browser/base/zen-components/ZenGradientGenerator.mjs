@@ -2,7 +2,7 @@
   class ZenThemePicker extends ZenMultiWindowFeature {
     static GRADIENT_IMAGE_URL = 'chrome://browser/content/zen-images/gradient.png';
     static GRADIENT_DISPLAY_URL = 'chrome://browser/content/zen-images/gradient-display.png';
-    static MAX_DOTS = 5;
+    static MAX_DOTS = 3;
 
     currentOpacity = 0.5;
     currentRotation = 45;
@@ -78,7 +78,7 @@
 
     onImageLoad() {
       // resize the image to fit the panel
-      const imageSize = 300 - 20; // 20 is the padding (10px)
+      const imageSize = 350 - 20; // 20 is the padding (10px)
       const scale = imageSize / Math.max(this.image.width, this.image.height);
       this.image.width *= scale;
       this.image.height *= scale;
@@ -448,12 +448,18 @@
 
     onThemePickerClick(event) {
       event.preventDefault();
+      const target = event.target;
+      if (target.id === 'PanelUI-zen-gradient-generator-color-add') {
+        if (this.dots.length >= ZenThemePicker.MAX_DOTS) return;
+      } else if (target.id === 'PanelUI-zen-gradient-generator-color-remove') {
+      } else if (target.id === 'PanelUI-zen-gradient-generator-color-toggle-algo') {
+      }
 
       if (event.button !== 0 || this.dragging || this.recentlyDragged) return;
 
       const gradient = this.panel.querySelector('.zen-theme-picker-gradient');
       const rect = gradient.getBoundingClientRect();
-      const padding = 90;
+      const padding = 60;
 
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
