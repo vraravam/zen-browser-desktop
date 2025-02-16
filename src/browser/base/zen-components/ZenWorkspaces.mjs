@@ -1337,10 +1337,18 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       return;
     }
     tab.setAttribute('zen-workspace-id', workspaceID);
-    const parent = tab.pinned ? '#zen-browser-tabs-pinned ' : '#zen-browser-tabs ';
-    const container = document.querySelector(parent + '.zen-workspace-tabs-section');
+    if (tab.hasAttribute('zen-essential')) {
+      return;
+    }
+    const parent = tab.pinned ? '#vertical-pinned-tabs-container ' : '#tabbrowser-arrowscrollbox ';
+    const container = document.querySelector(parent + `.zen-workspace-tabs-section[zen-workspace-id="${workspaceID}"]`);
     if (container) {
-      container.insertBefore(tab, container.firstChild);
+      container.insertBefore(tab, container.lastChild);
+    }
+    // also change glance tab if it's the same tab
+    const glanceTab = tab.querySelector('.tabbrowser-tab[zen-glance-tab]');
+    if (glanceTab) {
+      glanceTab.setAttribute('zen-workspace-id', workspaceID);
     }
   }
 
@@ -2009,6 +2017,8 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
         delete this._lastSelectedWorkspaceTabs[previousWorkspaceID];
       }
     }
+    // Make sure we select the last tab in the new workspace
+    this._lastSelectedWorkspaceTabs[workspaceID] = tabs[tabs.length - 1];
     const workspaces = await this._workspaces();
     await this.changeWorkspace(workspaces.workspaces.find((workspace) => workspace.uuid === workspaceID));
   }
