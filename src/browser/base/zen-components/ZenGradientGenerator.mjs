@@ -548,7 +548,7 @@
 
         // Reassign the IDs after sorting
         this.dots.forEach((dot, index) => {
-          dot.ID = index; 
+          dot.ID = index;
         });
 
         console.log(this.dots);
