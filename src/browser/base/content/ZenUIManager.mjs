@@ -10,6 +10,8 @@ var gZenUIManager = {
     XPCOMUtils.defineLazyPreferenceGetter(this, 'contentElementSeparation', 'zen.theme.content-element-separation', 0);
     XPCOMUtils.defineLazyPreferenceGetter(this, 'urlbarWaitToClear', 'zen.urlbar.wait-to-clear', 0);
 
+    gURLBar._zenTrimURL = this.urlbarTrim.bind(this);
+
     ChromeUtils.defineLazyGetter(this, 'motion', () => {
       return ChromeUtils.importESModule('chrome://browser/content/zen-vendor/motion.min.mjs', { global: 'current' });
     });
@@ -151,6 +153,8 @@ var gZenUIManager = {
     this.__currentPopupTrackElement = null;
   },
 
+  // Section: URL bar
+
   get newtabButtons() {
     return document.querySelectorAll('#tabs-newtab-button');
   },
@@ -214,6 +218,14 @@ var gZenUIManager = {
     }
   },
 
+  urlbarTrim(aURL) {
+    if (gZenVerticalTabsManager._hasSetSingleToolbar) {
+      let url = BrowserUIUtils.removeSingleTrailingSlashFromURL(aURL);
+      return url.startsWith('http://') || url.startsWith('https://') ? url.split('/')[2] : url;
+    }
+    return BrowserUIUtils.trimURL(aURL);
+  },
+
   // Section: Notification messages
   _createToastElement(messageId, options) {
     const element = document.createXULElement('vbox');
@@ -234,7 +246,7 @@ var gZenUIManager = {
     const toast = this._createToastElement(messageId, options);
     this._toastContainer.removeAttribute('hidden');
     this._toastContainer.appendChild(toast);
-    await this.motion.animate(toast, { opacity: [0, 1], scale: [0.8, 1] }, { type: 'spring', duration: 0.3 });
+    await this.motion.animate(toast, { opacity: [0, 1], scale: [0.8, 1] }, { type: 'spring', bounce: 0.4 });
     await new Promise((resolve) => setTimeout(resolve, 3000));
     await this.motion.animate(toast, { opacity: [1, 0], scale: [1, 0.9] }, { duration: 0.2, bounce: 0 });
     const toastHeight = toast.getBoundingClientRect().height;

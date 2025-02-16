@@ -290,6 +290,9 @@
       for (let otherTab of gBrowser.tabs) {
         if (otherTab.pinned && otherTab._tPos > tab.position) {
           const actualPin = this._pinsCache.find((pin) => pin.uuid === otherTab.getAttribute('zen-pin-id'));
+          if (!actualPin) {
+            continue;
+          }
           actualPin.position = otherTab._tPos;
           await ZenPinnedTabsStorage.savePin(actualPin, false);
         }
