@@ -221,9 +221,7 @@ var gZenUIManager = {
   urlbarTrim(aURL) {
     if (gZenVerticalTabsManager._hasSetSingleToolbar) {
       let url = BrowserUIUtils.removeSingleTrailingSlashFromURL(aURL);
-      return (url.startsWith("http://") || url.startsWith("https://"))
-          ? url.split('/')[2]
-          : url;
+      return url.startsWith('http://') || url.startsWith('https://') ? url.split('/')[2] : url;
     }
     return BrowserUIUtils.trimURL(aURL);
   },
