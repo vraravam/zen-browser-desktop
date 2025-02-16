@@ -310,6 +310,7 @@
 
       if (primary === true) {
         id = 0;
+
         const existingPrimaryDot = this.dots.find((d) => d.ID === 0);
         if (existingPrimaryDot) {
           existingPrimaryDot.ID = this.dots.length;
@@ -328,22 +329,22 @@
 
     calculateCompliments(dots, action = 'update', useHarmony = '') {
       const colorHarmonies = [
-          { type: 'complementary', angles: [180] },
-          { type: 'splitComplementary', angles: [150, 210] },
-          { type: 'analogous', angles: [30, 330] },
-          { type: 'triadic', angles: [120, 240] },
-          { type: 'floating', angles: [] },
+        { type: 'complementary', angles: [180] },
+        { type: 'splitComplementary', angles: [150, 210] },
+        { type: 'analogous', angles: [30, 330] },
+        { type: 'triadic', angles: [120, 240] },
+        { type: 'floating', angles: [] },
       ];
-  
+
       function getColorHarmonyType(numDots) {
         if (useHarmony !== '') {
-          const selectedHarmony = colorHarmonies.find(harmony => harmony.type === useHarmony);
+          const selectedHarmony = colorHarmonies.find((harmony) => harmony.type === useHarmony);
           if (selectedHarmony) {
             if (action === 'remove') {
-                return colorHarmonies.find(harmony => harmony.angles.length === selectedHarmony.angles.length - 1);
+              return colorHarmonies.find((harmony) => harmony.angles.length === selectedHarmony.angles.length - 1);
             }
             if (action === 'add') {
-                return colorHarmonies.find(harmony => harmony.angles.length === selectedHarmony.angles.length + 1);
+              return colorHarmonies.find((harmony) => harmony.angles.length === selectedHarmony.angles.length + 1);
             }
             if (action === 'update') {
               return selectedHarmony;
@@ -352,44 +353,44 @@
         }
 
         if (action === 'remove') {
-            return colorHarmonies.find(harmony => harmony.angles.length === numDots);
+          return colorHarmonies.find((harmony) => harmony.angles.length === numDots);
         }
         if (action === 'add') {
-            return colorHarmonies.find(harmony => harmony.angles.length + 1 === numDots);
+          return colorHarmonies.find((harmony) => harmony.angles.length + 1 === numDots);
         }
         if (action === 'update') {
-            return colorHarmonies.find(harmony => harmony.angles.length + 1 === numDots);
+          return colorHarmonies.find((harmony) => harmony.angles.length + 1 === numDots);
         }
-    }
-    
+      }
+
       function getAngleFromPosition(position, centerPosition) {
-          let deltaX = position.x - centerPosition.x;
-          let deltaY = position.y - centerPosition.y;
-          let angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-          return (angle + 360) % 360;
+        let deltaX = position.x - centerPosition.x;
+        let deltaY = position.y - centerPosition.y;
+        let angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+        return (angle + 360) % 360;
       }
-  
+
       function getDistanceFromCenter(position, centerPosition) {
-          const deltaX = position.x - centerPosition.x;
-          const deltaY = position.y - centerPosition.y;
-          return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        const deltaX = position.x - centerPosition.x;
+        const deltaY = position.y - centerPosition.y;
+        return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
       }
-  
+
       const dotPad = this.panel.querySelector('.zen-theme-picker-gradient');
       const rect = dotPad.getBoundingClientRect();
       const padding = 90;
-      
+
       let updatedDots = [...dots];
       const centerPosition = { x: rect.width / 2, y: rect.height / 2 };
-  
+
       const harmonyAngles = getColorHarmonyType(dots.length + (action === 'add' ? 1 : action === 'remove' ? -1 : 0));
       this.useAlgo = harmonyAngles.type;
-  
+
       if (!harmonyAngles || harmonyAngles.angles.length === 0) return [];
-  
-      let primaryDot = dots.find(dot => dot.ID === 0);
+
+      let primaryDot = dots.find((dot) => dot.ID === 0);
       if (!primaryDot) return [];
-      
+
       if (action === 'add' && this.dots.length) {
         updatedDots.push({ ID: this.dots.length, Position: centerPosition });
       }
@@ -397,25 +398,25 @@
       let distance = getDistanceFromCenter(primaryDot.Position, centerPosition);
       const radius = (rect.width - padding) / 2;
       if (distance > radius) distance = radius;
-      
+
       if (this.dots.length > 0) {
         updatedDots = [{ ID: 0, Position: primaryDot.Position }];
       }
-      
+
       harmonyAngles.angles.forEach((angleOffset, index) => {
-          let newAngle = (baseAngle + angleOffset) % 360;
-          let radian = (newAngle * Math.PI) / 180;
-  
-          let newPosition = {
-              x: centerPosition.x + distance * Math.cos(radian),
-              y: centerPosition.y + distance * Math.sin(radian),
-          };
-  
-          updatedDots.push({ ID: index + 1, Position: newPosition });
+        let newAngle = (baseAngle + angleOffset) % 360;
+        let radian = (newAngle * Math.PI) / 180;
+
+        let newPosition = {
+          x: centerPosition.x + distance * Math.cos(radian),
+          y: centerPosition.y + distance * Math.sin(radian),
+        };
+
+        updatedDots.push({ ID: index + 1, Position: newPosition });
       });
-  
+
       return updatedDots;
-  }  
+    }
 
     handleColorPositions(colorPositions) {
       colorPositions.sort((a, b) => a.ID - b.ID);
@@ -480,7 +481,7 @@
       const target = event.target;
       if (target.id === 'PanelUI-zen-gradient-generator-color-add') {
         if (this.dots.length >= ZenThemePicker.MAX_DOTS) return;
-        let colorPositions = this.calculateCompliments(this.dots, "add", this.useAlgo);
+        let colorPositions = this.calculateCompliments(this.dots, 'add', this.useAlgo);
         this.handleColorPositions(colorPositions);
         this.updateCurrentWorkspace();
         return;
@@ -495,7 +496,7 @@
           dot.ID = index;
         });
 
-        let colorPositions = this.calculateCompliments(this.dots, "remove", this.useAlgo);
+        let colorPositions = this.calculateCompliments(this.dots, 'remove', this.useAlgo);
         this.handleColorPositions(colorPositions);
         this.updateCurrentWorkspace();
         return;
@@ -506,21 +507,21 @@
           { type: 'analogous', angles: [30, 330] },
           { type: 'triadic', angles: [120, 240] },
           { type: 'floating', angles: [] },
-      ];
-  
-      const applicableHarmonies = colorHarmonies.filter(harmony => 
-          harmony.angles.length + 1 === this.dots.length || harmony.type === 'floating'
-      );
-  
-      let currentIndex = applicableHarmonies.findIndex(harmony => harmony.type === this.useAlgo);
+        ];
 
-      let nextIndex = (currentIndex === -1) ? 0 : (currentIndex + 1) % applicableHarmonies.length;
-      this.useAlgo = applicableHarmonies[nextIndex].type;
-      
-      let colorPositions = this.calculateCompliments(this.dots, "update", this.useAlgo);
-      this.handleColorPositions(colorPositions);
-      this.updateCurrentWorkspace();
-      return;
+        const applicableHarmonies = colorHarmonies.filter(
+          (harmony) => harmony.angles.length + 1 === this.dots.length || harmony.type === 'floating'
+        );
+
+        let currentIndex = applicableHarmonies.findIndex((harmony) => harmony.type === this.useAlgo);
+
+        let nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % applicableHarmonies.length;
+        this.useAlgo = applicableHarmonies[nextIndex].type;
+
+        let colorPositions = this.calculateCompliments(this.dots, 'update', this.useAlgo);
+        this.handleColorPositions(colorPositions);
+        this.updateCurrentWorkspace();
+        return;
       }
 
       if (event.button !== 0 || this.dragging || this.recentlyDragged) return;
@@ -544,7 +545,7 @@
         existingPrimaryDot.ID = clickedDot.ID;
         clickedDot.ID = 0;
         clickedDot.Element.style.zIndex = 999;
-        let colorPositions = this.calculateCompliments(this.dots, "update", this.useAlgo);
+        let colorPositions = this.calculateCompliments(this.dots, 'update', this.useAlgo);
         this.handleColorPositions(colorPositions);
         return;
       }
@@ -575,9 +576,10 @@
           y: relativeY,
         };
 
-        let colorPositions = this.calculateCompliments(this.dots, "update", this.useAlgo);
+        let colorPositions = this.calculateCompliments(this.dots, 'update', this.useAlgo);
         this.handleColorPositions(colorPositions);
-
+        this.updateCurrentWorkspace(true);
+        
         gZenUIManager.motion.animate(
           existingPrimaryDot.Element,
           {
@@ -627,7 +629,7 @@
           dot.ID = index;
         });
 
-        let colorPositions = this.calculateCompliments(this.dots, "update", this.useAlgo);
+        let colorPositions = this.calculateCompliments(this.dots, 'update', this.useAlgo);
         this.handleColorPositions(colorPositions);
 
         this.updateCurrentWorkspace();
@@ -682,7 +684,7 @@
           x: relativeX,
           y: relativeY,
         };
-        let colorPositions = this.calculateCompliments(this.dots, "update", this.useAlgo);
+        let colorPositions = this.calculateCompliments(this.dots, 'update', this.useAlgo);
         this.handleColorPositions(colorPositions);
 
         this.updateCurrentWorkspace();
