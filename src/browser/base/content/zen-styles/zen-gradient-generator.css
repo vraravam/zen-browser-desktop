@@ -237,18 +237,19 @@
   }
 
   & .zen-theme-picker-dot {
-    position: absolute;
-    z-index: 2;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--zen-theme-picker-dot-color);
-    box-shadow: 0 0 0 2px var(--zen-themed-toolbar-bg);
-    cursor: pointer;
-    border: 2px solid #fff;
-    animation: zen-theme-picker-dot-animation 0.5s;
-    transition: transform 0.2s;
-    transform: translate(-50%, -50%);
+   position: absolute;
+   z-index: 2;
+   width: 28px;
+   height: 28px;
+   border-radius: 50%;
+   background: var(--zen-theme-picker-dot-color);
+   box-shadow: 0 0 0 2px var(--zen-themed-toolbar-bg);
+   cursor: pointer;
+   border: 3px solid #fff;
+   animation: zen-theme-picker-dot-animation 0.5s;
+   transition: transform 0.2s;
+   transform: translate(-50%, -50%);
+
 
     &[dragging='true'] {
       transform: scale(1.2) translate(-50%, -50%) !important;

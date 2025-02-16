@@ -7,7 +7,6 @@
     currentOpacity = 0.5;
     currentRotation = 45;
     dots = [];
-    numberOfDots = 0;
 
     constructor() {
       super();
@@ -177,7 +176,6 @@
         this.addCustomColor();
     
         let colorPositions = this.calculateCompliments(this.dots);
-        console.log("colorPositions: ", colorPositions);
         this.handleColorPositions(colorPositions);
       }
     }
@@ -188,6 +186,7 @@
       themePicker.style.setProperty('--zen-theme-picker-gradient-image', `url(${ZenThemePicker.GRADIENT_DISPLAY_URL})`);
       themePicker.addEventListener('mousemove', this.onDotMouseMove.bind(this));
       themePicker.addEventListener('mouseup', this.onDotMouseUp.bind(this));
+      themePicker.addEventListener('mousedown', this.onDotMouseDown.bind(this));
       themePicker.addEventListener('click', this.onThemePickerClick.bind(this));
     }
 
@@ -250,38 +249,6 @@
       }
     }
 
-    onDotMouseMove(event) {
-      if (this.dragging) {
-        event.preventDefault();
-        const rect = this.panel.querySelector('.zen-theme-picker-gradient').getBoundingClientRect();
-        const padding = 90; // each side
-        // do NOT let the ball be draged outside of an imaginary circle. You can drag it anywhere inside the circle
-        // if the distance between the center of the circle and the dragged ball is bigger than the radius, then the ball
-        // should be placed on the edge of the circle. If it's inside the circle, then the ball just follows the mouse
-
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const radius = (rect.width - padding) / 2;
-        let pixelX = event.clientX;
-        let pixelY = event.clientY;
-        const distance = Math.sqrt((pixelX - centerX) ** 2 + (pixelY - centerY) ** 2);
-        if (distance > radius) {
-          const angle = Math.atan2(pixelY - centerY, pixelX - centerX);
-          pixelX = centerX + Math.cos(angle) * radius;
-          pixelY = centerY + Math.sin(angle) * radius;
-        }
-
-        // set the location of the dot in pixels
-        const relativeX = pixelX - rect.left;
-        const relativeY = pixelY - rect.top;
-        this.draggedDot.style.left = `${relativeX}px`;
-        this.draggedDot.style.top = `${relativeY}px`;
-        const color = this.getColorFromPosition(relativeX, relativeY);
-        this.draggedDot.style.setProperty('--zen-theme-picker-dot-color', `rgb(${color[0]}, ${color[1]}, ${color[2]})`);
-        this.updateCurrentWorkspace();
-      }
-    }
-
     addColorToCustomList(color) {
       const listItems = window.MozXULElement.parseXULToFragment(`
         <hbox class="zen-theme-picker-custom-list-item">
@@ -334,8 +301,10 @@
 
       if (primary === true) {
         id = 0
+
         const existingPrimaryDot = this.dots.find((d) => d.ID === 0);
         if (existingPrimaryDot) {
+          existingPrimaryDot.Element.style.zIndex = 999;
           existingPrimaryDot.ID = this.dots.length;
         }
       }
@@ -348,12 +317,9 @@
         Element: dot,
         Position: { x: parseFloat(dot.style.left), y: parseFloat(dot.style.top) }
       });
-      console.log("dotsss: ", this.dots);
     }
 
     calculateCompliments(dots, dotRemoved = false) {
-      console.log("calculateCompliments");
-      console.log("dots", dots);
       const colorHarmonies = [
         { type: 'complementary', angles: [180] },
         { type: 'splitComplementary', angles: [150, 210] },
@@ -386,16 +352,12 @@
       const rect = dotPad.getBoundingClientRect();
       const padding = 90;
 
-      // Calculate the center of the color wheel
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
       const radius = (rect.width - padding) / 2;
       const centerPosition = { x: rect.width / 2, y: rect.height / 2 };
 
-      //check for null harmonys
-      console.log("DOTS LENGTH: ", dots.length)
       const harmonyAngles = getColorHarmonyType(dots.length);
-      console.log("harmonyAngles",harmonyAngles);
       if (!harmonyAngles || harmonyAngles.angles.length === 0) return [];
 
       let primaryDot = dots.find((dot) => dot.ID === 0);
@@ -405,13 +367,9 @@
       const baseAngle = getAngleFromPosition(primaryDot.Position, centerPosition)
  
       let distance = getDistanceFromCenter(primaryDot.Position, centerPosition);
-      console.log("distance", distance);
-      // If the dot is outside the radius, adjust it to stay inside
+
       if (distance > radius) {
-        const angle = Math.atan2(dy, dx);
-        cursorPosition.x = centerX + Math.cos(angle) * radius;
-        cursorPosition.y = centerY + Math.sin(angle) * radius;
-        distance = radius;  // Set distance to the constrained radius
+        distance = radius;
       }
 
       dots.sort((a, b) => a.ID - b.ID); 
@@ -434,7 +392,14 @@
       
     handleColorPositions(colorPositions) {
       colorPositions.sort((a, b) => a.ID - b.ID);
-    
+
+      const existingPrimaryDot = this.dots.find((d) => d.ID === 0);
+      
+      if (existingPrimaryDot) {
+        existingPrimaryDot.Element.style.zIndex = 999;
+        const colorFromPos = this.getColorFromPosition(existingPrimaryDot.Position.x, existingPrimaryDot.Position.y);
+        existingPrimaryDot.Element.style.setProperty('--zen-theme-picker-dot-color', `rgb(${colorFromPos[0]}, ${colorFromPos[1]}, ${colorFromPos[2]})`);
+      }
       colorPositions.forEach(dotPosition => {
         const existingDot = this.dots.find(dot => dot.ID === dotPosition.ID);
     
@@ -444,6 +409,21 @@
           existingDot.Element.style.top = `${dotPosition.Position.y}px`;
           const colorFromPos = this.getColorFromPosition(dotPosition.Position.x, dotPosition.Position.y);
           existingDot.Element.style.setProperty('--zen-theme-picker-dot-color', `rgb(${colorFromPos[0]}, ${colorFromPos[1]}, ${colorFromPos[2]})`);
+          
+          if (!this.dragging) {
+          gZenUIManager.motion.animate(
+            existingDot.Element,
+            {
+              left: `${dotPosition.Position.x}px`,
+              top: `${dotPosition.Position.y}px`,
+            },
+            {
+              duration: 0.4,
+              type: 'spring',
+              bounce: 0.3,
+            }
+          );
+        }
         } else {
           this.spawnDot(dotPosition.Position);
         }
@@ -458,7 +438,7 @@
       
       const gradient = this.panel.querySelector('.zen-theme-picker-gradient');
       const rect = gradient.getBoundingClientRect();
-      const padding = 90; // each side
+      const padding = 90;
 
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
@@ -479,8 +459,7 @@
       if (clickedDot) {
         existingPrimaryDot.ID = clickedDot.ID;
         clickedDot.ID = 0;
-        console.log("clickedDot.ID", clickedDot.ID)
-        console.log("existingPrimaryDot.ID", existingPrimaryDot.ID)
+        clickedDot.Element.style.zIndex = 999;
 
         let colorPositions = this.calculateCompliments(this.dots, true);
         this.handleColorPositions(colorPositions);
@@ -513,7 +492,6 @@
         this.handleColorPositions(colorPositions);
     }
 
-      console.log(this.dots);
     }
 
     onDotMouseDown(event) {
@@ -521,10 +499,13 @@
       if (event.button === 2) {
         return;
       }
-      this.dragging = true;
-      this.draggedDot = event.target;
-      this.draggedDot.style.zIndex = 1;
-      this.draggedDot.classList.add('dragging');
+      const draggedDot = this.dots.find(dot => dot.Element === event.target)
+      if (draggedDot) {
+        this.dragging = true;
+        this.draggedDot = event.target;
+        this.draggedDot.classList.add('dragging');
+      }
+      
 
       // Store the starting position of the drag
       this.dragStartPosition = {
@@ -539,15 +520,11 @@
           return;
         }
         this.dots = this.dots.filter(dot => dot.Element !== event.target);
-        console.log("this.dots: ", this.dots);
         event.target.remove();
-
         let colorPositions = this.calculateCompliments(this.dots, true);
-        console.log("colorPositions: ", colorPositions);
         this.handleColorPositions(colorPositions);
 
         this.updateCurrentWorkspace();
-        this.numberOfDots--;
         return;
       }
 
@@ -555,14 +532,51 @@
         event.preventDefault();
         event.stopPropagation();
         this.dragging = false;
-        this.draggedDot.style.zIndex = 1;
         this.draggedDot.classList.remove('dragging');
         this.draggedDot = null;
         this.dragStartPosition = null; // Reset the drag start position
         return;
       }
+    }
 
-      this.numberOfDots = this.panel.querySelectorAll('.zen-theme-picker-dot').length;
+
+    onDotMouseMove(event) {
+      if (this.dragging) {
+        event.preventDefault();
+        const rect = this.panel.querySelector('.zen-theme-picker-gradient').getBoundingClientRect();
+        const padding = 90; // each side
+        // do NOT let the ball be draged outside of an imaginary circle. You can drag it anywhere inside the circle
+        // if the distance between the center of the circle and the dragged ball is bigger than the radius, then the ball
+        // should be placed on the edge of the circle. If it's inside the circle, then the ball just follows the mouse
+
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const radius = (rect.width - padding) / 2;
+        let pixelX = event.clientX;
+        let pixelY = event.clientY;
+        const distance = Math.sqrt((pixelX - centerX) ** 2 + (pixelY - centerY) ** 2);
+        if (distance > radius) {
+          const angle = Math.atan2(pixelY - centerY, pixelX - centerX);
+          pixelX = centerX + Math.cos(angle) * radius;
+          pixelY = centerY + Math.sin(angle) * radius;
+        }
+
+        // set the location of the dot in pixels
+        const relativeX = pixelX - rect.left;
+        const relativeY = pixelY - rect.top;
+        
+        const draggedDot = this.dots.find(dot => dot.Element === this.draggedDot)
+        draggedDot.Element.style.left = `${relativeX}px`;
+        draggedDot.Element.style.top = `${relativeY}px`;
+        draggedDot.Position = {
+            x: relativeX,
+            y: relativeY
+        };
+        let colorPositions = this.calculateCompliments(this.dots, true);
+        this.handleColorPositions(colorPositions);
+        
+        this.updateCurrentWorkspace();
+      }
     }
 
     themedColors(colors) {
@@ -779,8 +793,6 @@
         browser.gZenThemePicker.currentOpacity = workspaceTheme.opacity ?? 0.5;
         browser.gZenThemePicker.currentRotation = workspaceTheme.rotation ?? 45;
         browser.gZenThemePicker.currentTexture = workspaceTheme.texture ?? 0;
-
-        browser.gZenThemePicker.numberOfDots = workspaceTheme.gradientColors.length;
 
         browser.document.getElementById('PanelUI-zen-gradient-generator-opacity').value =
           browser.gZenThemePicker.currentOpacity;
