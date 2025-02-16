@@ -71,10 +71,6 @@
   padding-inline-start: 8px !important;
 }
 
-#identity-box.chromeUI:not([pageproxystate='invalid']) #identity-icon-box {
-  margin-right: 0 !important;
-}
-
 #urlbar:not([extend='true']) #identity-box #identity-icon-box {
   position: relative;
 }
