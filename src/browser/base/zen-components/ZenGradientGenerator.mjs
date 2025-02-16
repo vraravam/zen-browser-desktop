@@ -171,12 +171,17 @@
     }
 
     onCustomColorKeydown(event) {
-      //checks for enter key for custom colors
+      // Check for Enter key to add custom colors
       if (event.key === 'Enter') {
         event.preventDefault();
         this.addCustomColor();
+    
+        let colorPositions = this.calculateCompliments(this.dots);
+        console.log("colorPositions: ", colorPositions);
+        this.handleColorPositions(colorPositions);
       }
     }
+    
 
     initThemePicker() {
       const themePicker = this.panel.querySelector('.zen-theme-picker-gradient');
@@ -243,23 +248,6 @@
       if (!fromWorkspace) {
         this.updateCurrentWorkspace(true);
       }
-    }
-
-    onDotMouseDown(event) {
-      event.preventDefault();
-      if (event.button === 2) {
-        return;
-      }
-      this.dragging = true;
-      this.draggedDot = event.target;
-      this.draggedDot.style.zIndex = 1;
-      this.draggedDot.classList.add('dragging');
-
-      // Store the starting position of the drag
-      this.dragStartPosition = {
-        x: event.clientX,
-        y: event.clientY,
-      };
     }
 
     onDotMouseMove(event) {
@@ -331,20 +319,53 @@
       await this.updateCurrentWorkspace();
     }
 
-    spawnDot() {
+    spawnDot(relativePosition, primary = false) {
+      const dotPad = this.panel.querySelector('.zen-theme-picker-gradient');
 
+      const dot = document.createElement('div');
+      dot.classList.add('zen-theme-picker-dot');
+
+      dot.style.left = `${relativePosition.x}px`;
+      dot.style.top = `${relativePosition.y}px`;
+     
+      dotPad.appendChild(dot);
+     
+      let id = this.dots.length
+
+      if (primary === true) {
+        id = 0
+        const existingPrimaryDot = this.dots.find((d) => d.ID === 0);
+        if (existingPrimaryDot) {
+          existingPrimaryDot.ID = this.dots.length;
+        }
+      }
+      const colorFromPos = this.getColorFromPosition(relativePosition.x, relativePosition.y);
+      dot.style.setProperty('--zen-theme-picker-dot-color', `rgb(${colorFromPos[0]}, ${colorFromPos[1]}, ${colorFromPos[2]})`);
+      
+
+      this.dots.push({
+        ID: id,
+        Element: dot,
+        Position: { x: parseFloat(dot.style.left), y: parseFloat(dot.style.top) }
+      });
+      console.log("dotsss: ", this.dots);
     }
 
-    calculateCompliments(primaryDot, dots, colorHarmonyType) {
-      const colorHarmonies = {
-        complementary: [180],
-        splitComplementary: [150, 210],
-        analogous: [30, 330],
-        triadic: [120, 240],
-      };
+    calculateCompliments(dots, dotRemoved = false) {
+      console.log("calculateCompliments");
+      console.log("dots", dots);
+      const colorHarmonies = [
+        { type: 'complementary', angles: [180] },
+        { type: 'splitComplementary', angles: [150, 210] },
+        { type: 'analogous', angles: [30, 330] },
+        { type: 'triadic', angles: [120, 240] },
+      ];
 
-      function getColorHarmony(colorHarmonyType) {
-        return colorHarmonies[colorHarmonyType] || null;
+      function getColorHarmonyType(numDots) {
+        if (dotRemoved) {
+          return colorHarmonies.find((harmony) => harmony.angles.length === numDots - 1);
+        }
+        return colorHarmonies.find((harmony) => harmony.angles.length === numDots);
       }
 
       // rule: if the data will be inputed into an argument it should be stored as an object else not
@@ -354,7 +375,13 @@
         let angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
         return (angle + 360) % 360;
       }
-      
+
+      function getDistanceFromCenter(position, centerPosition) {
+        const deltaX = position.x - centerPosition.x;
+        const deltaY = position.y - centerPosition.y;
+        return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      }
+
       const dotPad = this.panel.querySelector('.zen-theme-picker-gradient');
       const rect = dotPad.getBoundingClientRect();
       const padding = 90;
@@ -365,41 +392,70 @@
       const radius = (rect.width - padding) / 2;
       const centerPosition = { x: rect.width / 2, y: rect.height / 2 };
 
-      const harmonyAngles = getColorHarmony(colorHarmonyType);
-      if (harmonyAngles.length === 0) return [];
+      //check for null harmonys
+      console.log("DOTS LENGTH: ", dots.length)
+      const harmonyAngles = getColorHarmonyType(dots.length);
+      console.log("harmonyAngles",harmonyAngles);
+      if (!harmonyAngles || harmonyAngles.angles.length === 0) return [];
 
-      primaryDot = this.dots.find((dot) => {dot.Element === primaryDot});
+      let primaryDot = dots.find((dot) => dot.ID === 0);
+
       if (!primaryDot) return [];
-      const baseAngle = getAngleFromPosition(primaryDot.position, centerPosition)
+
+      const baseAngle = getAngleFromPosition(primaryDot.Position, centerPosition)
+ 
+      let distance = getDistanceFromCenter(primaryDot.Position, centerPosition);
+      console.log("distance", distance);
+      // If the dot is outside the radius, adjust it to stay inside
+      if (distance > radius) {
+        const angle = Math.atan2(dy, dx);
+        cursorPosition.x = centerX + Math.cos(angle) * radius;
+        cursorPosition.y = centerY + Math.sin(angle) * radius;
+        distance = radius;  // Set distance to the constrained radius
+      }
 
       dots.sort((a, b) => a.ID - b.ID); 
 
       let updatedDots = [];
-      
-      harmonyAngles.forEach((angleOffset, index) => {
-        const dot = dots[index + 1]; // Skip the primary dot
-        if (!dot) return;
-    
+      harmonyAngles.angles.forEach((angleOffset, index) => {
         let newAngle = (baseAngle + angleOffset) % 360;
         let radian = (newAngle * Math.PI) / 180;
     
         let newPosition = {
-          x: centerPosition.x + radius * Math.cos(radian),
-          y: centerPosition.y + radius * Math.sin(radian),
+          x: centerPosition.x + distance * Math.cos(radian),
+          y: centerPosition.y + distance * Math.sin(radian),
         };
 
-        updatedDots.push({ dot, newPosition });
+        updatedDots.push({ID: index + 1, Position: newPosition});
       });
     
-      return updatedDots;
+      return updatedDots;    
     }
-
+      
+    handleColorPositions(colorPositions) {
+      colorPositions.sort((a, b) => a.ID - b.ID);
+    
+      colorPositions.forEach(dotPosition => {
+        const existingDot = this.dots.find(dot => dot.ID === dotPosition.ID);
+    
+        if (existingDot) {
+          existingDot.Position = dotPosition.Position;
+          existingDot.Element.style.left = `${dotPosition.Position.x}px`;
+          existingDot.Element.style.top = `${dotPosition.Position.y}px`;
+          const colorFromPos = this.getColorFromPosition(dotPosition.Position.x, dotPosition.Position.y);
+          existingDot.Element.style.setProperty('--zen-theme-picker-dot-color', `rgb(${colorFromPos[0]}, ${colorFromPos[1]}, ${colorFromPos[2]})`);
+        } else {
+          this.spawnDot(dotPosition.Position);
+        }
+      });
+    }
+    
 
     onThemePickerClick(event) {
       event.preventDefault();
 
       if (event.button !== 0 || this.dragging) return;
-
+      
       const gradient = this.panel.querySelector('.zen-theme-picker-gradient');
       const rect = gradient.getBoundingClientRect();
       const padding = 90; // each side
@@ -417,26 +473,47 @@
       }
 
       const clickedElement = event.target;
-      const isExistingDot = clickedElement.classList.contains('zen-theme-picker-dot');
+      let clickedDot = null;
+      const existingPrimaryDot = this.dots.find((d) => d.ID === 0);
+      clickedDot = this.dots.find(dot => dot.Element === clickedElement);
+      if (clickedDot) {
+        existingPrimaryDot.ID = clickedDot.ID;
+        clickedDot.ID = 0;
+        console.log("clickedDot.ID", clickedDot.ID)
+        console.log("existingPrimaryDot.ID", existingPrimaryDot.ID)
 
-      if (!isExistingDot && this.numberOfDots < ZenThemePicker.MAX_DOTS) {
-        const relativeX = event.clientX - rect.left;
-        const relativeY = event.clientY - rect.top;
+        let colorPositions = this.calculateCompliments(this.dots, true);
+        this.handleColorPositions(colorPositions);
+        return;
+      }
+     
+      const relativeX = event.clientX - rect.left;
+      const relativeY = event.clientY - rect.top;
 
-        const color = this.getColorFromPosition(relativeX, relativeY);
+      
+      if (!clickedDot && this.dots.length < 1) {
 
-        const dot = document.createElement('div');
-        dot.classList.add('zen-theme-picker-dot');
-        dot.addEventListener('mousedown', this.onDotMouseDown.bind(this));
-
-        dot.style.left = `${relativeX}px`;
-        dot.style.top = `${relativeY}px`;
-        dot.style.setProperty('--zen-theme-picker-dot-color', `rgb(${color[0]}, ${color[1]}, ${color[2]})`);
-
-        gradient.appendChild(dot);
-
+        if (this.dots.length === 0) {
+          this.spawnDot({x: relativeX, y: relativeY}, true);
+        }
+        else{
+          this.spawnDot({x: relativeX, y: relativeY});
+        }
+       
         this.updateCurrentWorkspace(true);
       }
+      else if (!clickedDot && existingPrimaryDot) {
+        existingPrimaryDot.Element.style.left = `${relativeX}px`;
+        existingPrimaryDot.Element.style.top = `${relativeY}px`;
+        existingPrimaryDot.Position = {
+            x: relativeX,
+            y: relativeY
+        };
+        let colorPositions = this.calculateCompliments(this.dots, true);
+        this.handleColorPositions(colorPositions);
+    }
+
+      console.log(this.dots);
     }
 
     onDotMouseDown(event) {
@@ -461,7 +538,14 @@
         if (!event.target.classList.contains('zen-theme-picker-dot')) {
           return;
         }
+        this.dots = this.dots.filter(dot => dot.Element !== event.target);
+        console.log("this.dots: ", this.dots);
         event.target.remove();
+
+        let colorPositions = this.calculateCompliments(this.dots, true);
+        console.log("colorPositions: ", colorPositions);
+        this.handleColorPositions(colorPositions);
+
         this.updateCurrentWorkspace();
         this.numberOfDots--;
         return;
