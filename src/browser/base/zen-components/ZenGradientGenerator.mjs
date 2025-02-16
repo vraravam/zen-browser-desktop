@@ -474,14 +474,15 @@
         return;
       }
 
-      // Check if the click is within the circle
       const distance = Math.sqrt((pixelX - centerX) ** 2 + (pixelY - centerY) ** 2);
       if (distance > radius) {
-        return;
+        const angle = Math.atan2(pixelY - centerY, pixelX - centerX);
+        pixelX = centerX + Math.cos(angle) * radius;
+        pixelY = centerY + Math.sin(angle) * radius;
       }
 
-      const relativeX = event.clientX - rect.left;
-      const relativeY = event.clientY - rect.top;
+      const relativeX = pixelX - rect.left;
+      const relativeY = pixelY - rect.top;
 
       if (!clickedDot && this.dots.length < 1) {
         if (this.dots.length === 0) {
