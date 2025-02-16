@@ -14,6 +14,10 @@ var gZenUIManager = {
       return ChromeUtils.importESModule('chrome://browser/content/zen-vendor/motion.min.mjs', { global: 'current' });
     });
 
+    ChromeUtils.defineLazyGetter(this, '_toastContainer', () => {
+      return document.getElementById('zen-toast-container');
+    });
+
     new ResizeObserver(this.updateTabsToolbar.bind(this)).observe(document.getElementById('TabsToolbar'));
 
     new ResizeObserver(
@@ -207,6 +211,38 @@ var gZenUIManager = {
       if (gBrowser.selectedTab.linkedBrowser && onSwitch) {
         gURLBar.getBrowserState(gBrowser.selectedTab.linkedBrowser).urlbarFocused = false;
       }
+    }
+  },
+
+  // Section: Notification messages
+  _createToastElement(messageId, options) {
+    const element = document.createXULElement('vbox');
+    const label = document.createXULElement('label');
+    document.l10n.setAttributes(label, messageId, options);
+    element.appendChild(label);
+    if (options.descriptionId) {
+      const description = document.createXULElement('label');
+      description.classList.add('description');
+      document.l10n.setAttributes(description, options.descriptionId, options);
+      element.appendChild(description);
+    }
+    element.classList.add('zen-toast');
+    return element;
+  },
+
+  async showToast(messageId, options = {}) {
+    const toast = this._createToastElement(messageId, options);
+    this._toastContainer.removeAttribute('hidden');
+    this._toastContainer.appendChild(toast);
+    await this.motion.animate(toast, { opacity: [0, 1], scale: [0.8, 1] }, { type: 'spring', duration: 0.3 });
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    await this.motion.animate(toast, { opacity: [1, 0], scale: [1, 0.9] }, { duration: 0.2, bounce: 0 });
+    const toastHeight = toast.getBoundingClientRect().height;
+    // 5 for the separation between toasts
+    await this.motion.animate(toast, { marginBottom: [0, `-${toastHeight + 5}px`] }, { duration: 0.2 });
+    toast.remove();
+    if (!this._toastContainer.hasChildNodes()) {
+      this._toastContainer.setAttribute('hidden', 'true');
     }
   },
 };
@@ -635,11 +671,15 @@ var gZenVerticalTabsManager = {
       }
 
       // Maybe add some confetti here?!?
-      gZenUIManager.motion.animate(this._tabEdited, {
-        scale: [1, 0.98, 1],
-      }, {
-        duration: 0.25,
-      });
+      gZenUIManager.motion.animate(
+        this._tabEdited,
+        {
+          scale: [1, 0.98, 1],
+        },
+        {
+          duration: 0.25,
+        }
+      );
 
       this._tabEdited.querySelector('.tab-editor-container').remove();
       label.classList.remove('tab-label-container-editing');
