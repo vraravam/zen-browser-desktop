@@ -382,7 +382,6 @@
       let updatedDots = [...dots];
       const centerPosition = { x: rect.width / 2, y: rect.height / 2 };
   
-      // **Get the correct harmony based on action**
       const harmonyAngles = getColorHarmonyType(dots.length + (action === 'add' ? 1 : action === 'remove' ? -1 : 0));
       this.useAlgo = harmonyAngles.type;
   
@@ -402,7 +401,7 @@
       if (this.dots.length > 0) {
         updatedDots = [{ ID: 0, Position: primaryDot.Position }];
       }
-      // **Recalculate Positions for New Harmony**
+      
       harmonyAngles.angles.forEach((angleOffset, index) => {
           let newAngle = (baseAngle + angleOffset) % 360;
           let radian = (newAngle * Math.PI) / 180;
