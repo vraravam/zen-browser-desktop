@@ -37,7 +37,6 @@
       this.initCanvas();
       this.initCustomColorInput();
 
-      ZenWorkspaces.addChangeListeners(this.onWorkspaceChange.bind(this));
       window.matchMedia('(prefers-color-scheme: dark)').addListener(this.onDarkModeChange.bind(this));
     }
 
@@ -614,7 +613,7 @@
                 // Reactivate the transition after the animation
                 appWrapper.removeAttribute('post-animating');
               }, 100);
-            }, 500);
+            }, 200);
           });
         }
 
@@ -726,7 +725,7 @@
       if (!skipSave) {
         await ZenWorkspacesStorage.saveWorkspaceTheme(currentWorkspace.uuid, gradient);
         await ZenWorkspaces._propagateWorkspaceData();
-        ConfirmationHint.show(document.getElementById('PanelUI-menu-button'), 'zen-panel-ui-gradient-generator-saved-message');
+        gZenUIManager.showToast('zen-panel-ui-gradient-generator-saved-message');
         currentWorkspace = await ZenWorkspaces.getActiveWorkspace();
       }
 

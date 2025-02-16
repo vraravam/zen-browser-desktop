@@ -10,8 +10,8 @@
 }
 
 #urlbar {
-  --toolbarbutton-border-radius: 10px;
-  --urlbarView-separator-color: var(--zen-colors-border);
+  --toolbarbutton-border-radius: 8px;
+  --urlbarView-separator-color: light-dark(hsl(0, 0%, 90%), hsl(0, 0%, 20%));
   --urlbarView-hover-background: var(--toolbarbutton-hover-background);
   --urlbarView-highlight-background: var(--toolbarbutton-hover-background);
   border-radius: var(--toolbarbutton-border-radius);
@@ -121,26 +121,32 @@
 }
 
 #urlbar[breakout-extend='true'] #urlbar-background {
-  border: 1px solid var(--zen-colors-border) !important;
-  box-shadow: var(--zen-big-shadow) !important;
+  box-shadow:
+    inset 0 0 0.5px 1px hsla(0, 0%, 100%, 0.1),
+    /* 2. shadow ring 👇 */ 0 0 0 1px hsla(230, 13%, 9%, 0.075),
+    /* 3. multiple soft shadows 👇 */ 0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
+    0 0.9px 1.5px hsla(230, 13%, 9%, 0.045),
+    0 6.5px 12px hsla(230, 13%, 9%, 0.1) !important;
   backdrop-filter: none !important;
 }
 
 :root[zen-single-toolbar='true'] {
   .urlbar-page-action:not([open]),
+  .identity-box-button:not([open]),
   #tracking-protection-icon-container {
-    margin-inline-end: calc(-16px - 2 * var(--urlbar-icon-padding)) !important;
+    margin-inline-end: calc(-8px - 2 * var(--urlbar-icon-padding)) !important;
     opacity: 0;
-    transition: all 0.2s;
+    transition: all 0.1s ease;
   }
 
   #identity-permission-box > *:not(#permissions-granted-icon) {
     visibility: collapse;
   }
 
-  #urlbar[open] :is(#tracking-protection-icon-container, .urlbar-page-action),
-  #urlbar:hover :is(#tracking-protection-icon-container, .urlbar-page-action),
+  #urlbar[open] :is(#tracking-protection-icon-container, .urlbar-page-action, .identity-box-button),
+  #urlbar:hover :is(#tracking-protection-icon-container, .urlbar-page-action, .identity-box-button),
   .urlbar-page-action[open],
+  .identity-box-button[open],
   #tracking-protection-icon-container[open] {
     opacity: 1;
     margin-inline-end: 0 !important;
@@ -234,8 +240,22 @@ button.popup-notification-dropmarker {
 }
 
 @container urlbar-container (width < 350px) {
+  #userContext-icons {
+    transition: all 0.1s ease;
+  }
+
   #userContext-label {
     display: none;
+  }
+
+  #userContext-indicator {
+    margin-inline-end: 4px;
+  }
+
+  #urlbar:hover:not([breakout-extend='true']) #userContext-icons {
+    margin-inline-end: calc(-16px - 2 * var(--urlbar-icon-padding)) !important;
+    opacity: 0;
+    pointer-events: none;
   }
 }
 
@@ -274,7 +294,7 @@ button.popup-notification-dropmarker {
 #urlbar .urlbar-page-action,
 #urlbar #tracking-protection-icon-container,
 #urlbar:not([breakout-extend='true']) #identity-box:is(:not(.chromeUI), [pageproxystate='invalid']) #identity-icon-box {
-  border-radius: 10px !important;
+  border-radius: 8px !important;
 }
 
 /* Extensions or similar */
@@ -373,13 +393,14 @@ button.popup-notification-dropmarker {
     /* We cant have a transparent background with a backdrop-filter because on normal websites,
       the backdrop woudn't work, we would need to apply a clip-path to the site and that's not recommended
       due to performance issues */
-    background-color: light-dark(rgb(247, 247, 247), var(--zen-branding-bg)) !important;
+    background-color: light-dark(hsl(0, 0%, 100%), hsl(0, 0%, 14%)) !important;
+    outline: 1px solid rgba(0, 0, 0, 0.3) !important;
   }
 }
 
 :root[zen-single-toolbar='true'] {
   #urlbar[open] {
-    min-width: 30vw;
+    min-width: 35vw;
   }
 
   &[zen-right-side='true'] #urlbar[open]:not([zen-floating-urlbar='true']) {
@@ -391,20 +412,24 @@ button.popup-notification-dropmarker {
   z-index: 1000;
   max-width: 45vw;
   min-width: 45vw !important;
-  font-size: 1.1em;
   --urlbar-container-height: 55px !important;
   --urlbar-margin-inline: 10px !important;
   position: absolute;
 
   font-size: 1.15em !important;
+  @media (-moz-platform: macos) {
+    font-size: 1.5em !important;
+  }
   top: calc(var(--zen-toolbar-height) * 2) !important;
 
+  --zen-urlbar-center: calc(var(--zen-urlbar-offset, 0px) + 28vw);
+
   :root[zen-right-side='true'] & {
-    right: 28vw !important;
+    right: var(--zen-urlbar-center) !important;
   }
 
   :root:not([zen-right-side='true']) & {
-    left: 28vw !important;
+    left: var(--zen-urlbar-center) !important;
   }
 
   #urlbar-container:has(&) {
@@ -475,10 +500,9 @@ button.popup-notification-dropmarker {
   }
 
   &:hover {
-    background-color: light-dark(var(--zen-colors-secondary), var(--zen-colors-primary)) !important;
-
-    .urlbarView-favicon {
-      background-color: color-mix(in srgb, var(--zen-branding-bg-reverse) 20%, transparent 80%) !important;
+    .urlbarView-favicon,
+    & {
+      background-color: color-mix(in srgb, var(--zen-branding-bg-reverse) 5%, transparent 95%) !important;
     }
 
     .urlbarView-url,
