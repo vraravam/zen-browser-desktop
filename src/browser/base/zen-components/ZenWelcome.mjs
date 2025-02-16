@@ -155,8 +155,8 @@
       if (this._currentPage !== -1) {
         const previousPage = this._pages[this._currentPage];
         await Promise.all([this.fadeOutTitles(), this.fadeOutButtons(), this.fadeOutContent()]);
+        await previousPage.fadeOut();
         document.getElementById('zen-welcome-page-content').innerHTML = '';
-        previousPage.fadeOut();
       }
       this._currentPage++;
       const currentPage = this._pages[this._currentPage];
@@ -181,6 +181,7 @@
         element.style.removeProperty('display');
       }
       await animate('#browser > *', { opacity: [0, 1] });
+      gZenUIManager.showToast('zen-welcome-finished');
     }
 
     async animHeart() {
@@ -195,7 +196,7 @@
         {
           duration: 1.5,
           delay: 0.2,
-          bounce: 0
+          bounce: 0,
         }
       );
     }
@@ -220,8 +221,12 @@
             l10n: 'zen-welcome-import-button',
             onclick: async () => {
               MigrationUtils.showMigrationWizard(window, {
-                zenBlocking: true,
+                isStartupMigration: true,
               });
+              document.querySelector('#zen-welcome-page-sidebar-buttons button').remove();
+              const newButton = document.querySelector('#zen-welcome-page-sidebar-buttons button');
+              newButton.setAttribute('primary', 'true');
+              document.l10n.setAttributes(newButton, 'zen-welcome-next-action');
               return false;
             },
           },
@@ -246,7 +251,22 @@
           const fragment = window.MozXULElement.parseXULToFragment(xul);
           document.getElementById('zen-welcome-page-content').appendChild(fragment);
         },
-        fadeOut() {},
+        async fadeOut() {
+          const shouldSetDefault = document.getElementById('zen-welcome-set-default-browser').checked;
+          if (AppConstants.HAVE_SHELL_SERVICE && shouldSetDefault) {
+            let shellSvc = getShellService();
+            if (!shellSvc) {
+              return;
+            }
+
+            try {
+              await shellSvc.setDefaultBrowser(false);
+            } catch (ex) {
+              console.error(ex);
+              return;
+            }
+          }
+        },
       },
       {
         text: [
