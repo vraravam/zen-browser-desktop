@@ -543,6 +543,15 @@
         }
         this.dots = this.dots.filter((dot) => dot.Element !== event.target);
         event.target.remove();
+
+        this.dots.sort((a, b) => a.ID - b.ID);
+
+        // Reassign the IDs after sorting
+        this.dots.forEach((dot, index) => {
+          dot.ID = index; 
+        });
+
+        console.log(this.dots);
         let colorPositions = this.calculateCompliments(this.dots, true);
         this.handleColorPositions(colorPositions);
 
