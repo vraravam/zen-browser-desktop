@@ -62,7 +62,7 @@
         (description2 ? `<html:p>${description2}</html:p>` : '');
       await animate(
         '#zen-welcome-page-sidebar-content > *',
-        { x: ['100%', 0], filter: ['blur(2px)', 'blur(0px)'] },
+        { x: ['150%', 0], filter: ['blur(2px)', 'blur(0px)'], opacity: [0, 1] },
         {
           delay: getMotion().stagger(0.05, { startDelay: 0.3 }),
           type: 'spring',
@@ -91,7 +91,7 @@
       }
       await animate(
         '#zen-welcome-page-sidebar-buttons button',
-        { x: ['100%', 0], filter: ['blur(2px)', 'blur(0px)'] },
+        { x: ['150%', 0], filter: ['blur(2px)', 'blur(0px)'], opacity: [0, 1] },
         {
           delay: getMotion().stagger(0.1, { startDelay: 0.4 }),
           type: 'spring',
@@ -115,7 +115,7 @@
     async fadeOutButtons() {
       await animate(
         '#zen-welcome-page-sidebar-buttons button',
-        { x: [0, '-100%'], filter: ['blur(0px)', 'blur(2px)'] },
+        { x: [0, '-150%'], filter: ['blur(0px)', 'blur(2px)'], opacity: [1, 0] },
         {
           type: 'spring',
           bounce: 0,
@@ -129,7 +129,7 @@
     async fadeOutTitles() {
       await animate(
         '#zen-welcome-page-sidebar-content > *',
-        { x: [0, '-100%'], filter: ['blur(0px)', 'blur(2px)'] },
+        { x: [0, '-150%'], filter: ['blur(0px)', 'blur(2px)'], opacity: [1, 0] },
         {
           delay: getMotion().stagger(0.05, { startDelay: 0.3 }),
           type: 'spring',
@@ -250,6 +250,49 @@
       {
         text: [
           {
+            id: 'zen-welcome-initial-essentials-title',
+          },
+          {
+            id: 'zen-welcome-initial-essentials-description-1',
+          },
+          {
+            id: 'zen-welcome-initial-essentials-description-2',
+          },
+        ],
+        buttons: [
+          {
+            l10n: 'zen-welcome-next-action',
+            onclick: async () => {
+              return true;
+            },
+          },
+        ],
+        fadeIn() {},
+        fadeOut() {},
+      },
+      {
+        text: [
+          {
+            id: 'zen-welcome-workspace-colors-title',
+          },
+          {
+            id: 'zen-welcome-workspace-colors-description',
+          },
+        ],
+        buttons: [
+          {
+            l10n: 'zen-welcome-next-action',
+            onclick: async () => {
+              return true;
+            },
+          },
+        ],
+        fadeIn() {},
+        fadeOut() {},
+      },
+      {
+        text: [
+          {
             id: 'zen-welcome-start-browsing-title',
           },
           {
@@ -315,7 +358,17 @@
     });
   }
 
+  function centerWindowOnScreen() {
+    var xOffset = screen.availWidth / 2 - window.outerWidth / 2;
+    var yOffset = screen.availHeight / 2 - window.outerHeight / 2;
+
+    xOffset = xOffset > 0 ? xOffset : 0;
+    yOffset = yOffset > 0 ? yOffset : 0;
+    window.moveTo(xOffset, yOffset);
+  }
+
   function startZenWelcome() {
+    centerWindowOnScreen();
     clearBrowserElements();
     initializeZenWelcome();
     animateInitialStage();
