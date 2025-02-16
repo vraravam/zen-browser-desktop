@@ -462,7 +462,6 @@
       let clickedDot = null;
       const existingPrimaryDot = this.dots.find((d) => d.ID === 0);
       clickedDot = this.dots.find((dot) => dot.Element === clickedElement);
-      console.log(clickedDot);
       if (clickedDot) {
         existingPrimaryDot.ID = clickedDot.ID;
         clickedDot.ID = 0;
@@ -529,10 +528,7 @@
         this.draggedDot = event.target;
         this.draggedDot.classList.add('dragging');
       }
-      console.log("Dots: ", this.dots);
-      this.dots.forEach((dot) => {
-        console.log(dot.Element);
-      });
+
       // Store the starting position of the drag
       this.dragStartPosition = {
         x: event.clientX,
