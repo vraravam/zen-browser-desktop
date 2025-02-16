@@ -132,8 +132,9 @@
 
 :root[zen-single-toolbar='true'] {
   .urlbar-page-action:not([open]),
+  .identity-box-button:not([open]),
   #tracking-protection-icon-container {
-    margin-inline-end: calc(-14px - 2 * var(--urlbar-icon-padding)) !important;
+    margin-inline-end: calc(-8px - 2 * var(--urlbar-icon-padding)) !important;
     opacity: 0;
     transition: all 0.1s ease;
   }
@@ -142,9 +143,10 @@
     visibility: collapse;
   }
 
-  #urlbar[open] :is(#tracking-protection-icon-container, .urlbar-page-action),
-  #urlbar:hover :is(#tracking-protection-icon-container, .urlbar-page-action),
+  #urlbar[open] :is(#tracking-protection-icon-container, .urlbar-page-action, .identity-box-button),
+  #urlbar:hover :is(#tracking-protection-icon-container, .urlbar-page-action, .identity-box-button),
   .urlbar-page-action[open],
+  .identity-box-button[open],
   #tracking-protection-icon-container[open] {
     opacity: 1;
     margin-inline-end: 0 !important;
