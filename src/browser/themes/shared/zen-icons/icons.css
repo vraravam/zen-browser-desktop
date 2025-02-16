@@ -45,7 +45,8 @@
   list-style-image: url('reload.svg') !important;
 }
 
-.tab-reset-button {
+.tab-reset-button,
+#PanelUI-zen-gradient-generator-color-remove {
   list-style-image: url('unpin.svg') !important;
 }
 
@@ -87,7 +88,8 @@
   list-style-image: url('translations.svg') !important;
 }
 
-#appMenu-zoom-controls {
+#appMenu-zoom-controls,
+#PanelUI-zen-gradient-generator-color-add {
   list-style-image: url('plus.svg') !important;
 }
 
