@@ -393,17 +393,23 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     event.preventDefault();
     event.stopPropagation();
 
-    const delta = event.delta * 300;
-    this._swipeState.lastDelta = delta;
+    const delta = event.delta * 300 + 1;
+    const stripWidth = document.getElementById('tabbrowser-tabs').scrollWidth;
+    let translateX = this._swipeState.lastDelta + delta;
+    // Add a force multiplier as we are translating the strip depending on how close to the edge we are
+    let forceMultiplier = Math.min(1, 1 - (Math.abs(translateX) / (stripWidth * 1.5)));
+    if (forceMultiplier > 0.5) {
+      translateX *= forceMultiplier;
+      this._swipeState.lastDelta = delta;
+    } else {
+      translateX = this._swipeState.lastDelta;
+    }
 
     if (Math.abs(delta) > 1) {
       this._swipeState.direction = delta > 0 ? 'left' : 'right';
     }
 
     // Apply a translateX to the tab strip to give the user feedback on the swipe
-    const stripWidth = document.getElementById('tabbrowser-tabs').scrollWidth;
-    const translateX = Math.max(-stripWidth, Math.min(delta, stripWidth));
-
     const currentWorkspace = this.activeWorkspace;
     this._organizeWorkspaceStripLocations({ uuid: currentWorkspace }, true, translateX);
   }
