@@ -351,6 +351,58 @@ var ZenPinnedTabsStorage = {
     this._notifyPinsChanged('zen-pin-updated', Array.from(changedUUIDs));
   },
 
+  async updatePinTitle(uuid, newTitle, notifyObservers = true) {
+    if (!uuid || typeof newTitle !== 'string') {
+      throw new Error('Invalid parameters: uuid and newTitle are required');
+    }
+
+    const changedUUIDs = new Set();
+
+    await PlacesUtils.withConnectionWrapper('ZenPinnedTabsStorage.updatePinTitle', async (db) => {
+      await db.executeTransaction(async () => {
+        const now = Date.now();
+
+        // Update the pin's title
+        const result = await db.execute(
+          `
+            UPDATE zen_pins
+            SET title = :newTitle,
+                updated_at = :now
+            WHERE uuid = :uuid
+          `,
+          {
+            uuid,
+            newTitle,
+            now,
+          }
+        );
+
+        // Only proceed with change tracking if a row was actually updated
+        if (result.rowsAffected > 0) {
+          changedUUIDs.add(uuid);
+
+          // Record the change
+          await db.execute(
+            `
+              INSERT OR REPLACE INTO zen_pins_changes (uuid, timestamp)
+          VALUES (:uuid, :timestamp)
+            `,
+            {
+              uuid,
+              timestamp: Math.floor(now / 1000),
+            }
+          );
+
+          await this.updateLastChangeTimestamp(db);
+        }
+      });
+    });
+
+    if (notifyObservers && changedUUIDs.size > 0) {
+      this._notifyPinsChanged('zen-pin-updated', Array.from(changedUUIDs));
+    }
+  },
+
   async __dropTables() {
     await PlacesUtils.withConnectionWrapper('ZenPinnedTabsStorage.__dropTables', async (db) => {
       await db.execute(`DROP TABLE IF EXISTS zen_pins`);

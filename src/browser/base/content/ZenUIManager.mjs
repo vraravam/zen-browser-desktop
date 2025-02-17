@@ -665,7 +665,7 @@ var gZenVerticalTabsManager = {
     target.appendChild(child);
   },
 
-  renameTabKeydown(event) {
+  async renameTabKeydown(event) {
     if (event.key === 'Enter') {
       let label = this._tabEdited.querySelector('.tab-label-container-editing');
       let input = this._tabEdited.querySelector('#tab-label-input');
@@ -680,6 +680,11 @@ var gZenVerticalTabsManager = {
         this._tabEdited.setAttribute('zen-has-static-label', 'true');
       } else {
         gBrowser.setTabTitle(this._tabEdited);
+      }
+      const pinId = this._tabEdited.getAttribute('zen-pin-id');
+      if (pinId) {
+        // Update pin title in storage
+        await ZenPinnedTabsStorage.updatePinTitle(pinId, this._tabEdited.label);
       }
 
       // Maybe add some confetti here?!?
