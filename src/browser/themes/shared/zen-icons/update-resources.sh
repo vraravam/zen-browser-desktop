@@ -10,19 +10,19 @@ echo "" > jar.inc.mn
 do_icons() {
   os=$1
   preprocessed_os=$2
-  #echo "#ifdef XP_$preprocessed_os" >> jar.inc.mn
+  echo "#ifdef XP_$preprocessed_os" >> jar.inc.mn
   for filename in $os/*.svg; do
     # remove the os/ prefix
     filename=$(basename $filename)
     echo "Working on $filename"
     echo "  skin/classic/browser/zen-icons/$filename                      (../shared/zen-icons/$os/$filename) " >> jar.inc.mn
   done
- # echo "#endif" >> jar.inc.mn
+  echo "#endif" >> jar.inc.mn
 }
 
-#do_icons win WIN
+do_icons win WIN
 do_icons mac MACOSX
-#do_icons lin LINUX
+do_icons lin LINUX
 
 echo "    skin/classic/browser/zen-icons/icons.css                      (../shared/zen-icons/icons.css) " >> jar.inc.mn
 
