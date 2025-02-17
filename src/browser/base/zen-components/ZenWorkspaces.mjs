@@ -550,6 +550,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       await this.workspaceBookmarks();
       window.addEventListener('TabBrowserInserted', this.onTabBrowserInserted.bind(this));
       window.addEventListener('TabOpen', this.updateTabsContainers.bind(this));
+      window.addEventListener('TabClose', this.updateTabsContainers.bind(this));
       let workspaces = await this._workspaces();
       let activeWorkspace = null;
       if (workspaces.workspaces.length === 0) {
@@ -1776,7 +1777,9 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   updateShouldHideSeparator(arrowScrollbox, pinnedContainer) {
-    const shouldHideSeparator = pinnedContainer.children.length === 1 || arrowScrollbox.children.length === 1;
+    const shouldHideSeparator =
+      pinnedContainer.children.length === 1 ||
+      Array.from(arrowScrollbox.children).filter((child) => !child.hasAttribute('hidden')).length === 1;
     if (shouldHideSeparator) {
       pinnedContainer.setAttribute('hide-separator', 'true');
     } else {
