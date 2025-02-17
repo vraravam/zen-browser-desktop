@@ -462,7 +462,7 @@
       let owner = tab.owner;
       return (
         owner &&
-        owner.getAttribute('zen-essential') === 'true' &&
+        owner.pinned &&
         this._lazyPref.SHOULD_OPEN_EXTERNAL_TABS_IN_GLANCE &&
         owner.linkedBrowser?.docShellIsActive &&
         owner.linkedBrowser?.browsingContext?.isAppTab &&
