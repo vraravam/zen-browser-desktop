@@ -147,8 +147,6 @@
         return;
       }
 
-      const workspaces = await ZenWorkspaces._workspaces();
-
       const activeTab = gBrowser.selectedTab;
       const pinnedTabsByUUID = new Map();
       const pinsToCreate = new Set(pins.map((p) => p.uuid));
@@ -174,7 +172,21 @@
         }
       }
 
-      // Second pass: create new tabs for pins that don't have tabs
+      // Second pass: For every existing tab, update its label
+      // and set 'zen-has-static-label' attribute if it's been edited
+      for (let pin of pins) {
+        const tab = pinnedTabsByUUID.get(pin.uuid);
+        if (!tab) {
+          continue;
+        }
+
+        if (pin.title && pin.editedTitle) {
+          gBrowser._setTabLabel(tab, pin.title);
+          tab.setAttribute('zen-has-static-label', 'true');
+        }
+      }
+
+      // Third pass: create new tabs for pins that don't have tabs
       for (let pin of pins) {
         if (!pinsToCreate.has(pin.uuid)) {
           continue; // Skip pins that already have tabs
