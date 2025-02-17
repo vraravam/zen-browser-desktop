@@ -315,10 +315,10 @@
       const centerPosition = { x: rect.width / 2, y: rect.height / 2 };
 
       const harmonyAngles = getColorHarmonyType(dots.length + (action === 'add' ? 1 : action === 'remove' ? -1 : 0));
-      this.useAlgo = harmonyAngles.type;
-
+      
       if (!harmonyAngles || harmonyAngles.angles.length === 0) return [];
-
+      this.useAlgo = harmonyAngles.type;
+      
       let primaryDot = dots.find((dot) => dot.ID === 0);
       if (!primaryDot) return [];
 
@@ -333,6 +333,7 @@
       if (this.dots.length > 0) {
         updatedDots = [{ ID: 0, Position: primaryDot.Position }];
       }
+
 
       harmonyAngles.angles.forEach((angleOffset, index) => {
         let newAngle = (baseAngle + angleOffset) % 360;
@@ -459,7 +460,7 @@
 
       const gradient = this.panel.querySelector('.zen-theme-picker-gradient');
       const rect = gradient.getBoundingClientRect();
-      const padding = 60;
+      const padding = 90;
 
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
