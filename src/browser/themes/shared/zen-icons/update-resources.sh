@@ -21,7 +21,7 @@ do_icons() {
 }
 
 do_icons win WIN
-do_icons mac MACOSX
+do_icons lin MACOSX # TODO: use macos icons
 do_icons lin LINUX
 
 echo "    skin/classic/browser/zen-icons/icons.css                      (../shared/zen-icons/icons.css) " >> jar.inc.mn
