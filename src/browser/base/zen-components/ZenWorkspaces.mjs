@@ -154,7 +154,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   get tabboxChildren() {
-    return this.activeWorkspaceStrip.children;
+    return this.activeWorkspaceStrip?.children || [];
   }
 
   get pinnedTabsContainer() {

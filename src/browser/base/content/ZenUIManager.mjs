@@ -681,10 +681,9 @@ var gZenVerticalTabsManager = {
       } else {
         gBrowser.setTabTitle(this._tabEdited);
       }
-      const pinId = this._tabEdited.getAttribute('zen-pin-id');
-      if (pinId) {
+      if (this._tabEdited.getAttribute('zen-pin-id')) {
         // Update pin title in storage
-        await ZenPinnedTabsStorage.updatePinTitle(pinId, this._tabEdited.label);
+        await gZenPinnedTabManager.updatePinTitle(this._tabEdited, this._tabEdited.label, !!newName);
       }
 
       // Maybe add some confetti here?!?

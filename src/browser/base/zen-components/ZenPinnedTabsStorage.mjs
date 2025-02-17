@@ -24,6 +24,19 @@ var ZenPinnedTabsStorage = {
           )
       `);
 
+      const columns = await db.execute(`PRAGMA table_info(zen_pins)`);
+      const columnNames = columns.map((row) => row.getResultByName('name'));
+
+      // Helper function to add column if it doesn't exist
+      const addColumnIfNotExists = async (columnName, definition) => {
+        if (!columnNames.includes(columnName)) {
+          await db.execute(`ALTER TABLE zen_pins ADD COLUMN ${columnName} ${definition}`);
+        }
+      };
+
+      // Add edited_title column if it doesn't exist
+      await addColumnIfNotExists('edited_title', 'BOOLEAN NOT NULL DEFAULT 0');
+
       // Create indices
       await db.execute(`
         CREATE INDEX IF NOT EXISTS idx_zen_pins_uuid ON zen_pins(uuid)
@@ -152,6 +165,7 @@ var ZenPinnedTabsStorage = {
       isEssential: Boolean(row.getResultByName('is_essential')),
       isGroup: Boolean(row.getResultByName('is_group')),
       parentUuid: row.getResultByName('parent_uuid'),
+      editedTitle: Boolean(row.getResultByName('edited_title')),
     }));
   },
 
@@ -176,6 +190,7 @@ var ZenPinnedTabsStorage = {
       isEssential: Boolean(row.getResultByName('is_essential')),
       isGroup: Boolean(row.getResultByName('is_group')),
       parentUuid: row.getResultByName('parent_uuid'),
+      editedTitle: Boolean(row.getResultByName('edited_title')),
     }));
   },
 
@@ -351,7 +366,7 @@ var ZenPinnedTabsStorage = {
     this._notifyPinsChanged('zen-pin-updated', Array.from(changedUUIDs));
   },
 
-  async updatePinTitle(uuid, newTitle, notifyObservers = true) {
+  async updatePinTitle(uuid, newTitle, isEdited = true, notifyObservers = true) {
     if (!uuid || typeof newTitle !== 'string') {
       throw new Error('Invalid parameters: uuid and newTitle are required');
     }
@@ -362,17 +377,19 @@ var ZenPinnedTabsStorage = {
       await db.executeTransaction(async () => {
         const now = Date.now();
 
-        // Update the pin's title
+        // Update the pin's title and edited_title flag
         const result = await db.execute(
           `
             UPDATE zen_pins
             SET title = :newTitle,
+                edited_title = :isEdited,
                 updated_at = :now
             WHERE uuid = :uuid
           `,
           {
             uuid,
             newTitle,
+            isEdited,
             now,
           }
         );
