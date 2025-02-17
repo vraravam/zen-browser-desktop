@@ -75,8 +75,7 @@ pref("app.update.checkInstallTime.days", 6);
 
 // CUSTOM ZEN PREFS
 
-pref('zen.welcome-screen.enabled', true, sticky);
-pref('zen.welcome-screen.seen', false);
+pref('zen.welcome-screen.seen', false, sticky);
 
 pref('zen.tabs.vertical', true);
 pref('zen.tabs.vertical.right-side', false);
