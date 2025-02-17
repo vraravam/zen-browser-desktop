@@ -225,7 +225,7 @@
               });
               document.querySelector('#zen-welcome-page-sidebar-buttons button').remove();
               const newButton = document.querySelector('#zen-welcome-page-sidebar-buttons button');
-              newButton.setAttribute('primary', 'true');
+              newButton.classList.add('primary');
               document.l10n.setAttributes(newButton, 'zen-welcome-next-action');
               return false;
             },
@@ -380,17 +380,22 @@
   }
 
   function centerWindowOnScreen() {
-    var xOffset = screen.availWidth / 2 - window.outerWidth / 2;
-    var yOffset = screen.availHeight / 2 - window.outerHeight / 2;
-
-    xOffset = xOffset > 0 ? xOffset : 0;
-    yOffset = yOffset > 0 ? yOffset : 0;
-    window.moveTo(xOffset, yOffset);
+    window.addEventListener(
+      'MozAfterPaint',
+      function () {
+        window.resizeTo(875, 560);
+        window.focus();
+        appWin.center(null, true, false);
+        const appWin = window.docShell.treeOwner.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIAppWindow);
+        appWin.rollupAllPopups();
+      },
+      { once: true }
+    );
   }
 
   function startZenWelcome() {
-    centerWindowOnScreen();
     clearBrowserElements();
+    centerWindowOnScreen();
     initializeZenWelcome();
     animateInitialStage();
   }
