@@ -119,7 +119,7 @@
         {
           type: 'spring',
           bounce: 0,
-          delay: getMotion().stagger(0.1, { startDelay: 0.5 }),
+          delay: getMotion().stagger(0.1, { startDelay: 0.3 }),
         }
       );
       document.getElementById('zen-welcome-page-sidebar-buttons').innerHTML = '';
