@@ -122,8 +122,7 @@
 
     _checkForWelcomePage() {
       if (!Services.prefs.getBoolPref('zen.welcome-screen.seen', false)) {
-        //Services.prefs.setBoolPref('zen.welcome-screen.seen', true);
-        console.log('ZenStartup: Show welcome page');
+        Services.prefs.setBoolPref('zen.welcome-screen.seen', true);
         Services.scriptloader.loadSubScript('chrome://browser/content/zen-components/ZenWelcome.mjs', window);
       }
     },
