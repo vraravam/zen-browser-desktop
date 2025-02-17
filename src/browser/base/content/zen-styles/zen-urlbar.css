@@ -142,7 +142,7 @@
     visibility: collapse;
   }
 
-  #urlbar[open] :is(#tracking-protection-icon-container, .urlbar-page-action, .identity-box-button):not([hidden="true"]),
+  #urlbar[open] :is(#tracking-protection-icon-container, .urlbar-page-action, .identity-box-button):not([hidden='true']),
   #urlbar:hover #identity-icon-box {
     opacity: 1;
     margin-inline-end: 0 !important;

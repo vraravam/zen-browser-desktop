@@ -397,7 +397,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     const stripWidth = document.getElementById('tabbrowser-tabs').scrollWidth;
     let translateX = this._swipeState.lastDelta + delta;
     // Add a force multiplier as we are translating the strip depending on how close to the edge we are
-    let forceMultiplier = Math.min(1, 1 - (Math.abs(translateX) / (stripWidth * 1.5)));
+    let forceMultiplier = Math.min(1, 1 - Math.abs(translateX) / (stripWidth * 1.5));
     if (forceMultiplier > 0.5) {
       translateX *= forceMultiplier;
       this._swipeState.lastDelta = delta;
