@@ -69,3 +69,8 @@
 body > #confetti {
   z-index: 1;
 }
+
+/* Bookmarks */
+#PersonalToolbar {
+  min-height: 30px;
+}
