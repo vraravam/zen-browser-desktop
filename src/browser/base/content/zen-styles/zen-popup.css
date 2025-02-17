@@ -358,6 +358,8 @@ menuitem {
   right: calc(var(--zen-element-separation) * 2);
   z-index: 1000;
   gap: 1rem;
+  display: flex;
+  align-items: end;
 
   & .zen-toast {
     padding: 0.9rem 0.8rem;
@@ -366,6 +368,7 @@ menuitem {
     color: var(--button-primary-color);
     box-shadow: var(--zen-big-shadow);
     display: flex;
+    font-weight: 600;
     gap: 5px;
     flex-direction: column;
     gap: 2px;
