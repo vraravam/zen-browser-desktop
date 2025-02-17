@@ -371,13 +371,15 @@
           `;
           const fragment = window.MozXULElement.parseXULToFragment(xul);
           document.getElementById('zen-welcome-page-content').appendChild(fragment);
-          document.getElementById('zen-welcome-initial-essentials-browser-sidebar-essentials').addEventListener('click', async (event) => {
-            const tab = event.target.closest('.tabbrowser-tab');
-            if (!tab) {
-              return;
-            }
-            tab.toggleAttribute('visuallyselected');
-          });
+          document
+            .getElementById('zen-welcome-initial-essentials-browser-sidebar-essentials')
+            .addEventListener('click', async (event) => {
+              const tab = event.target.closest('.tabbrowser-tab');
+              if (!tab) {
+                return;
+              }
+              tab.toggleAttribute('visuallyselected');
+            });
         },
         fadeOut() {},
       },

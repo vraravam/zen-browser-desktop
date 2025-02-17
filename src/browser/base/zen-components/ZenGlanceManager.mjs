@@ -485,7 +485,16 @@
       }
     }
 
-    fullyOpenGlance() {
+    finishOpeningGlance() {
+      this.browserWrapper.removeAttribute('animate-full');
+      this.overlay.classList.remove('zen-glance-overlay');
+      this.browserWrapper.removeAttribute('style');
+      this.animatingFullOpen = false;
+      this.closeGlance({ noAnimation: true });
+      this.#glances.delete(this.#currentGlanceID);
+    }
+
+    async fullyOpenGlance() {
       this.animatingFullOpen = true;
       gBrowser._insertTabAtIndex(this.#currentTab, {
         index: this.getTabPosition(this.#currentTab),
@@ -501,26 +510,22 @@
       this.#currentParentTab.linkedBrowser.closest('.browserSidebarContainer').classList.remove('zen-glance-background');
       this.#currentParentTab._visuallySelected = false;
       this.hideSidebarButtons();
-      gZenUIManager.motion
-        .animate(
-          this.browserWrapper,
-          {
-            width: ['85%', '100%'],
-            height: ['100%', '100%'],
-          },
-          {
-            duration: 0.4,
-            type: 'spring',
-          }
-        )
-        .then(() => {
-          this.browserWrapper.removeAttribute('animate-full');
-          this.overlay.classList.remove('zen-glance-overlay');
-          this.browserWrapper.removeAttribute('style');
-          this.animatingFullOpen = false;
-          this.closeGlance({ noAnimation: true });
-          this.#glances.delete(this.#currentGlanceID);
-        });
+      if (gReduceMotion) {
+        this.finishOpeningGlance();
+        return;
+      }
+      await gZenUIManager.motion.animate(
+        this.browserWrapper,
+        {
+          width: ['85%', '100%'],
+          height: ['100%', '100%'],
+        },
+        {
+          duration: 0.4,
+          type: 'spring',
+        }
+      );
+      this.finishOpeningGlance();
     }
 
     openGlanceForBookmark(event) {

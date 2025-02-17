@@ -121,7 +121,9 @@
 
     & label {
       opacity: 0;
-      transition: scale 0.1s, box-shadow 0.1s;
+      transition:
+        scale 0.1s,
+        box-shadow 0.1s;
       padding: 1.5rem 1.1rem;
       border-radius: 0.6rem;
       width: 50%;
@@ -191,7 +193,7 @@
             height: 3rem;
             border-radius: 0.8rem;
             margin-top: 0.5rem;
-            background: var(--zen-toolbar-element-bg)
+            background: var(--zen-toolbar-element-bg);
           }
 
           & .tabbrowser-tab {
@@ -202,7 +204,7 @@
 
             &::after {
               position: absolute;
-              content: "";
+              content: '';
               width: 1.6rem;
               height: 1.6rem;
               top: 50%;
