@@ -955,7 +955,8 @@
   padding: 0;
 }
 
-#zen-essentials-container > .tabbrowser-tab {
+#zen-essentials-container > .tabbrowser-tab,
+#zen-welcome-initial-essentials-browser-sidebar-essentials .tabbrowser-tab {
   --toolbarbutton-inner-padding: 0;
   max-width: unset;
   width: 100% !important;
@@ -1010,11 +1011,12 @@
       background: transparent;
       overflow: hidden;
       position: relative;
+      --zen-essential-bg-margin: 2px;
 
       &::before {
         background: light-dark(rgba(255, 255, 255, 0.85), rgba(68, 64, 64, 0.85));
-        margin: 2px;
-        border-radius: calc(var(--border-radius-medium) - 2px);
+        margin: var(--zen-essential-bg-margin);
+        border-radius: calc(var(--border-radius-medium) - var(--zen-essential-bg-margin));
         position: absolute;
         inset: 0;
         z-index: 0;

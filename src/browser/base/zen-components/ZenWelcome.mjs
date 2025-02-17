@@ -62,9 +62,9 @@
         (description2 ? `<html:p>${description2}</html:p>` : '');
       await animate(
         '#zen-welcome-page-sidebar-content > *',
-        { x: ['150%', 0], filter: ['blur(2px)', 'blur(0px)'], opacity: [0, 1] },
+        { x: ['150%', 0] },
         {
-          delay: getMotion().stagger(0.05, { startDelay: 0.3 }),
+          delay: getMotion().stagger(0.05),
           type: 'spring',
           bounce: 0.2,
         }
@@ -91,7 +91,7 @@
       }
       await animate(
         '#zen-welcome-page-sidebar-buttons button',
-        { x: ['150%', 0], filter: ['blur(2px)', 'blur(0px)'], opacity: [0, 1] },
+        { x: ['150%', 0] },
         {
           delay: getMotion().stagger(0.1, { startDelay: 0.4 }),
           type: 'spring',
@@ -103,7 +103,7 @@
     async fadeInContent() {
       await animate(
         '#zen-welcome-page-content > *',
-        { opacity: [0, 1], scale: [0.9, 1], filter: ['blur(2px)', 'blur(0px)'] },
+        { opacity: [0, 1] },
         {
           delay: getMotion().stagger(0.1),
           type: 'spring',
@@ -115,7 +115,7 @@
     async fadeOutButtons() {
       await animate(
         '#zen-welcome-page-sidebar-buttons button',
-        { x: [0, '-150%'], filter: ['blur(0px)', 'blur(2px)'], opacity: [1, 0] },
+        { x: [0, '-150%'] },
         {
           type: 'spring',
           bounce: 0,
@@ -129,7 +129,7 @@
     async fadeOutTitles() {
       await animate(
         '#zen-welcome-page-sidebar-content > *',
-        { x: [0, '-150%'], filter: ['blur(0px)', 'blur(2px)'], opacity: [1, 0] },
+        { x: [0, '-150%'] },
         {
           delay: getMotion().stagger(0.05, { startDelay: 0.3 }),
           type: 'spring',
@@ -141,7 +141,7 @@
     async fadeOutContent() {
       await animate(
         '#zen-welcome-page-content > *',
-        { opacity: [1, 0], scale: [1, 0.9], filter: ['blur(0px)', 'blur(2px)'] },
+        { opacity: [1, 0] },
         {
           delay: getMotion().stagger(0.05, { startDelay: 0.3 }),
           type: 'spring',
@@ -271,6 +271,26 @@
       {
         text: [
           {
+            id: 'zen-welcome-workspace-colors-title',
+          },
+          {
+            id: 'zen-welcome-workspace-colors-description',
+          },
+        ],
+        buttons: [
+          {
+            l10n: 'zen-welcome-next-action',
+            onclick: async () => {
+              return true;
+            },
+          },
+        ],
+        fadeIn() {},
+        fadeOut() {},
+      },
+      {
+        text: [
+          {
             id: 'zen-welcome-initial-essentials-title',
           },
           {
@@ -288,27 +308,77 @@
             },
           },
         ],
-        fadeIn() {},
-        fadeOut() {},
-      },
-      {
-        text: [
-          {
-            id: 'zen-welcome-workspace-colors-title',
-          },
-          {
-            id: 'zen-welcome-workspace-colors-description',
-          },
-        ],
-        buttons: [
-          {
-            l10n: 'zen-welcome-next-action',
-            onclick: async () => {
-              return true;
-            },
-          },
-        ],
-        fadeIn() {},
+        fadeIn() {
+          const xul = `
+            <hbox id="zen-welcome-initial-essentials-browser">
+              <vbox id="zen-welcome-initial-essentials-browser-sidebar">
+                <hbox id="zen-welcome-initial-essentials-browser-sidebar-win-buttons">
+                  <html:div></html:div>
+                  <html:div></html:div>
+                  <html:div></html:div>
+                </hbox>
+                <html:div id="zen-welcome-initial-essentials-browser-sidebar-essentials">
+                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://web.whatsapp.com" style="--zen-tab-icon: url('https://web.whatsapp.com/favicon.ico');">
+                    <stack class="tab-stack">
+                      <html:div class="tab-background"></html:div>
+                    </stack>
+                  </html:div>
+                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://discord.com" style="--zen-tab-icon: url('http://www.google.com/s2/favicons?domain=discord.com');">
+                    <stack class="tab-stack">
+                      <html:div class="tab-background"></html:div>
+                    </stack>
+                  </html:div>
+                  <html:div class="tabbrowser-tab" fadein="" data-url="https://reddit.com" style="--zen-tab-icon: url('https://www.redditstatic.com/desktop2x/img/favicon/favicon-96x96.png');">
+                    <stack class="tab-stack">
+                      <html:div class="tab-background"></html:div>
+                    </stack>
+                  </html:div>
+                  <html:div class="tabbrowser-tab" fadein="" data-url="https://slack.com/" style="--zen-tab-icon: url('https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png');">
+                    <stack class="tab-stack">
+                      <html:div class="tab-background"></html:div>
+                    </stack>
+                  </html:div>
+                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://google.com" style="--zen-tab-icon: url('https://www.google.com/s2/favicons?domain=google.com');">
+                    <stack class="tab-stack">
+                      <html:div class="tab-background"></html:div>
+                    </stack>
+                  </html:div>
+                  <html:div class="tabbrowser-tab" fadein="" data-url="https://twitter.com" style="--zen-tab-icon: url('https://abs.twimg.com/favicons/twitter.ico');">
+                    <stack class="tab-stack">
+                      <html:div class="tab-background"></html:div>
+                    </stack>
+                  </html:div>
+                  <html:div class="tabbrowser-tab" fadein="" data-url="https://notion.com" style="--zen-tab-icon: url('https://www.notion.so/front-static/favicon.ico');">
+                    <stack class="tab-stack">
+                      <html:div class="tab-background"></html:div>
+                    </stack>
+                  </html:div>
+                  <html:div class="tabbrowser-tab" fadein="" data-url="https://instagram.com" style="--zen-tab-icon: url('https://www.instagram.com/static/images/ico/favicon-192.png/68d99ba29cc8.png');">
+                    <stack class="tab-stack">
+                      <html:div class="tab-background"></html:div>
+                    </stack>
+                  </html:div>
+                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://element.io" style="--zen-tab-icon: url('http://www.google.com/s2/favicons?domain=element.io');">
+                    <stack class="tab-stack">
+                      <html:div class="tab-background"></html:div>
+                    </stack>
+                  </html:div>
+                  <html:div class="extra-tab"></html:div>
+                  <html:div class="extra-tab"></html:div>
+                </html:div>
+              </vbox>
+            </hbox>
+          `;
+          const fragment = window.MozXULElement.parseXULToFragment(xul);
+          document.getElementById('zen-welcome-page-content').appendChild(fragment);
+          document.getElementById('zen-welcome-initial-essentials-browser-sidebar-essentials').addEventListener('click', async (event) => {
+            const tab = event.target.closest('.tabbrowser-tab');
+            if (!tab) {
+              return;
+            }
+            tab.toggleAttribute('visuallyselected');
+          });
+        },
         fadeOut() {},
       },
       {
@@ -385,7 +455,6 @@
       function () {
         window.resizeTo(875, 560);
         window.focus();
-        appWin.center(null, true, false);
         const appWin = window.docShell.treeOwner.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIAppWindow);
         appWin.rollupAllPopups();
       },
