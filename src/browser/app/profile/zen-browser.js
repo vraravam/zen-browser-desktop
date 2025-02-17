@@ -75,15 +75,13 @@ pref("app.update.checkInstallTime.days", 6);
 
 // CUSTOM ZEN PREFS
 
-pref('zen.welcome-screen.enabled', true, sticky);
-pref('zen.welcome-screen.seen', false);
+pref('zen.welcome-screen.seen', false, sticky);
 
 pref('zen.tabs.vertical', true);
 pref('zen.tabs.vertical.right-side', false);
 pref('zen.tabs.rename-tabs', true);
 pref('zen.theme.accent-color', "#ffb787");
 pref('zen.theme.content-element-separation', 6); // In pixels
-pref('zen.theme.pill-button', false);
 pref('zen.theme.gradient', true);
 pref('zen.theme.gradient.show-custom-colors', false);
 pref('zen.theme.essentials-favicon-bg', true);

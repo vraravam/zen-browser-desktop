@@ -246,7 +246,7 @@ var gZenUIManager = {
     const toast = this._createToastElement(messageId, options);
     this._toastContainer.removeAttribute('hidden');
     this._toastContainer.appendChild(toast);
-    await this.motion.animate(toast, { opacity: [0, 1], scale: [0.8, 1] }, { type: 'spring', bounce: 0.4 });
+    await this.motion.animate(toast, { opacity: [0, 1], scale: [0.8, 1] }, { type: 'spring', bounce: 0.5, duration: 0.5 });
     await new Promise((resolve) => setTimeout(resolve, 3000));
     await this.motion.animate(toast, { opacity: [1, 0], scale: [1, 0.9] }, { duration: 0.2, bounce: 0 });
     const toastHeight = toast.getBoundingClientRect().height;
@@ -665,7 +665,7 @@ var gZenVerticalTabsManager = {
     target.appendChild(child);
   },
 
-  renameTabKeydown(event) {
+  async renameTabKeydown(event) {
     if (event.key === 'Enter') {
       let label = this._tabEdited.querySelector('.tab-label-container-editing');
       let input = this._tabEdited.querySelector('#tab-label-input');
@@ -680,6 +680,10 @@ var gZenVerticalTabsManager = {
         this._tabEdited.setAttribute('zen-has-static-label', 'true');
       } else {
         gBrowser.setTabTitle(this._tabEdited);
+      }
+      if (this._tabEdited.getAttribute('zen-pin-id')) {
+        // Update pin title in storage
+        await gZenPinnedTabManager.updatePinTitle(this._tabEdited, this._tabEdited.label, !!newName);
       }
 
       // Maybe add some confetti here?!?

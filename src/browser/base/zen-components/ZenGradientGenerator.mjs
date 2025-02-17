@@ -802,7 +802,7 @@
                 // Reactivate the transition after the animation
                 appWrapper.removeAttribute('post-animating');
               }, 100);
-            }, 200);
+            }, 300);
           });
         }
 

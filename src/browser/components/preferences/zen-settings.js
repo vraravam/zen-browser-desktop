@@ -940,11 +940,6 @@ Preferences.addAll([
     default: true,
   },
   {
-    id: 'zen.theme.pill-button',
-    type: 'bool',
-    default: true,
-  },
-  {
     id: 'zen.workspaces.hide-default-container-indicator',
     type: 'bool',
     default: true,
