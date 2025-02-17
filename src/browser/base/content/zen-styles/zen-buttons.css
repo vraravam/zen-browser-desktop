@@ -37,10 +37,3 @@ xul|button:is(.expander-down) {
     scale: 0.98;
   }
 }
-
-@media (-moz-bool-pref: 'zen.theme.pill-button') {
-  :host(:is(.anonymous-content-host, notification-message)),
-  :root {
-    --zen-button-border-radius: 20px;
-  }
-}
