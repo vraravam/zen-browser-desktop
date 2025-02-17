@@ -32,7 +32,6 @@
         this.onDarkModeChange.bind(this)
       );
 
-      this.initRotation();
       this.initCanvas();
       this.initCustomColorInput();
 
@@ -95,74 +94,6 @@
 
       this._hasInitialized = true;
       this.onDarkModeChange(null);
-    }
-
-    initRotation() {
-      this.rotationInput = document.getElementById('PanelUI-zen-gradient-degrees');
-      this.rotationInputDot = this.rotationInput.querySelector('.dot');
-      this.rotationInputText = this.rotationInput.querySelector('.text');
-      this.rotationInputDot.addEventListener('mousedown', this.onRotationMouseDown.bind(this));
-      this.rotationInput.addEventListener('wheel', this.onRotationWheel.bind(this));
-    }
-
-    onRotationWheel(event) {
-      event.preventDefault();
-      const delta = event.deltaY;
-      const degrees = this.currentRotation + (delta > 0 ? 10 : -10);
-      this.setRotationInput(degrees);
-      this.updateCurrentWorkspace();
-    }
-
-    onRotationMouseDown(event) {
-      event.preventDefault();
-      this.rotationDragging = true;
-      this.rotationInputDot.style.zIndex = 2;
-      this.rotationInputDot.classList.add('dragging');
-      document.addEventListener('mousemove', this.onRotationMouseMove.bind(this));
-      document.addEventListener('mouseup', this.onRotationMouseUp.bind(this));
-    }
-
-    onRotationMouseUp(event) {
-      this.rotationDragging = false;
-      this.rotationInputDot.style.zIndex = 1;
-      this.rotationInputDot.classList.remove('dragging');
-      document.removeEventListener('mousemove', this.onRotationMouseMove.bind(this));
-      document.removeEventListener('mouseup', this.onRotationMouseUp.bind(this));
-    }
-
-    onRotationMouseMove(event) {
-      if (this.rotationDragging) {
-        event.preventDefault();
-        const rect = this.rotationInput.getBoundingClientRect();
-        // Make the dot follow the mouse in a circle, it can't go outside or inside the circle
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const angle = Math.atan2(event.clientY - centerY, event.clientX - centerX);
-        const distance = Math.sqrt((event.clientX - centerX) ** 2 + (event.clientY - centerY) ** 2);
-        const radius = rect.width / 2;
-        let x = centerX + Math.cos(angle) * radius;
-        let y = centerY + Math.sin(angle) * radius;
-        if (distance > radius) {
-          x = event.clientX;
-          y = event.clientY;
-        }
-        const degrees = Math.round((Math.atan2(y - centerY, x - centerX) * 180) / Math.PI);
-        this.setRotationInput(degrees);
-        this.updateCurrentWorkspace();
-      }
-    }
-
-    setRotationInput(degrees) {
-      let fixedRotation = degrees;
-      while (fixedRotation < 0) {
-        fixedRotation += 360;
-      }
-      while (fixedRotation >= 360) {
-        fixedRotation -= 360;
-      }
-      this.currentRotation = degrees;
-      this.rotationInputDot.style.transform = `rotate(${degrees - 20}deg)`;
-      this.rotationInputText.textContent = `${fixedRotation}°`;
     }
 
     initCustomColorInput() {
@@ -579,12 +510,12 @@
         let colorPositions = this.calculateCompliments(this.dots, 'update', this.useAlgo);
         this.handleColorPositions(colorPositions);
         this.updateCurrentWorkspace(true);
-        
+
         gZenUIManager.motion.animate(
           existingPrimaryDot.Element,
           {
-            left: `${relativeX}px`,
-            top: `${relativeY}px`,
+            left: `${existingPrimaryDot.Position.x}px`,
+            top: `${existingPrimaryDot.Position.y}px`,
           },
           {
             duration: 0.4,
@@ -910,7 +841,6 @@
           browser.gZenThemePicker.currentOpacity;
         browser.document.getElementById('PanelUI-zen-gradient-generator-texture').value =
           browser.gZenThemePicker.currentTexture;
-        browser.gZenThemePicker.setRotationInput(browser.gZenThemePicker.currentRotation);
 
         const gradient = browser.gZenThemePicker.getGradient(workspaceTheme.gradientColors);
         const gradientToolbar = browser.gZenThemePicker.getGradient(workspaceTheme.gradientColors, true);
