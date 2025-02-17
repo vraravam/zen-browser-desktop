@@ -69,7 +69,9 @@
         return;
       }
 
-      await this._refreshPinnedTabs(newWorkspace, { init: onInit });
+      if (onInit) {
+        await this._refreshPinnedTabs(newWorkspace, { init: onInit });
+      }
     }
 
     log(message) {
@@ -152,7 +154,7 @@
       const pinsToCreate = new Set(pins.map((p) => p.uuid));
 
       // First pass: identify existing tabs and remove those without pins
-      for (let tab of gBrowser.tabs) {
+      for (let tab of ZenWorkspaces.allStoredTabs) {
         const pinId = tab.getAttribute('zen-pin-id');
         if (!pinId) {
           continue;
@@ -176,10 +178,6 @@
       for (let pin of pins) {
         if (!pinsToCreate.has(pin.uuid)) {
           continue; // Skip pins that already have tabs
-        }
-
-        if (!this._shouldShowPin(pin, currentWorkspace, workspaces)) {
-          continue; // Skip pins not relevant to current workspace
         }
 
         let params = {
@@ -234,6 +232,13 @@
 
         this.log(`Created new pinned tab for pin ${pin.uuid} (isEssential: ${pin.isEssential})`);
         gBrowser.pinTab(newTab);
+        if (!pin.isEssential) {
+          const contaienr = document.querySelector(
+            `#vertical-pinned-tabs-container .zen-workspace-tabs-section[zen-workspace-id="${pin.workspaceUuid}"]`
+          );
+          contaienr.insertBefore(newTab, contaienr.lastChild);
+        }
+        gBrowser.tabContainer._invalidateCachedTabs();
 
         newTab.initialize();
       }
@@ -244,43 +249,7 @@
       }
 
       gBrowser._updateTabBarForPinnedTabs();
-    }
-
-    _shouldShowPin(pin, currentWorkspace, workspaces) {
-      const isEssential = pin.isEssential;
-      const pinWorkspaceUuid = pin.workspaceUuid;
-      const pinContextId = pin.containerTabId ? pin.containerTabId.toString() : '0';
-      const workspaceContextId = currentWorkspace.containerTabId?.toString() || '0';
-      const containerSpecificEssentials = ZenWorkspaces.containerSpecificEssentials;
-
-      // Handle essential pins
-      if (isEssential) {
-        if (!containerSpecificEssentials) {
-          return true; // Show all essential pins when containerSpecificEssentials is false
-        }
-
-        if (workspaceContextId !== '0') {
-          // In workspaces with default container: Show essentials that match the container
-          return pinContextId === workspaceContextId;
-        } else {
-          // In workspaces without a default container: Show essentials that aren't in container-specific workspaces
-          // or have userContextId="0" or no userContextId
-          return (
-            !pinContextId ||
-            pinContextId === '0' ||
-            !workspaces.workspaces.some((workspace) => workspace.containerTabId === parseInt(pinContextId, 10))
-          );
-        }
-      }
-
-      // For non-essential pins
-      if (!pinWorkspaceUuid) {
-        // Pins without a workspace belong to all workspaces (if that's your desired behavior)
-        return true;
-      }
-
-      // Show if pin belongs to current workspace
-      return pinWorkspaceUuid === currentWorkspace.uuid;
+      gZenUIManager.updateTabsToolbar();
     }
 
     _onPinnedTabEvent(action, event) {
@@ -321,12 +290,19 @@
       for (let otherTab of gBrowser.tabs) {
         if (otherTab.pinned && otherTab._tPos > tab.position) {
           const actualPin = this._pinsCache.find((pin) => pin.uuid === otherTab.getAttribute('zen-pin-id'));
+          if (!actualPin) {
+            continue;
+          }
           actualPin.position = otherTab._tPos;
           await ZenPinnedTabsStorage.savePin(actualPin, false);
         }
       }
 
       const actualPin = this._pinsCache.find((pin) => pin.uuid === tab.getAttribute('zen-pin-id'));
+
+      if (!actualPin) {
+        return;
+      }
       actualPin.position = tab.position;
       await ZenPinnedTabsStorage.savePin(actualPin);
     }
@@ -446,15 +422,13 @@
       }
     }
 
-    _onCloseTabShortcut(event, selectedTab = gBrowser.selectedTab) {
+    _onCloseTabShortcut(event, selectedTab = gBrowser.selectedTab, behavior = lazy.zenPinnedTabCloseShortcutBehavior) {
       if (!selectedTab?.pinned) {
         return;
       }
 
       event.stopPropagation();
       event.preventDefault();
-
-      const behavior = lazy.zenPinnedTabCloseShortcutBehavior;
 
       switch (behavior) {
         case 'close':
@@ -470,6 +444,9 @@
             this._resetTabToStoredState(selectedTab);
           }
           if (behavior.includes('unload')) {
+            if (selectedTab.hasAttribute('glance-id')) {
+              break;
+            }
             gBrowser.explicitUnloadTabs([selectedTab]);
             selectedTab.removeAttribute('linkedpanel');
           }
@@ -557,8 +534,8 @@
       }
     }
 
-    addToEssentials() {
-      const tabs = TabContextMenu.contextTab.multiselected ? gBrowser.selectedTabs : [TabContextMenu.contextTab];
+    addToEssentials(tab) {
+      const tabs = tab ? [tab] : TabContextMenu.contextTab.multiselected ? gBrowser.selectedTabs : [TabContextMenu.contextTab];
       for (let i = 0; i < tabs.length; i++) {
         const tab = tabs[i];
         tab.setAttribute('zen-essential', 'true');
@@ -572,10 +549,11 @@
         gBrowser.pinTab(tab);
         this.onTabIconChanged(tab);
       }
+      gZenUIManager.updateTabsToolbar();
     }
 
-    removeEssentials() {
-      const tabs = TabContextMenu.contextTab.multiselected ? gBrowser.selectedTabs : [TabContextMenu.contextTab];
+    removeEssentials(tab) {
+      const tabs = tab ? [tab] : TabContextMenu.contextTab.multiselected ? gBrowser.selectedTabs : [TabContextMenu.contextTab];
       for (let i = 0; i < tabs.length; i++) {
         const tab = tabs[i];
         tab.removeAttribute('zen-essential');
@@ -584,6 +562,7 @@
         }
         gBrowser.unpinTab(tab);
       }
+      gZenUIManager.updateTabsToolbar();
     }
 
     _insertItemsIntoTabContextMenu() {
@@ -637,6 +616,172 @@
       document.getElementById('context_unpinSelectedTabs').hidden =
         document.getElementById('context_unpinSelectedTabs').hidden || contextTab.getAttribute('zen-essential');
       document.getElementById('context_zen-pinned-tab-separator').hidden = !isVisible;
+    }
+
+    moveToAnotherTabContainerIfNecessary(event, movingTabs) {
+      const pinnedTabsTarget =
+        event.target.closest('#vertical-pinned-tabs-container') || event.target.closest('.zen-current-workspace-indicator');
+      const essentialTabsTarget = event.target.closest('#zen-essentials-container');
+      const tabsTarget = event.target.closest('#tabbrowser-arrowscrollbox');
+
+      let isVertical = this.expandedSidebarMode;
+      let moved = false;
+      for (const draggedTab of movingTabs) {
+        let isRegularTabs = false;
+        // Check for pinned tabs container
+        if (pinnedTabsTarget) {
+          if (!draggedTab.pinned) {
+            gBrowser.pinTab(draggedTab);
+            moved = true;
+          } else if (draggedTab.hasAttribute('zen-essential')) {
+            this.removeEssentials(draggedTab);
+            gBrowser.pinTab(draggedTab);
+            moved = true;
+          }
+        }
+        // Check for essentials container
+        else if (essentialTabsTarget) {
+          if (!draggedTab.hasAttribute('zen-essential')) {
+            this.addToEssentials(draggedTab);
+            moved = true;
+            isVertical = false;
+          }
+        }
+        // Check for normal tabs container
+        else if (tabsTarget || event.target.id === 'zen-tabs-wrapper') {
+          if (draggedTab.pinned && !draggedTab.hasAttribute('zen-essential')) {
+            gBrowser.unpinTab(draggedTab);
+            moved = true;
+            isRegularTabs = true;
+          } else if (draggedTab.hasAttribute('zen-essential')) {
+            this.removeEssentials(draggedTab);
+            moved = true;
+            isRegularTabs = true;
+          }
+        }
+
+        // If the tab was moved, adjust its position relative to the target tab
+        if (moved) {
+          const targetTab = event.target.closest('.tabbrowser-tab');
+          if (targetTab) {
+            const rect = targetTab.getBoundingClientRect();
+            let newIndex = targetTab._tPos;
+
+            if (isVertical) {
+              const middleY = targetTab.screenY + rect.height / 2;
+              if (!isRegularTabs && event.screenY > middleY) {
+                newIndex++;
+              } else if (isRegularTabs && event.screenY < middleY) {
+                newIndex--;
+              }
+            } else {
+              const middleX = targetTab.screenX + rect.width / 2;
+              if (event.screenX > middleX) {
+                newIndex++;
+              }
+            }
+            gBrowser.moveTabTo(draggedTab, newIndex);
+          }
+        }
+      }
+
+      return moved;
+    }
+
+    removeTabContainersDragoverClass() {
+      this.dragIndicator.remove();
+      this._dragIndicator = null;
+      ZenWorkspaces.activeWorkspaceIndicator.removeAttribute('open');
+    }
+
+    get dragIndicator() {
+      if (!this._dragIndicator) {
+        this._dragIndicator = document.createElement('div');
+        this._dragIndicator.id = 'zen-drag-indicator';
+        document.body.appendChild(this._dragIndicator);
+      }
+      return this._dragIndicator;
+    }
+
+    get expandedSidebarMode() {
+      return document.documentElement.getAttribute('zen-sidebar-expanded') === 'true';
+    }
+
+    applyDragoverClass(event, draggedTab) {
+      const pinnedTabsTarget = event.target.closest('#vertical-pinned-tabs-container');
+      const essentialTabsTarget = event.target.closest('#zen-essentials-container');
+      const tabsTarget = event.target.closest('#tabbrowser-arrowscrollbox');
+      const targetTab = event.target.closest('.tabbrowser-tab');
+      if (event.target.closest('.zen-current-workspace-indicator')) {
+        this.removeTabContainersDragoverClass();
+        ZenWorkspaces.activeWorkspaceIndicator.setAttribute('open', true);
+      } else {
+        ZenWorkspaces.activeWorkspaceIndicator.removeAttribute('open');
+      }
+
+      // If there's no valid target tab, nothing to do
+      if (!targetTab) {
+        return;
+      }
+
+      let shouldAddDragOverElement = false;
+      let isVertical = this.expandedSidebarMode;
+
+      // Decide whether we should show a dragover class for the given target
+      if (pinnedTabsTarget) {
+        if (!draggedTab.pinned || draggedTab.hasAttribute('zen-essential')) {
+          shouldAddDragOverElement = true;
+        }
+      } else if (essentialTabsTarget) {
+        if (!draggedTab.hasAttribute('zen-essential')) {
+          shouldAddDragOverElement = true;
+          isVertical = false;
+        }
+      } else if (tabsTarget) {
+        if (draggedTab.pinned || draggedTab.hasAttribute('zen-essential')) {
+          shouldAddDragOverElement = true;
+        }
+      }
+
+      if (!shouldAddDragOverElement) {
+        this.removeTabContainersDragoverClass();
+        return;
+      }
+
+      // Calculate middle to decide 'before' or 'after'
+      const rect = targetTab.getBoundingClientRect();
+
+      if (isVertical) {
+        const separation = 8;
+        const middleY = targetTab.screenY + rect.height / 2;
+        const indicator = this.dragIndicator;
+        let top = 0;
+        if (event.screenY > middleY) {
+          top = rect.top + rect.height + 'px';
+        } else {
+          top = rect.top + 'px';
+        }
+        indicator.setAttribute('orientation', 'horizontal');
+        indicator.style.setProperty('--indicator-left', rect.left + separation / 2 + 'px');
+        indicator.style.setProperty('--indicator-width', rect.width - separation + 'px');
+        indicator.style.top = top;
+        indicator.style.removeProperty('left');
+      } else {
+        const separation = 8;
+        const middleX = targetTab.screenX + rect.width / 2;
+        const indicator = this.dragIndicator;
+        let left = 0;
+        if (event.screenX > middleX) {
+          left = rect.left + rect.width + 1 + 'px';
+        } else {
+          left = rect.left - 2 + 'px';
+        }
+        indicator.setAttribute('orientation', 'vertical');
+        indicator.style.setProperty('--indicator-top', rect.top + separation / 2 + 'px');
+        indicator.style.setProperty('--indicator-height', rect.height - separation + 'px');
+        indicator.style.left = left;
+        indicator.style.removeProperty('top');
+      }
     }
   }
 

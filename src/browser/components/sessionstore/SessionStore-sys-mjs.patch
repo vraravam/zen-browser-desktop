@@ -1,8 +1,20 @@
 diff --git a/browser/components/sessionstore/SessionStore.sys.mjs b/browser/components/sessionstore/SessionStore.sys.mjs
-index 8125c1afc07f3365a2ad030adaf6a560453d7fe6..2856c5f93bfc9d68b98e09b2f26e3d5266c1f46a 100644
+index 908743177d9f95e2e6549c689e7a493ca8668701..2dd53f5fdbffb21dfdc8bf68a6771d4ac0acd8be 100644
 --- a/browser/components/sessionstore/SessionStore.sys.mjs
 +++ b/browser/components/sessionstore/SessionStore.sys.mjs
-@@ -3679,6 +3679,7 @@ var SessionStoreInternal = {
+@@ -2174,9 +2174,10 @@ var SessionStoreInternal = {
+           TelemetryStopwatch.finish(
+             "FX_SESSION_RESTORE_STARTUP_ONLOAD_INITIAL_WINDOW_MS"
+           );
+-
++          aWindow.ZenWorkspaces.delayedStartup().then(() => {
+           // Let everyone know we're done.
+           this._deferredInitialized.resolve();
++          });
+         }
+       })
+       .catch(ex => {
+@@ -3848,6 +3849,7 @@ var SessionStoreInternal = {
          aWindow.gBrowser.selectedTab = newTab;
        }
  
@@ -10,3 +22,12 @@ index 8125c1afc07f3365a2ad030adaf6a560453d7fe6..2856c5f93bfc9d68b98e09b2f26e3d52
        // Restore the state into the new tab.
        this.restoreTab(newTab, tabState, {
          restoreImmediately: aRestoreImmediately,
+@@ -5315,7 +5317,7 @@ var SessionStoreInternal = {
+     }
+ 
+     let tabbrowser = aWindow.gBrowser;
+-    let tabs = tabbrowser.tabs;
++    let tabs = aWindow.ZenWorkspaces.allStoredTabs;
+     /** @type {WindowStateData} */
+     let winData = this._windows[aWindow.__SSi];
+     let tabsData = (winData.tabs = []);

@@ -28,7 +28,7 @@
     --tab-min-height: 10px !important;
   }
 
-  #vertical-pinned-tabs-container-separator {
+  .vertical-pinned-tabs-container-separator {
     display: none !important;
   }
 
@@ -214,7 +214,7 @@
   }
 
   /* Other UI Elements */
-  #zen-current-workspace-indicator {
+  .zen-current-workspace-indicator {
     display: none !important;
   }
 

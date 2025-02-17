@@ -46,7 +46,6 @@ var ZenPinnedTabsStorage = {
         CREATE INDEX IF NOT EXISTS idx_zen_pins_changes_uuid ON zen_pins_changes(uuid)
       `);
 
-      await SessionStore.promiseInitialized;
       this._resolveInitialized();
     });
   },

@@ -2,13 +2,12 @@
   class ZenThemePicker extends ZenMultiWindowFeature {
     static GRADIENT_IMAGE_URL = 'chrome://browser/content/zen-images/gradient.png';
     static GRADIENT_DISPLAY_URL = 'chrome://browser/content/zen-images/gradient-display.png';
-    static MAX_DOTS = 5;
+    static MAX_DOTS = 3;
 
     currentOpacity = 0.5;
     currentRotation = 45;
-
-    numberOfDots = 0;
-
+    dots = [];
+    useAlgo = '';
     constructor() {
       super();
       if (!Services.prefs.getBoolPref('zen.theme.gradient', true) || !ZenWorkspaces.shouldHaveWorkspaces) {
@@ -33,11 +32,9 @@
         this.onDarkModeChange.bind(this)
       );
 
-      this.initRotation();
       this.initCanvas();
       this.initCustomColorInput();
 
-      ZenWorkspaces.addChangeListeners(this.onWorkspaceChange.bind(this));
       window.matchMedia('(prefers-color-scheme: dark)').addListener(this.onDarkModeChange.bind(this));
     }
 
@@ -80,7 +77,7 @@
 
     onImageLoad() {
       // resize the image to fit the panel
-      const imageSize = 300 - 20; // 20 is the padding (10px)
+      const imageSize = 350 - 20; // 20 is the padding (10px)
       const scale = imageSize / Math.max(this.image.width, this.image.height);
       this.image.width *= scale;
       this.image.height *= scale;
@@ -99,80 +96,12 @@
       this.onDarkModeChange(null);
     }
 
-    initRotation() {
-      this.rotationInput = document.getElementById('PanelUI-zen-gradient-degrees');
-      this.rotationInputDot = this.rotationInput.querySelector('.dot');
-      this.rotationInputText = this.rotationInput.querySelector('.text');
-      this.rotationInputDot.addEventListener('mousedown', this.onRotationMouseDown.bind(this));
-      this.rotationInput.addEventListener('wheel', this.onRotationWheel.bind(this));
-    }
-
-    onRotationWheel(event) {
-      event.preventDefault();
-      const delta = event.deltaY;
-      const degrees = this.currentRotation + (delta > 0 ? 10 : -10);
-      this.setRotationInput(degrees);
-      this.updateCurrentWorkspace();
-    }
-
-    onRotationMouseDown(event) {
-      event.preventDefault();
-      this.rotationDragging = true;
-      this.rotationInputDot.style.zIndex = 2;
-      this.rotationInputDot.classList.add('dragging');
-      document.addEventListener('mousemove', this.onRotationMouseMove.bind(this));
-      document.addEventListener('mouseup', this.onRotationMouseUp.bind(this));
-    }
-
-    onRotationMouseUp(event) {
-      this.rotationDragging = false;
-      this.rotationInputDot.style.zIndex = 1;
-      this.rotationInputDot.classList.remove('dragging');
-      document.removeEventListener('mousemove', this.onRotationMouseMove.bind(this));
-      document.removeEventListener('mouseup', this.onRotationMouseUp.bind(this));
-    }
-
-    onRotationMouseMove(event) {
-      if (this.rotationDragging) {
-        event.preventDefault();
-        const rect = this.rotationInput.getBoundingClientRect();
-        // Make the dot follow the mouse in a circle, it can't go outside or inside the circle
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const angle = Math.atan2(event.clientY - centerY, event.clientX - centerX);
-        const distance = Math.sqrt((event.clientX - centerX) ** 2 + (event.clientY - centerY) ** 2);
-        const radius = rect.width / 2;
-        let x = centerX + Math.cos(angle) * radius;
-        let y = centerY + Math.sin(angle) * radius;
-        if (distance > radius) {
-          x = event.clientX;
-          y = event.clientY;
-        }
-        const degrees = Math.round((Math.atan2(y - centerY, x - centerX) * 180) / Math.PI);
-        this.setRotationInput(degrees);
-        this.updateCurrentWorkspace();
-      }
-    }
-
-    setRotationInput(degrees) {
-      let fixedRotation = degrees;
-      while (fixedRotation < 0) {
-        fixedRotation += 360;
-      }
-      while (fixedRotation >= 360) {
-        fixedRotation -= 360;
-      }
-      this.currentRotation = degrees;
-      this.rotationInputDot.style.transform = `rotate(${degrees - 20}deg)`;
-      this.rotationInputText.textContent = `${fixedRotation}°`;
-    }
-
     initCustomColorInput() {
       this.customColorInput.addEventListener('keydown', this.onCustomColorKeydown.bind(this));
     }
 
     onCustomColorKeydown(event) {
-      //checks for enter key for custom colors
+      // Check for Enter key to add custom colors
       if (event.key === 'Enter') {
         event.preventDefault();
         this.addCustomColor();
@@ -184,6 +113,7 @@
       themePicker.style.setProperty('--zen-theme-picker-gradient-image', `url(${ZenThemePicker.GRADIENT_DISPLAY_URL})`);
       themePicker.addEventListener('mousemove', this.onDotMouseMove.bind(this));
       themePicker.addEventListener('mouseup', this.onDotMouseUp.bind(this));
+      themePicker.addEventListener('mousedown', this.onDotMouseDown.bind(this));
       themePicker.addEventListener('click', this.onThemePickerClick.bind(this));
     }
 
@@ -234,133 +164,29 @@
         dot.style.opacity = 0;
         dot.style.setProperty('--zen-theme-picker-dot-color', color.c);
       } else {
-        dot.style.setProperty('--zen-theme-picker-dot-color', `rgb(${r}, ${g}, ${b})`);
         const { x, y } = this.calculateInitialPosition(color);
+        const dotPad = this.panel.querySelector('.zen-theme-picker-gradient');
+
+        const dot = document.createElement('div');
+        dot.classList.add('zen-theme-picker-dot');
+
         dot.style.left = `${x * 100}%`;
         dot.style.top = `${y * 100}%`;
-        dot.addEventListener('mousedown', this.onDotMouseDown.bind(this));
+
+        dotPad.appendChild(dot);
+        let id = this.dots.length;
+
+        dot.style.setProperty('--zen-theme-picker-dot-color', `rgb(${r}, ${g}, ${b})`);
+
+        this.dots.push({
+          ID: id,
+          Element: dot,
+          Position: { x: parseFloat(dot.style.left), y: parseFloat(dot.style.top) },
+        });
       }
-      if (color.isPrimary) {
-        dot.classList.add('primary');
-      }
-      const lastDot = this.panel.querySelector('.zen-theme-picker-dot:last-child');
-      let newIndex = 0;
-      if (lastDot) {
-        newIndex = parseInt(lastDot.getAttribute('data-index')) + 1;
-      }
-      dot.setAttribute('data-index', newIndex);
-      this.panel.querySelector('.zen-theme-picker-gradient').appendChild(dot);
       if (!fromWorkspace) {
         this.updateCurrentWorkspace(true);
       }
-    }
-
-    onDotMouseDown(event) {
-      event.preventDefault();
-      if (event.button === 2) {
-        return;
-      }
-      this.dragging = true;
-      this.draggedDot = event.target;
-      this.draggedDot.style.zIndex = 1;
-      this.draggedDot.classList.add('dragging');
-
-      // Store the starting position of the drag
-      this.dragStartPosition = {
-        x: event.clientX,
-        y: event.clientY,
-      };
-    }
-
-    onDotMouseMove(event) {
-      if (this.dragging) {
-        event.preventDefault();
-        const rect = this.panel.querySelector('.zen-theme-picker-gradient').getBoundingClientRect();
-        const padding = 90; // each side
-        // do NOT let the ball be draged outside of an imaginary circle. You can drag it anywhere inside the circle
-        // if the distance between the center of the circle and the dragged ball is bigger than the radius, then the ball
-        // should be placed on the edge of the circle. If it's inside the circle, then the ball just follows the mouse
-
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const radius = (rect.width - padding) / 2;
-        let pixelX = event.clientX;
-        let pixelY = event.clientY;
-        const distance = Math.sqrt((pixelX - centerX) ** 2 + (pixelY - centerY) ** 2);
-        if (distance > radius) {
-          const angle = Math.atan2(pixelY - centerY, pixelX - centerX);
-          pixelX = centerX + Math.cos(angle) * radius;
-          pixelY = centerY + Math.sin(angle) * radius;
-        }
-
-        // set the location of the dot in pixels
-        const relativeX = pixelX - rect.left;
-        const relativeY = pixelY - rect.top;
-        this.draggedDot.style.left = `${relativeX}px`;
-        this.draggedDot.style.top = `${relativeY}px`;
-        const color = this.getColorFromPosition(relativeX, relativeY);
-        this.draggedDot.style.setProperty('--zen-theme-picker-dot-color', `rgb(${color[0]}, ${color[1]}, ${color[2]})`);
-        this.updateOtherColorsAndUpdateTheme(color);
-      }
-    }
-
-    updateOtherColorsAndUpdateTheme(primaryColor) {
-      // Convert the other colors into the correct color by using color theory
-      const dots = this.panel.querySelectorAll('.zen-theme-picker-dot');
-      const primaryColorRGB = primaryColor;
-      const primaryColorDot = this.draggedDot;
-      const primaryColorIndex = parseInt(primaryColorDot.getAttribute('data-index'));
-
-      for (const dot of dots) {
-        if (dot.classList.contains('primary') || dot.classList.contains('custom')) {
-          continue;
-        }
-
-        const index = parseInt(dot.getAttribute('data-index'));
-        if (index === primaryColorIndex) {
-          continue;
-        }
-
-        const [r, g, b] = this.getColorFromPosition(parseInt(dot.style.left), parseInt(dot.style.top));
-        const color = [r, g, b];
-
-        // modify the color based on the index and color theory
-        const modifiedColor = this.modifyColor(primaryColorRGB, color, index - primaryColorIndex);
-        dot.style.setProperty('--zen-theme-picker-dot-color', `rgb(${modifiedColor[0]}, ${modifiedColor[1]}, ${modifiedColor[2]})`);
-
-        // update y and x
-        const rect = this.panel.querySelector('.zen-theme-picker-gradient').getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const radius = (rect.width - 90) / 2;
-        const angle = Math.atan2(modifiedColor[1] - primaryColorRGB[1], modifiedColor[0] - primaryColorRGB[0]);
-        const distance = Math.sqrt((modifiedColor[0] - primaryColorRGB[0]) ** 2 + (modifiedColor[1] - primaryColorRGB[1]) ** 2);
-        let x = centerX + Math.cos(angle) * radius;
-        let y = centerY + Math.sin(angle) * radius;
-        if (distance > radius) {
-          x = primaryColorDot.style.left;
-          y = primaryColorDot.style.top;
-        }
-        dot.style.left = x + 'px';
-        dot.style.top = y + 'px';
-      }
-      this.updateCurrentWorkspace();
-    }
-
-    modifyColor(primaryColor, color, index) {
-      // index may be negative
-      if (index < 0) {
-        index = -(1 / index);
-      }
-      const [r, g, b] = primaryColor;
-      const [r2, g2, b2] = color;
-      const factor = 0.5;
-      const modifiedColor = [
-        Math.floor(Math.min(255, r + (r2 - r) * factor * index)),
-        Math.floor(Math.min(255, g + (g2 - g) * factor * index)),
-        Math.floor(Math.min(255, b + (b2 - b) * factor * index)),
-      ];
-      return modifiedColor;
     }
 
     addColorToCustomList(color) {
@@ -400,14 +226,240 @@
       await this.updateCurrentWorkspace();
     }
 
+    spawnDot(relativePosition, primary = false) {
+      const dotPad = this.panel.querySelector('.zen-theme-picker-gradient');
+
+      const dot = document.createElement('div');
+      dot.classList.add('zen-theme-picker-dot');
+
+      dot.style.left = `${relativePosition.x}px`;
+      dot.style.top = `${relativePosition.y}px`;
+
+      dotPad.appendChild(dot);
+
+      let id = this.dots.length;
+
+      if (primary === true) {
+        id = 0;
+
+        const existingPrimaryDot = this.dots.find((d) => d.ID === 0);
+        if (existingPrimaryDot) {
+          existingPrimaryDot.ID = this.dots.length;
+        }
+      }
+
+      const colorFromPos = this.getColorFromPosition(relativePosition.x, relativePosition.y);
+      dot.style.setProperty('--zen-theme-picker-dot-color', `rgb(${colorFromPos[0]}, ${colorFromPos[1]}, ${colorFromPos[2]})`);
+
+      this.dots.push({
+        ID: id,
+        Element: dot,
+        Position: { x: parseFloat(dot.style.left), y: parseFloat(dot.style.top) },
+      });
+    }
+
+    calculateCompliments(dots, action = 'update', useHarmony = '') {
+      const colorHarmonies = [
+        { type: 'complementary', angles: [180] },
+        { type: 'splitComplementary', angles: [150, 210] },
+        { type: 'analogous', angles: [30, 330] },
+        { type: 'triadic', angles: [120, 240] },
+        { type: 'floating', angles: [] },
+      ];
+
+      function getColorHarmonyType(numDots) {
+        if (useHarmony !== '') {
+          const selectedHarmony = colorHarmonies.find((harmony) => harmony.type === useHarmony);
+          if (selectedHarmony) {
+            if (action === 'remove') {
+              return colorHarmonies.find((harmony) => harmony.angles.length === selectedHarmony.angles.length - 1);
+            }
+            if (action === 'add') {
+              return colorHarmonies.find((harmony) => harmony.angles.length === selectedHarmony.angles.length + 1);
+            }
+            if (action === 'update') {
+              return selectedHarmony;
+            }
+          }
+        }
+
+        if (action === 'remove') {
+          return colorHarmonies.find((harmony) => harmony.angles.length === numDots);
+        }
+        if (action === 'add') {
+          return colorHarmonies.find((harmony) => harmony.angles.length + 1 === numDots);
+        }
+        if (action === 'update') {
+          return colorHarmonies.find((harmony) => harmony.angles.length + 1 === numDots);
+        }
+      }
+
+      function getAngleFromPosition(position, centerPosition) {
+        let deltaX = position.x - centerPosition.x;
+        let deltaY = position.y - centerPosition.y;
+        let angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+        return (angle + 360) % 360;
+      }
+
+      function getDistanceFromCenter(position, centerPosition) {
+        const deltaX = position.x - centerPosition.x;
+        const deltaY = position.y - centerPosition.y;
+        return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      }
+
+      const dotPad = this.panel.querySelector('.zen-theme-picker-gradient');
+      const rect = dotPad.getBoundingClientRect();
+      const padding = 90;
+
+      let updatedDots = [...dots];
+      const centerPosition = { x: rect.width / 2, y: rect.height / 2 };
+
+      const harmonyAngles = getColorHarmonyType(dots.length + (action === 'add' ? 1 : action === 'remove' ? -1 : 0));
+      this.useAlgo = harmonyAngles.type;
+
+      if (!harmonyAngles || harmonyAngles.angles.length === 0) return [];
+
+      let primaryDot = dots.find((dot) => dot.ID === 0);
+      if (!primaryDot) return [];
+
+      if (action === 'add' && this.dots.length) {
+        updatedDots.push({ ID: this.dots.length, Position: centerPosition });
+      }
+      const baseAngle = getAngleFromPosition(primaryDot.Position, centerPosition);
+      let distance = getDistanceFromCenter(primaryDot.Position, centerPosition);
+      const radius = (rect.width - padding) / 2;
+      if (distance > radius) distance = radius;
+
+      if (this.dots.length > 0) {
+        updatedDots = [{ ID: 0, Position: primaryDot.Position }];
+      }
+
+      harmonyAngles.angles.forEach((angleOffset, index) => {
+        let newAngle = (baseAngle + angleOffset) % 360;
+        let radian = (newAngle * Math.PI) / 180;
+
+        let newPosition = {
+          x: centerPosition.x + distance * Math.cos(radian),
+          y: centerPosition.y + distance * Math.sin(radian),
+        };
+
+        updatedDots.push({ ID: index + 1, Position: newPosition });
+      });
+
+      return updatedDots;
+    }
+
+    handleColorPositions(colorPositions) {
+      colorPositions.sort((a, b) => a.ID - b.ID);
+
+      if (this.useAlgo === 'floating') {
+        this.dots.forEach((dot) => {
+          dot.Element.style.zIndex = 999;
+          const colorFromPos = this.getColorFromPosition(dot.Position.x, dot.Position.y);
+          dot.Element.style.setProperty(
+            '--zen-theme-picker-dot-color',
+            `rgb(${colorFromPos[0]}, ${colorFromPos[1]}, ${colorFromPos[2]})`
+          );
+        });
+      }
+
+      const existingPrimaryDot = this.dots.find((d) => d.ID === 0);
+
+      if (existingPrimaryDot) {
+        existingPrimaryDot.Element.style.zIndex = 999;
+        const colorFromPos = this.getColorFromPosition(existingPrimaryDot.Position.x, existingPrimaryDot.Position.y);
+        existingPrimaryDot.Element.style.setProperty(
+          '--zen-theme-picker-dot-color',
+          `rgb(${colorFromPos[0]}, ${colorFromPos[1]}, ${colorFromPos[2]})`
+        );
+      }
+
+      colorPositions.forEach((dotPosition) => {
+        const existingDot = this.dots.find((dot) => dot.ID === dotPosition.ID);
+
+        if (existingDot) {
+          existingDot.Position = dotPosition.Position;
+          existingDot.Element.style.left = `${dotPosition.Position.x}px`;
+          existingDot.Element.style.top = `${dotPosition.Position.y}px`;
+          const colorFromPos = this.getColorFromPosition(dotPosition.Position.x, dotPosition.Position.y);
+          existingDot.Element.style.setProperty(
+            '--zen-theme-picker-dot-color',
+            `rgb(${colorFromPos[0]}, ${colorFromPos[1]}, ${colorFromPos[2]})`
+          );
+
+          if (!this.dragging) {
+            gZenUIManager.motion.animate(
+              existingDot.Element,
+              {
+                left: `${dotPosition.Position.x}px`,
+                top: `${dotPosition.Position.y}px`,
+              },
+              {
+                duration: 0.4,
+                type: 'spring',
+                bounce: 0.3,
+              }
+            );
+          }
+        } else {
+          this.spawnDot(dotPosition.Position);
+        }
+      });
+    }
+
     onThemePickerClick(event) {
       event.preventDefault();
+      const target = event.target;
+      if (target.id === 'PanelUI-zen-gradient-generator-color-add') {
+        if (this.dots.length >= ZenThemePicker.MAX_DOTS) return;
+        let colorPositions = this.calculateCompliments(this.dots, 'add', this.useAlgo);
+        this.handleColorPositions(colorPositions);
+        this.updateCurrentWorkspace();
+        return;
+      } else if (target.id === 'PanelUI-zen-gradient-generator-color-remove') {
+        this.dots.sort((a, b) => a.ID - b.ID);
+        if (this.dots.length === 0) return;
 
-      if (event.button !== 0 || this.dragging) return;
+        const lastDot = this.dots.pop();
+        lastDot.Element.remove();
+
+        this.dots.forEach((dot, index) => {
+          dot.ID = index;
+        });
+
+        let colorPositions = this.calculateCompliments(this.dots, 'remove', this.useAlgo);
+        this.handleColorPositions(colorPositions);
+        this.updateCurrentWorkspace();
+        return;
+      } else if (target.id === 'PanelUI-zen-gradient-generator-color-toggle-algo') {
+        const colorHarmonies = [
+          { type: 'complementary', angles: [180] },
+          { type: 'splitComplementary', angles: [150, 210] },
+          { type: 'analogous', angles: [30, 330] },
+          { type: 'triadic', angles: [120, 240] },
+          { type: 'floating', angles: [] },
+        ];
+
+        const applicableHarmonies = colorHarmonies.filter(
+          (harmony) => harmony.angles.length + 1 === this.dots.length || harmony.type === 'floating'
+        );
+
+        let currentIndex = applicableHarmonies.findIndex((harmony) => harmony.type === this.useAlgo);
+
+        let nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % applicableHarmonies.length;
+        this.useAlgo = applicableHarmonies[nextIndex].type;
+
+        let colorPositions = this.calculateCompliments(this.dots, 'update', this.useAlgo);
+        this.handleColorPositions(colorPositions);
+        this.updateCurrentWorkspace();
+        return;
+      }
+
+      if (event.button !== 0 || this.dragging || this.recentlyDragged) return;
 
       const gradient = this.panel.querySelector('.zen-theme-picker-gradient');
       const rect = gradient.getBoundingClientRect();
-      const padding = 90; // each side
+      const padding = 60;
 
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
@@ -415,39 +467,62 @@
       let pixelX = event.clientX;
       let pixelY = event.clientY;
 
-      // Check if the click is within the circle
-      const distance = Math.sqrt((pixelX - centerX) ** 2 + (pixelY - centerY) ** 2);
-      if (distance > radius) {
+      const clickedElement = event.target;
+      let clickedDot = null;
+      const existingPrimaryDot = this.dots.find((d) => d.ID === 0);
+
+      clickedDot = this.dots.find((dot) => dot.Element === clickedElement);
+      if (clickedDot) {
+        existingPrimaryDot.ID = clickedDot.ID;
+        clickedDot.ID = 0;
+        clickedDot.Element.style.zIndex = 999;
+        let colorPositions = this.calculateCompliments(this.dots, 'update', this.useAlgo);
+        this.handleColorPositions(colorPositions);
         return;
       }
 
-      const clickedElement = event.target;
-      const isExistingDot = clickedElement.classList.contains('zen-theme-picker-dot');
+      const distance = Math.sqrt((pixelX - centerX) ** 2 + (pixelY - centerY) ** 2);
+      if (distance > radius) {
+        const angle = Math.atan2(pixelY - centerY, pixelX - centerX);
+        pixelX = centerX + Math.cos(angle) * radius;
+        pixelY = centerY + Math.sin(angle) * radius;
+      }
 
-      if (!isExistingDot && this.numberOfDots < ZenThemePicker.MAX_DOTS) {
-        const relativeX = event.clientX - rect.left;
-        const relativeY = event.clientY - rect.top;
+      const relativeX = pixelX - rect.left;
+      const relativeY = pixelY - rect.top;
 
-        const color = this.getColorFromPosition(relativeX, relativeY);
-
-        const dot = document.createElement('div');
-        dot.classList.add('zen-theme-picker-dot');
-        dot.addEventListener('mousedown', this.onDotMouseDown.bind(this));
-
-        dot.style.left = `${relativeX}px`;
-        dot.style.top = `${relativeY}px`;
-        dot.style.setProperty('--zen-theme-picker-dot-color', `rgb(${color[0]}, ${color[1]}, ${color[2]})`);
-
-        const lastDot = this.panel.querySelector('.zen-theme-picker-dot:last-child');
-        let newIndex = 0;
-        if (lastDot) {
-          newIndex = parseInt(lastDot.getAttribute('data-index')) + 1;
+      if (!clickedDot && this.dots.length < 1) {
+        if (this.dots.length === 0) {
+          this.spawnDot({ x: relativeX, y: relativeY }, true);
+        } else {
+          this.spawnDot({ x: relativeX, y: relativeY });
         }
-        dot.setAttribute('data-index', newIndex);
-
-        gradient.appendChild(dot);
 
         this.updateCurrentWorkspace(true);
+      } else if (!clickedDot && existingPrimaryDot) {
+        existingPrimaryDot.Element.style.left = `${relativeX}px`;
+        existingPrimaryDot.Element.style.top = `${relativeY}px`;
+        existingPrimaryDot.Position = {
+          x: relativeX,
+          y: relativeY,
+        };
+
+        let colorPositions = this.calculateCompliments(this.dots, 'update', this.useAlgo);
+        this.handleColorPositions(colorPositions);
+        this.updateCurrentWorkspace(true);
+
+        gZenUIManager.motion.animate(
+          existingPrimaryDot.Element,
+          {
+            left: `${existingPrimaryDot.Position.x}px`,
+            top: `${existingPrimaryDot.Position.y}px`,
+          },
+          {
+            duration: 0.4,
+            type: 'spring',
+            bounce: 0.3,
+          }
+        );
       }
     }
 
@@ -456,13 +531,12 @@
       if (event.button === 2) {
         return;
       }
-      if (!event.target.classList.contains('primary')) {
-        return;
+      const draggedDot = this.dots.find((dot) => dot.Element === event.target);
+      if (draggedDot) {
+        this.dragging = true;
+        this.draggedDot = event.target;
+        this.draggedDot.classList.add('dragging');
       }
-      this.dragging = true;
-      this.draggedDot = event.target;
-      this.draggedDot.style.zIndex = 1;
-      this.draggedDot.classList.add('dragging');
 
       // Store the starting position of the drag
       this.dragStartPosition = {
@@ -476,9 +550,20 @@
         if (!event.target.classList.contains('zen-theme-picker-dot')) {
           return;
         }
+        this.dots = this.dots.filter((dot) => dot.Element !== event.target);
         event.target.remove();
+
+        this.dots.sort((a, b) => a.ID - b.ID);
+
+        // Reassign the IDs after sorting
+        this.dots.forEach((dot, index) => {
+          dot.ID = index;
+        });
+
+        let colorPositions = this.calculateCompliments(this.dots, 'update', this.useAlgo);
+        this.handleColorPositions(colorPositions);
+
         this.updateCurrentWorkspace();
-        this.numberOfDots--;
         return;
       }
 
@@ -486,14 +571,55 @@
         event.preventDefault();
         event.stopPropagation();
         this.dragging = false;
-        this.draggedDot.style.zIndex = 1;
         this.draggedDot.classList.remove('dragging');
         this.draggedDot = null;
         this.dragStartPosition = null; // Reset the drag start position
+
+        this.recentlyDragged = true;
+        setTimeout(() => {
+          this.recentlyDragged = false;
+        }, 100);
         return;
       }
+    }
 
-      this.numberOfDots = this.panel.querySelectorAll('.zen-theme-picker-dot').length;
+    onDotMouseMove(event) {
+      if (this.dragging) {
+        event.preventDefault();
+        const rect = this.panel.querySelector('.zen-theme-picker-gradient').getBoundingClientRect();
+        const padding = 90; // each side
+        // do NOT let the ball be draged outside of an imaginary circle. You can drag it anywhere inside the circle
+        // if the distance between the center of the circle and the dragged ball is bigger than the radius, then the ball
+        // should be placed on the edge of the circle. If it's inside the circle, then the ball just follows the mouse
+
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const radius = (rect.width - padding) / 2;
+        let pixelX = event.clientX;
+        let pixelY = event.clientY;
+        const distance = Math.sqrt((pixelX - centerX) ** 2 + (pixelY - centerY) ** 2);
+        if (distance > radius) {
+          const angle = Math.atan2(pixelY - centerY, pixelX - centerX);
+          pixelX = centerX + Math.cos(angle) * radius;
+          pixelY = centerY + Math.sin(angle) * radius;
+        }
+
+        // set the location of the dot in pixels
+        const relativeX = pixelX - rect.left;
+        const relativeY = pixelY - rect.top;
+
+        const draggedDot = this.dots.find((dot) => dot.Element === this.draggedDot);
+        draggedDot.Element.style.left = `${relativeX}px`;
+        draggedDot.Element.style.top = `${relativeY}px`;
+        draggedDot.Position = {
+          x: relativeX,
+          y: relativeY,
+        };
+        let colorPositions = this.calculateCompliments(this.dots, 'update', this.useAlgo);
+        this.handleColorPositions(colorPositions);
+
+        this.updateCurrentWorkspace();
+      }
     }
 
     themedColors(colors) {
@@ -676,7 +802,7 @@
                 // Reactivate the transition after the animation
                 appWrapper.removeAttribute('post-animating');
               }, 100);
-            }, 500);
+            }, 200);
           });
         }
 
@@ -695,13 +821,10 @@
         browser.gZenThemePicker.currentRotation = workspaceTheme.rotation ?? 45;
         browser.gZenThemePicker.currentTexture = workspaceTheme.texture ?? 0;
 
-        browser.gZenThemePicker.numberOfDots = workspaceTheme.gradientColors.length;
-
         browser.document.getElementById('PanelUI-zen-gradient-generator-opacity').value =
           browser.gZenThemePicker.currentOpacity;
         browser.document.getElementById('PanelUI-zen-gradient-generator-texture').value =
           browser.gZenThemePicker.currentTexture;
-        browser.gZenThemePicker.setRotationInput(browser.gZenThemePicker.currentRotation);
 
         const gradient = browser.gZenThemePicker.getGradient(workspaceTheme.gradientColors);
         const gradientToolbar = browser.gZenThemePicker.getGradient(workspaceTheme.gradientColors, true);
@@ -725,6 +848,7 @@
         }
 
         if (!skipUpdate) {
+          this.dots = [];
           browser.gZenThemePicker.recalculateDots(workspaceTheme.gradientColors);
         }
       });
@@ -782,7 +906,6 @@
     }
 
     recalculateDots(colors) {
-      //THIS IS PART OF THE ISSUE
       for (const color of colors) {
         this.createDot(color, true);
       }
@@ -805,7 +928,7 @@
       if (!skipSave) {
         await ZenWorkspacesStorage.saveWorkspaceTheme(currentWorkspace.uuid, gradient);
         await ZenWorkspaces._propagateWorkspaceData();
-        ConfirmationHint.show(document.getElementById('PanelUI-menu-button'), 'zen-panel-ui-gradient-generator-saved-message');
+        gZenUIManager.showToast('zen-panel-ui-gradient-generator-saved-message');
         currentWorkspace = await ZenWorkspaces.getActiveWorkspace();
       }
 
