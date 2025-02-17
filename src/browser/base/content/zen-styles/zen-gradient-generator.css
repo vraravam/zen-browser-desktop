@@ -5,7 +5,7 @@
  */
 
 #PanelUI-zen-gradient-generator {
-  --panel-width: 350px;
+  --panel-width: 325px;
   --panel-padding: 10px;
   min-width: var(--panel-width);
 }
@@ -207,6 +207,7 @@
 }
 
 #PanelUI-zen-gradient-generator-color-actions {
+  color-scheme: dark; /* Always use light colors */
   display: flex;
   position: absolute;
   bottom: 20px;
@@ -223,7 +224,7 @@
     padding: 0.4rem !important;
     min-width: fit-content !important;
     transition: background 0.2s;
-    & .button-text {
+    &:not(#PanelUI-zen-gradient-generator-color-toggle-algo) .button-text {
       display: none;
     }
     appearance: none;

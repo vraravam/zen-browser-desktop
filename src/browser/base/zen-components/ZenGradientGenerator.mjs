@@ -806,6 +806,9 @@
           });
         }
 
+        const button = browser.document.getElementById('PanelUI-zen-gradient-generator-color-toggle-algo');
+        document.l10n.setAttributes(button, `zen-panel-ui-gradient-generator-algo-${browser.gZenThemePicker.useAlgo}`);
+
         browser.gZenThemePicker.resetCustomColorList();
         if (!workspaceTheme || workspaceTheme.type !== 'gradient') {
           const gradient = browser.gZenThemePicker.getGradient([]);
