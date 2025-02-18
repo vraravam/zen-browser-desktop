@@ -181,7 +181,7 @@
         this.dots.push({
           ID: id,
           Element: dot,
-          Position: { x: null, y: null }, // WARNING: these values are not correct because dot pads bound rect does not exist yet
+          Position: { x: null, y: null }, // at some point possition should instead be stored as percentege just so that the size of the color picker does not matter.
         });
       }
       if (!fromWorkspace) {
