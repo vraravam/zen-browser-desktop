@@ -245,6 +245,7 @@
         const existingPrimaryDot = this.dots.find((d) => d.ID === 0);
         if (existingPrimaryDot) {
           existingPrimaryDot.ID = this.dots.length;
+          dot.style.setProperty('--zen-primary-color');
         }
       }
 
@@ -450,6 +451,12 @@
 
         this.dots.forEach((dot, index) => {
           dot.ID = index;
+          if (index === 0) {
+            dot.Element.style.setProperty(
+              '--zen-primary-color',
+              dot.Element.style.getPropertyValue('--zen-primary-color') || ''
+            );
+          }
         });
 
         let colorPositions = this.calculateCompliments(this.dots, 'remove', this.useAlgo);
@@ -586,6 +593,12 @@
         // Reassign the IDs after sorting
         this.dots.forEach((dot, index) => {
           dot.ID = index;
+          if (index === 0) {
+            dot.Element.style.setProperty(
+              '--zen-primary-color',
+              dot.Element.style.getPropertyValue('--zen-primary-color') || ''
+            );
+          }
         });
 
         let colorPositions = this.calculateCompliments(this.dots, 'remove', this.useAlgo);
