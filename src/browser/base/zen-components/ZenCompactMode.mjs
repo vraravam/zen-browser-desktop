@@ -276,11 +276,13 @@ var gZenCompactModeManager = {
   },
 
   get hoverableElements() {
-    if (typeof this._showSidebarOnHover === 'undefined') {
-      this._showSidebarOnHover = Services.prefs.getBoolPref('zen.view.compact.show-sidebar-on-hover', true);
+    if (typeof this._showSidebarAndToolbarOnHover === 'undefined') {
+      this._showSidebarAndToolbarOnHover = Services.prefs.getBoolPref(
+        'zen.view.compact.show-sidebar-and-toolbar-on-hover',
+        true
+      );
     }
-    const showSidebarOnHover = this._showSidebarOnHover;
-    return !showSidebarOnHover
+    return !this._showSidebarAndToolbarOnHover
       ? []
       : [
           {
