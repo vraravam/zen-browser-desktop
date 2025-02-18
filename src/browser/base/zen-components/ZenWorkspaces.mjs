@@ -171,7 +171,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     const tabs = gBrowser.tabContainer.allTabs;
     const workspaces = await this._workspaces();
     for (const workspace of workspaces.workspaces) {
-      this._createWorkspaceTabsSection(workspace, tabs, perifery);
+      await this._createWorkspaceTabsSection(workspace, tabs, perifery);
     }
     if (tabs.length) {
       const defaultSelectedContainer = document.querySelector(
@@ -379,7 +379,6 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
     event.preventDefault();
     event.stopPropagation();
-
     this._swipeState = {
       isGestureActive: true,
       lastDelta: 0,
@@ -393,14 +392,14 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     event.preventDefault();
     event.stopPropagation();
 
-    const delta = event.delta * 300 + 1;
+    const delta = event.delta * 300;
     const stripWidth = document.getElementById('tabbrowser-tabs').getBoundingClientRect().width;
     let translateX = this._swipeState.lastDelta + delta;
     // Add a force multiplier as we are translating the strip depending on how close to the edge we are
     let forceMultiplier = Math.min(1, 1 - Math.abs(translateX) / (stripWidth * 4.5)); // 4.5 instead of 4 to add a bit of a buffer
     if (forceMultiplier > 0.5) {
       translateX *= forceMultiplier;
-      this._swipeState.lastDelta = delta;
+      this._swipeState.lastDelta = delta + (translateX - delta) * 0.5;
     } else {
       translateX = this._swipeState.lastDelta;
     }

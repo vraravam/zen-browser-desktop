@@ -643,7 +643,7 @@
 #PanelUI-history toolbarbutton,
 #unified-extensions-context-menu menuitem {
   background-image: var(--menu-image) !important;
-  background-size: 16px !important;
+  background-size: 20px !important;
   background-position: var(--fp-contextmenu-menuitem-padding-inline) center !important;
   background-repeat: no-repeat !important;
   -moz-context-properties: fill, fill-opacity !important;
