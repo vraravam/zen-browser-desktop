@@ -394,10 +394,10 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     event.stopPropagation();
 
     const delta = event.delta * 300 + 1;
-    const stripWidth = document.getElementById('tabbrowser-tabs').scrollWidth;
+    const stripWidth = document.getElementById('tabbrowser-tabs').getBoundingClientRect().width;
     let translateX = this._swipeState.lastDelta + delta;
     // Add a force multiplier as we are translating the strip depending on how close to the edge we are
-    let forceMultiplier = Math.min(1, 1 - Math.abs(translateX) / (stripWidth * 1.5));
+    let forceMultiplier = Math.min(1, 1 - Math.abs(translateX) / (stripWidth * 4.5)); // 4.5 instead of 4 to add a bit of a buffer
     if (forceMultiplier > 0.5) {
       translateX *= forceMultiplier;
       this._swipeState.lastDelta = delta;
@@ -550,6 +550,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       await this.workspaceBookmarks();
       window.addEventListener('TabBrowserInserted', this.onTabBrowserInserted.bind(this));
       window.addEventListener('TabOpen', this.updateTabsContainers.bind(this));
+      window.addEventListener('TabClose', this.updateTabsContainers.bind(this));
       let workspaces = await this._workspaces();
       let activeWorkspace = null;
       if (workspaces.workspaces.length === 0) {
@@ -1776,7 +1777,9 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   updateShouldHideSeparator(arrowScrollbox, pinnedContainer) {
-    const shouldHideSeparator = pinnedContainer.children.length === 1 || arrowScrollbox.children.length === 1;
+    const shouldHideSeparator =
+      pinnedContainer.children.length === 1 ||
+      Array.from(arrowScrollbox.children).filter((child) => !child.hasAttribute('hidden')).length === 1;
     if (shouldHideSeparator) {
       pinnedContainer.setAttribute('hide-separator', 'true');
     } else {

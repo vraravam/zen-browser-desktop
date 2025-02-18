@@ -970,11 +970,6 @@ Preferences.addAll([
     default: 10,
   },
   {
-    id: 'zen.view.show-bottom-border',
-    type: 'bool',
-    default: false,
-  },
-  {
     id: 'zen.workspaces.hide-deactivated-workspaces',
     type: 'bool',
     default: true,

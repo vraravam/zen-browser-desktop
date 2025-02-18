@@ -391,7 +391,9 @@ button.popup-notification-dropmarker {
       the backdrop woudn't work, we would need to apply a clip-path to the site and that's not recommended
       due to performance issues */
     background-color: light-dark(hsl(0, 0%, 100%), hsl(0, 0%, 14%)) !important;
-    outline: 1px solid rgba(0, 0, 0, 0.3) !important;
+    @media (-prefers-color-scheme: dark) {
+      outline: 1px solid rgba(0, 0, 0, 0.3) !important;
+    }
   }
 }
 

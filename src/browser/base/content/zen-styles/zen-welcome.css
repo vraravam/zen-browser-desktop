@@ -46,6 +46,7 @@
 }
 
 #zen-welcome-pages {
+  -moz-window-dragging: no-drag;
   opacity: 0;
   justify-content: start;
   align-items: start;
