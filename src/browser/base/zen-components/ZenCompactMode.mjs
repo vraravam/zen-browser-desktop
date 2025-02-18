@@ -280,21 +280,19 @@ var gZenCompactModeManager = {
       this._showSidebarOnHover = Services.prefs.getBoolPref('zen.view.compact.show-sidebar-on-hover', true);
     }
     const showSidebarOnHover = this._showSidebarOnHover;
-    return [
-      ...(showSidebarOnHover
-        ? [
-            {
-              element: this.sidebar,
-              screenEdge: this.sidebarIsOnRight ? 'right' : 'left',
-              keepHoverDuration: 100,
-            },
-          ]
-        : []),
-      {
-        element: document.getElementById('zen-appcontent-navbar-container'),
-        screenEdge: 'top',
-      },
-    ];
+    return !showSidebarOnHover
+      ? []
+      : [
+          {
+            element: this.sidebar,
+            screenEdge: this.sidebarIsOnRight ? 'right' : 'left',
+            keepHoverDuration: 100,
+          },
+          {
+            element: document.getElementById('zen-appcontent-navbar-container'),
+            screenEdge: 'top',
+          },
+        ];
   },
 
   flashSidebar(duration = lazyCompactMode.COMPACT_MODE_FLASH_DURATION) {
