@@ -189,6 +189,10 @@
         dot.style.left = `${x * 100}%`;
         dot.style.top = `${y * 100}%`;
 
+        if (this.dots.length < 1) {
+          dot.classList.add('primary');
+        }
+
         dotPad.appendChild(dot);
         let id = this.dots.length;
 
@@ -262,8 +266,9 @@
         const existingPrimaryDot = this.dots.find((d) => d.ID === 0);
         if (existingPrimaryDot) {
           existingPrimaryDot.ID = this.dots.length;
-          dot.style.setProperty('--zen-primary-color');
+          existingPrimaryDot.Element.classList.remove('primary');
         }
+        dot.classList.add('primary');
       }
 
       const colorFromPos = this.getColorFromPosition(relativePosition.x, relativePosition.y);
@@ -469,10 +474,9 @@
         this.dots.forEach((dot, index) => {
           dot.ID = index;
           if (index === 0) {
-            dot.Element.style.setProperty(
-              '--zen-primary-color',
-              dot.Element.style.getPropertyValue('--zen-primary-color') || ''
-            );
+            dot.Element.classList.add('primary');
+          } else {
+            dot.Element.classList.remove('primary');
           }
         });
 
@@ -611,10 +615,9 @@
         this.dots.forEach((dot, index) => {
           dot.ID = index;
           if (index === 0) {
-            dot.Element.style.setProperty(
-              '--zen-primary-color',
-              dot.Element.style.getPropertyValue('--zen-primary-color') || ''
-            );
+            dot.Element.classList.add('primary');
+          } else {
+            dot.Element.classList.remove('primary');
           }
         });
 
@@ -984,12 +987,14 @@
         .sort((a, b) => a.getAttribute('data-index') - b.getAttribute('data-index'))
         .map((dot) => {
           const color = dot.style.getPropertyValue('--zen-theme-picker-dot-color');
+          const isPrimary = dot.classList.contains('primary');
+
           if (color === 'undefined') {
             return;
           }
           const isCustom = dot.classList.contains('custom');
           const algorithm = this.useAlgo;
-          return { c: isCustom ? color : color.match(/\d+/g).map(Number), isCustom, algorithm };
+          return { c: isCustom ? color : color.match(/\d+/g).map(Number), isCustom, algorithm, isPrimary };
         });
       const gradient = ZenThemePicker.getTheme(colors, this.currentOpacity, this.currentRotation, this.currentTexture);
       let currentWorkspace = await ZenWorkspaces.getActiveWorkspace();
