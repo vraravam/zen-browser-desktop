@@ -276,7 +276,10 @@ var gZenCompactModeManager = {
   },
 
   get hoverableElements() {
-    const showSidebarOnHover = Services.prefs.getBoolPref('zen.view.compact.show-sidebar-on-hover', true);
+    if (typeof this._showSidebarOnHover === 'undefined') {
+      this._showSidebarOnHover = Services.prefs.getBoolPref('zen.view.compact.show-sidebar-on-hover', true);
+    }
+    const showSidebarOnHover = this._showSidebarOnHover;
     return [
       ...(showSidebarOnHover
         ? [
