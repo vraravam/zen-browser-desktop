@@ -59,6 +59,12 @@
   height: 60%;
   box-shadow: var(--zen-big-shadow);
 
+  /* Small screens */
+  @media (max-width: 800px) {
+    width: 80%;
+    height: 80%;
+  }
+
   #zen-welcome-page-sidebar {
     flex-direction: column;
     justify-content: space-between;
