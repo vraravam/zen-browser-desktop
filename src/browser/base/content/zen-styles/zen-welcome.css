@@ -145,6 +145,12 @@
       }
     }
 
+    #zen-welcome-workspace-colors-anchor {
+      width: 1px;
+      height: 1px;
+      margin: 10% auto auto 30%;
+    }
+
     #zen-welcome-initial-essentials-browser {
       width: 70%;
       height: 80%;
@@ -180,8 +186,8 @@
         }
 
         #zen-welcome-initial-essentials-browser-sidebar-essentials {
-          display: flex;
-          flex-wrap: wrap;
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
           gap: 0.8rem;
           visibility: visible;
 
@@ -195,6 +201,7 @@
             border-radius: 0.8rem;
             margin-top: 0.5rem;
             background: var(--zen-toolbar-element-bg);
+            grid-column: span 3;
           }
 
           & .tabbrowser-tab {

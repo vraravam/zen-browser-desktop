@@ -58,7 +58,7 @@
 
   @media (not (-moz-windows-mica)) and (-moz-bool-pref: 'zen.view.grey-out-inactive-windows') {
     transition: color var(--inactive-window-transition);
-    &:-moz-window-inactive {
+    :root:not([zen-welcome-stage]) &:-moz-window-inactive {
       color: var(--toolbox-textcolor-inactive);
       &::after {
         background-color: var(--toolbox-bgcolor-inactive);
