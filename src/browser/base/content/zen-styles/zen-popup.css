@@ -88,10 +88,6 @@ panel {
   padding-inline-start: calc(16px + var(--uc-arrowpanel-menuicon-margin-inline));
 }
 
-.subviewbutton > .toolbarbutton-icon {
-  width: 15px;
-}
-
 /* firefox profile avatar in appmenu */
 #appMenu-fxa-label2::before {
   content: '';

@@ -126,6 +126,10 @@
   backdrop-filter: none !important;
 }
 
+#urlbar-go-button {
+  margin: auto 0;
+}
+
 :root[zen-single-toolbar='true'] {
   .urlbar-page-action:not([open]),
   #tracking-protection-icon-container {

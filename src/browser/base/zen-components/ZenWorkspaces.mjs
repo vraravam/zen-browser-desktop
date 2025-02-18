@@ -171,7 +171,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     const tabs = gBrowser.tabContainer.allTabs;
     const workspaces = await this._workspaces();
     for (const workspace of workspaces.workspaces) {
-      this._createWorkspaceTabsSection(workspace, tabs, perifery);
+      await this._createWorkspaceTabsSection(workspace, tabs, perifery);
     }
     if (tabs.length) {
       const defaultSelectedContainer = document.querySelector(

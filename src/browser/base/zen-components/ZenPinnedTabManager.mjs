@@ -99,6 +99,7 @@
     }
 
     async _refreshPinnedTabs({ init = false } = {}) {
+      await ZenWorkspaces.promiseSectionsInitialized;
       await this._initializePinsCache();
       await this._initializePinnedTabs(init);
     }
@@ -249,10 +250,10 @@
         this.log(`Created new pinned tab for pin ${pin.uuid} (isEssential: ${pin.isEssential})`);
         gBrowser.pinTab(newTab);
         if (!pin.isEssential) {
-          const contaienr = document.querySelector(
+          const container = document.querySelector(
             `#vertical-pinned-tabs-container .zen-workspace-tabs-section[zen-workspace-id="${pin.workspaceUuid}"]`
           );
-          contaienr.insertBefore(newTab, contaienr.lastChild);
+          container.insertBefore(newTab, container.lastChild);
         }
         gBrowser.tabContainer._invalidateCachedTabs();
 
