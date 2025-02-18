@@ -18,7 +18,7 @@ export var ZenCustomizableUI = new (class {
       true
     );
     CustomizableUIInternal.registerArea(
-      'zen-sidebar-icons-wrapper',
+      'zen-sidebar-bottom-buttons',
       {
         type: this.TYPE_TOOLBAR,
         defaultPlacements: this.defaultSidebarIcons,
@@ -108,7 +108,7 @@ export var ZenCustomizableUI = new (class {
   }
 
   _hideToolbarButtons(window) {
-    const wrapper = window.document.getElementById('zen-sidebar-icons-wrapper');
+    const wrapper = window.document.getElementById('zen-sidebar-bottom-buttons');
     const elementsToHide = ['alltabs-button', 'new-tab-button'];
     for (let id of elementsToHide) {
       const elem = window.document.getElementById(id);
@@ -124,7 +124,7 @@ export var ZenCustomizableUI = new (class {
 
   registerToolbarNodes(window) {
     window.CustomizableUI.registerToolbarNode(window.document.getElementById('zen-sidebar-top-buttons'));
-    window.CustomizableUI.registerToolbarNode(window.document.getElementById('zen-sidebar-icons-wrapper'));
+    window.CustomizableUI.registerToolbarNode(window.document.getElementById('zen-sidebar-bottom-buttons'));
     window.addEventListener(
       'DOMContentLoaded',
       () => {

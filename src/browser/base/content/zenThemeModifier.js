@@ -32,14 +32,9 @@ var ZenThemeModifier = {
     this._inMainBrowserWindow = window.location.href == 'chrome://browser/content/browser.xhtml';
     this.listenForEvents();
     this.updateAllThemeBasics();
-    this._onPrefersColorSchemeChange();
   },
 
   listenForEvents() {
-    if (this._inMainBrowserWindow) {
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', this._onPrefersColorSchemeChange.bind(this));
-    }
-
     var handleEvent = this.handleEvent.bind(this);
     // Listen for changes in the accent color and border radius
     for (let pref of kZenThemePrefsList) {
@@ -93,39 +88,6 @@ var ZenThemeModifier = {
     if (typeof window.zenPageAccentColorChanged === 'function') {
       window.zenPageAccentColorChanged(accentColor);
     }
-  },
-
-  _onPrefersColorSchemeChange() {
-    this._updateZenAvatar();
-  },
-
-  _updateZenAvatar() {
-    if (typeof ProfileService === 'undefined') {
-      return;
-    }
-    const mainWindowEl = document.documentElement;
-    // Dont override the sync avatar if it's already set
-    if (mainWindowEl.style.hasOwnProperty('--avatar-image-url')) {
-      return;
-    }
-    let profile = ProfileService.currentProfile;
-    if (!profile || profile.zenAvatarPath == '') return;
-    // TODO: actually use profile data to generate the avatar, instead of just using the name
-    let avatarUrl = this._getThemedAvatar(profile.zenAvatarPath);
-    if (document.documentElement.hasAttribute('privatebrowsingmode')) {
-      avatarUrl = 'chrome://global/skin/icons/indicator-private-browsing.svg';
-    }
-    mainWindowEl.style.setProperty('--zen-avatar-image-url', `url(${avatarUrl})`);
-    mainWindowEl.style.setProperty('--avatar-image-url', `var(--zen-avatar-image-url)`, 'important');
-  },
-
-  _getThemedAvatar(avatarPath) {
-    if (!avatarPath || !avatarPath.startsWith('chrome://browser/content/zen-avatars/avatar-') || !avatarPath.endsWith('.svg')) {
-      return avatarPath;
-    }
-    let withoutExtension = avatarPath.slice(0, -4);
-    let scheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    return `${withoutExtension}-${scheme}.svg`;
   },
 };
 
