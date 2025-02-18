@@ -51,7 +51,7 @@
       document.getElementById('zen-welcome-pages').style.display = 'flex';
       document.getElementById('zen-welcome-start').remove();
       window.maximize();
-      animate('#zen-welcome-pages', { opacity: [0, 1] }, { delay: 0.1 });
+      animate('#zen-welcome-pages', { opacity: [0, 1] }, { delay: 0.2, duration: 0.2 });
     }
 
     async fadeInTitles(page) {
