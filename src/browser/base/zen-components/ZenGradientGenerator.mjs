@@ -164,7 +164,6 @@
         dot.style.opacity = 0;
         dot.style.setProperty('--zen-theme-picker-dot-color', color.c);
       } else {
-
         const { x, y } = this.calculateInitialPosition(color);
         const dotPad = this.panel.querySelector('.zen-theme-picker-gradient');
 
@@ -178,7 +177,7 @@
         let id = this.dots.length;
 
         dot.style.setProperty('--zen-theme-picker-dot-color', `rgb(${r}, ${g}, ${b})`);
-       
+
         this.dots.push({
           ID: id,
           Element: dot,
@@ -260,7 +259,6 @@
     }
 
     calculateCompliments(dots, action = 'update', useHarmony = '') {
-
       const colorHarmonies = [
         { type: 'complementary', angles: [180] },
         { type: 'splitComplementary', angles: [150, 210] },
@@ -270,16 +268,14 @@
       ];
 
       function getColorHarmonyType(numDots, dots) {
-
         if (useHarmony !== '') {
-          const selectedHarmony = colorHarmonies.find((harmony) => harmony.type === useHarmony)
-          
+          const selectedHarmony = colorHarmonies.find((harmony) => harmony.type === useHarmony);
+
           if (selectedHarmony) {
             if (action === 'remove') {
               if (dots.length !== 0) {
                 return colorHarmonies.find((harmony) => harmony.angles.length === selectedHarmony.angles.length - 1);
-              }
-              else {
+              } else {
                 return { type: 'floating', angles: [] };
               }
             }
@@ -344,7 +340,6 @@
         updatedDots = [{ ID: 0, Position: primaryDot.Position }];
       }
 
-
       harmonyAngles.angles.forEach((angleOffset, index) => {
         let newAngle = (baseAngle + angleOffset) % 360;
         let radian = (newAngle * Math.PI) / 180;
@@ -367,30 +362,29 @@
         const rect = dotPad.getBoundingClientRect();
         this.dots.forEach((dot) => {
           dot.Element.style.zIndex = 999;
-          
+
           let pixelX, pixelY;
           const rect = this.panel.querySelector('.zen-theme-picker-gradient').getBoundingClientRect();
-        
+
           if (dot.Position.x === null) {
             const leftPercentage = parseFloat(dot.Element.style.left) / 100;
             const topPercentage = parseFloat(dot.Element.style.top) / 100;
-        
+
             pixelX = leftPercentage * rect.width;
             pixelY = topPercentage * rect.height;
           } else {
-
-            pixelX = dot.Position.x
-            pixelY = dot.Position.y
+            pixelX = dot.Position.x;
+            pixelY = dot.Position.y;
           }
-        
+
           const colorFromPos = this.getColorFromPosition(pixelX, pixelY);
-        
+
           dot.Element.style.setProperty(
             '--zen-theme-picker-dot-color',
             `rgb(${colorFromPos[0]}, ${colorFromPos[1]}, ${colorFromPos[2]})`
           );
         });
-      
+
         return;
       }
       const existingPrimaryDot = this.dots.find((d) => d.ID === 0);
@@ -504,7 +498,8 @@
 
       clickedDot = this.dots.find((dot) => dot.Element === clickedElement);
 
-      if (clickedDot) { // TODO: this doesnt work and needs to be fixed
+      if (clickedDot) {
+        // TODO: this doesnt work and needs to be fixed
         existingPrimaryDot.ID = clickedDot.ID;
         clickedDot.ID = 0;
         clickedDot.Element.style.zIndex = 999;
@@ -658,7 +653,7 @@
     themedColors(colors) {
       const isDarkMode = this.isDarkMode;
       const factor = isDarkMode ? 0.5 : 1.1;
-    
+
       return colors.map((color) => ({
         c: color.isCustom
           ? color.c
@@ -952,15 +947,17 @@
     async updateCurrentWorkspace(skipSave = true) {
       this.updated = skipSave;
       const dots = this.panel.querySelectorAll('.zen-theme-picker-dot');
-      const colors = Array.from(dots).sort((a, b) => a.getAttribute('data-index') - b.getAttribute('data-index')).map((dot) => {
-        const color = dot.style.getPropertyValue('--zen-theme-picker-dot-color');
-        if (color === 'undefined') {
-          return;
-        }
-        const isCustom = dot.classList.contains('custom');
-        const algorithm = this.useAlgo;
-        return { c: isCustom ? color : color.match(/\d+/g).map(Number), isCustom, algorithm};
-      });
+      const colors = Array.from(dots)
+        .sort((a, b) => a.getAttribute('data-index') - b.getAttribute('data-index'))
+        .map((dot) => {
+          const color = dot.style.getPropertyValue('--zen-theme-picker-dot-color');
+          if (color === 'undefined') {
+            return;
+          }
+          const isCustom = dot.classList.contains('custom');
+          const algorithm = this.useAlgo;
+          return { c: isCustom ? color : color.match(/\d+/g).map(Number), isCustom, algorithm };
+        });
       const gradient = ZenThemePicker.getTheme(colors, this.currentOpacity, this.currentRotation, this.currentTexture);
       let currentWorkspace = await ZenWorkspaces.getActiveWorkspace();
 
