@@ -397,7 +397,9 @@
             });
         },
         fadeOut() {
-          const selectedTabs = document.getElementById('zen-welcome-initial-essentials-browser-sidebar-essentials').querySelectorAll('.tabbrowser-tab[visuallyselected]');
+          const selectedTabs = document
+            .getElementById('zen-welcome-initial-essentials-browser-sidebar-essentials')
+            .querySelectorAll('.tabbrowser-tab[visuallyselected]');
           for (const tab of selectedTabs) {
             const url = tab.getAttribute('data-url');
             const createdTab = window.gBrowser.addTrustedTab(url, {
