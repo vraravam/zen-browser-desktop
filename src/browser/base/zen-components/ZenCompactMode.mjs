@@ -282,19 +282,24 @@ var gZenCompactModeManager = {
         true
       );
     }
-    return !this._showSidebarAndToolbarOnHover
-      ? []
-      : [
-          {
-            element: this.sidebar,
-            screenEdge: this.sidebarIsOnRight ? 'right' : 'left',
-            keepHoverDuration: 100,
-          },
-          {
-            element: document.getElementById('zen-appcontent-navbar-container'),
-            screenEdge: 'top',
-          },
-        ];
+    return [
+      ...(!this._showSidebarAndToolbarOnHover
+        ? []
+        : [
+            {
+              element: this.sidebar,
+              screenEdge: this.sidebarIsOnRight ? 'right' : 'left',
+              keepHoverDuration: 100,
+            },
+            {
+              element: document.getElementById('zen-appcontent-navbar-container'),
+              screenEdge: 'top',
+            },
+          ]),
+      {
+        element: gZenVerticalTabsManager.actualWindowButtons,
+      },
+    ];
   },
 
   flashSidebar(duration = lazyCompactMode.COMPACT_MODE_FLASH_DURATION) {
