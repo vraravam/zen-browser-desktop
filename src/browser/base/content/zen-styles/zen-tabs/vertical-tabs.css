@@ -338,7 +338,7 @@
   }
 }
 
-#zen-sidebar-icons-wrapper {
+#zen-sidebar-bottom-wrapper {
   background: transparent;
   gap: 5px;
   align-items: center;
@@ -463,7 +463,7 @@
     }
   }
 
-  & #zen-sidebar-icons-wrapper {
+  & #zen-sidebar-bottom-wrapper {
     display: flex;
     /* Make sure the icons take most of the space, smartly */
     flex-direction: row;
@@ -592,7 +592,7 @@
     padding: 0 !important;
     background: transparent !important;
   }
-  :root[customizing] & #zen-sidebar-icons-wrapper {
+  :root[customizing] & #zen-sidebar-bottom-wrapper {
     min-width: unset !important;
   }
   & #zen-sidebar-top-buttons {
@@ -608,7 +608,7 @@
     flex-direction: column;
     padding-top: var(--zen-element-separation);
   }
-  & #zen-sidebar-icons-wrapper {
+  & #zen-sidebar-bottom-wrapper {
     display: flex;
     flex-direction: column;
     padding-top: var(--zen-element-separation);
@@ -810,7 +810,7 @@
 
 
 /* Customization mode */
-/*:root[customizing] #TabsToolbar > *:not(#zen-sidebar-icons-wrapper) {
+/*:root[customizing] #TabsToolbar > *:not(#zen-sidebar-bottom-wrapper) {
   overflow: hidden;
   max-width: 0 !important;
   margin-right: var(--zen-element-separation);

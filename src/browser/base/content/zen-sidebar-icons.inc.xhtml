@@ -1,5 +1,5 @@
 <toolbar brighttext="true"
-  id="zen-sidebar-icons-wrapper"
+  id="zen-sidebar-bottom-wrapper"
   fullscreentoolbar="true"
   class="browser-toolbar customization-target zen-dont-hide-on-fullscreen"
   data-l10n-id="tabs-toolbar"
@@ -10,19 +10,4 @@
   <toolbarbutton removable="true" class="chromeclass-toolbar-additional toolbarbutton-1 zen-sidebar-action-button" id="zen-expand-sidebar-button" data-l10n-id="sidebar-zen-expand" cui-areatype="toolbar" oncommand="gZenVerticalTabsManager.toggleExpand();"></toolbarbutton>
   <toolbarbutton removable="true" class="toolbarbutton-1 zen-sidebar-action-button zen-compact-mode-ignore" id="zen-sidepanel-button" data-l10n-id="sidebar-zen-sidepanel" onclick="gZenBrowserManagerSidebar.toggle();"></toolbarbutton>
   <toolbarbutton id="zen-workspaces-button" class="chromeclass-toolbar-additional" overflows="false" removable="false"></toolbarbutton>
-  <toolbarbutton id="zen-profile-button"
-    class="zen-sidebar-action-button toolbarbutton-1 chromeclass-toolbar-additional"
-    delegatesanchor="true"
-    onmousedown="ZenProfileDialogUI.showSubView(this, event)"
-    onkeypress="ZenProfileDialogUI.showSubView(this, event)"
-    consumeanchor="zen-profile-button"
-    closemenu="none"
-    data-l10n-id="toolbar-button-account"
-    cui-areatype="toolbar"
-    badged="true"
-    removable="true">
-    <vbox>
-      <image id="zen-profile-button-icon" />
-    </vbox>
-  </toolbarbutton>
 </toolbar>

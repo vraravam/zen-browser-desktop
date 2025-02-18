@@ -1,5 +1,5 @@
 diff --git a/browser/themes/shared/customizableui/panelUI-shared.css b/browser/themes/shared/customizableui/panelUI-shared.css
-index bdbfd3521b4921f7d6d44623181019a8263b5825..d4c4bab98197b2e5948a34daa1e435b74880a700 100644
+index bdbfd3521b4921f7d6d44623181019a8263b5825..e69b1fb9ee7e553f1183f7a52f9104d6f99d4288 100644
 --- a/browser/themes/shared/customizableui/panelUI-shared.css
 +++ b/browser/themes/shared/customizableui/panelUI-shared.css
 @@ -18,7 +18,7 @@
@@ -11,7 +11,7 @@ index bdbfd3521b4921f7d6d44623181019a8263b5825..d4c4bab98197b2e5948a34daa1e435b7
    --arrowpanel-menuitem-margin: var(--arrowpanel-menuitem-margin-block) var(--arrowpanel-menuitem-margin-inline);
    --arrowpanel-menuitem-padding-block: 8px;
    --arrowpanel-menuitem-padding-inline: 8px;
-@@ -819,15 +819,15 @@ toolbarbutton[constrain-size="true"][cui-areatype="panel"] > .toolbarbutton-badg
+@@ -819,8 +819,8 @@ toolbarbutton[constrain-size="true"][cui-areatype="panel"] > .toolbarbutton-badg
  /* Firefox Account Toolbar Panel */
  
  #fxa-avatar-image {
@@ -22,11 +22,3 @@ index bdbfd3521b4921f7d6d44623181019a8263b5825..d4c4bab98197b2e5948a34daa1e435b7
  }
  
  :root {
-   --avatar-image-url: url(chrome://browser/skin/fxa/avatar.svg);
- 
-   &[fxastatus="not_configured"] {
--    --avatar-image-url: url(chrome://browser/skin/fxa/avatar-empty.svg);
-+    --avatar-image-url: var(--zen-avatar-image-url);
-   }
- 
-   /**
