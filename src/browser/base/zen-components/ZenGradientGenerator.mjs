@@ -90,7 +90,6 @@
 
       // Call the rest of the initialization
       this.initContextMenu();
-      this.initThemePicker();
 
       this._hasInitialized = true;
       this.onDarkModeChange(null);
@@ -110,11 +109,27 @@
 
     initThemePicker() {
       const themePicker = this.panel.querySelector('.zen-theme-picker-gradient');
+      this._onDotMouseMove = this.onDotMouseMove.bind(this);
+      this._onDotMouseUp = this.onDotMouseUp.bind(this);
+      this._onDotMouseDown = this.onDotMouseDown.bind(this);
+      this._onThemePickerClick = this.onThemePickerClick.bind(this);
       themePicker.style.setProperty('--zen-theme-picker-gradient-image', `url(${ZenThemePicker.GRADIENT_DISPLAY_URL})`);
-      themePicker.addEventListener('mousemove', this.onDotMouseMove.bind(this));
-      themePicker.addEventListener('mouseup', this.onDotMouseUp.bind(this));
-      themePicker.addEventListener('mousedown', this.onDotMouseDown.bind(this));
-      themePicker.addEventListener('click', this.onThemePickerClick.bind(this));
+      document.addEventListener('mousemove', this._onDotMouseMove);
+      document.addEventListener('mouseup', this._onDotMouseUp);
+      themePicker.addEventListener('mousedown', this._onDotMouseDown);
+      themePicker.addEventListener('click', this._onThemePickerClick);
+    }
+
+    uninitThemePicker() {
+      const themePicker = this.panel.querySelector('.zen-theme-picker-gradient');
+      document.removeEventListener('mousemove', this._onDotMouseMove);
+      document.removeEventListener('mouseup', this._onDotMouseUp);
+      themePicker.removeEventListener('mousedown', this._onDotMouseDown);
+      themePicker.removeEventListener('click', this._onThemePickerClick);
+      this._onDotMouseMove = null;
+      this._onDotMouseUp = null;
+      this._onDotMouseDown = null;
+      this._onThemePickerClick = null;
     }
 
     calculateInitialPosition(color) {
@@ -155,7 +170,9 @@
     createDot(color, fromWorkspace = false) {
       const [r, g, b] = color.c;
       const dot = document.createElement('div');
-      dot.classList.add('zen-theme-picker-dot');
+      if (color.isPrimary) {
+        dot.classList.add('primary');
+      }
       if (color.isCustom) {
         if (!color.c) {
           return;
@@ -167,7 +184,6 @@
         const { x, y } = this.calculateInitialPosition(color);
         const dotPad = this.panel.querySelector('.zen-theme-picker-gradient');
 
-        const dot = document.createElement('div');
         dot.classList.add('zen-theme-picker-dot');
 
         dot.style.left = `${x * 100}%`;
@@ -239,8 +255,9 @@
 
       let id = this.dots.length;
 
-      if (primary === true) {
+      if (primary) {
         id = 0;
+        dot.classList.add('primary');
 
         const existingPrimaryDot = this.dots.find((d) => d.ID === 0);
         if (existingPrimaryDot) {
@@ -555,12 +572,12 @@
     }
 
     onDotMouseDown(event) {
-      event.preventDefault();
       if (event.button === 2) {
         return;
       }
       const draggedDot = this.dots.find((dot) => dot.Element === event.target);
       if (draggedDot) {
+        event.preventDefault();
         this.dragging = true;
         this.draggedDot = event.target;
         this.draggedDot.classList.add('dragging');
@@ -689,7 +706,7 @@
 
     getGradient(colors, forToolbar = false) {
       const themedColors = this.themedColors(colors);
-      this.useAlgo = themedColors[0].algorithm;
+      this.useAlgo = themedColors[0]?.algorithm ?? '';
 
       if (themedColors.length === 0) {
         return forToolbar ? 'var(--zen-themed-toolbar-bg)' : 'var(--zen-themed-toolbar-bg-transparent)';
@@ -889,7 +906,7 @@
 
     fixTheme(theme) {
       // add a primary color if there isn't one
-      if (!theme.gradientColors.find((color) => color.isPrimary)) {
+      if (!theme.gradientColors.find((color) => color.isPrimary) && theme.gradientColors.length > 0) {
         theme.gradientColors[(theme.gradientColors.length / 2) | 0].isPrimary = true;
       }
       return theme;
@@ -934,6 +951,9 @@
       if (primaryColor) {
         return primaryColor.c;
       }
+      if (colors.length === 0) {
+        return this.hexToRgb(this.getNativeAccentColor());
+      }
       // Get the middle color
       return colors[Math.floor(colors.length / 2)].c;
     }
@@ -975,6 +995,11 @@
       if (this.updated) {
         await this.updateCurrentWorkspace(false);
       }
+      this.uninitThemePicker();
+    }
+
+    handlePanelOpen() {
+      this.initThemePicker();
     }
   }
 
