@@ -217,12 +217,6 @@
     bottom: calc(-1 * var(--zen-toolbox-padding));
   }
 
-  @media (-moz-bool-pref: 'zen.view.show-bottom-border') {
-    &::after {
-      background: light-dark(rgba(1, 1, 1, 0.075), rgba(255, 255, 255, 0.1));
-    }
-  }
-
   & > * {
     border-top-width: 0 !important;
   }
