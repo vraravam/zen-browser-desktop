@@ -1583,12 +1583,21 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   _processTabVisibility(workspaceUuid, containerId, workspaces) {
+    const hiddenTabs = [];
+    const visibleTabs = gBrowser.tabContainer.visibleTabs;
     for (const tab of gBrowser.tabs) {
       if (!this._shouldShowTab(tab, workspaceUuid, containerId, workspaces)) {
-        gBrowser.hideTab(tab, undefined, true);
+        hiddenTabs.push(tab);
       } else if (tab.hasAttribute('zen-essential')) {
         gBrowser.showTab(tab, undefined, true);
       }
+    }
+    // If there's no more visible tabs, make a new tab visible
+    if (hiddenTabs.length === visibleTabs.length) {
+      this._createNewTabForWorkspace({ uuid: workspaceUuid });
+    }
+    for (const tab of hiddenTabs) {
+      gBrowser.hideTab(tab, undefined, true);
     }
   }
 

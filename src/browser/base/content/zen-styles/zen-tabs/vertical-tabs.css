@@ -578,6 +578,7 @@
     align-items: center;
     justify-content: center;
     opacity: .4;
+    align-items: center;
   }
   & #zen-essentials-container {
     justify-content: center;
