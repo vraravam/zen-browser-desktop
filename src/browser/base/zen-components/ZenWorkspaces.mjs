@@ -1135,6 +1135,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
       if (!ignoreStrip) {
         await browser.ZenWorkspaces._expandWorkspacesStrip(browser);
+        browser.ZenWorkspaces._fixIndicatorsNames(workspaces);
       }
     });
   }
