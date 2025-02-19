@@ -26,10 +26,6 @@
   border-color: transparent !important;
 }
 
-#urlbar[focused='true'] {
-  box-shadow: var(--panel-shadow) !important;
-}
-
 #urlbar-background {
   background: var(--zen-toolbar-element-bg) !important;
   border-radius: var(--border-radius-medium);
