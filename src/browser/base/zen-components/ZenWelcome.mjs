@@ -197,6 +197,7 @@
         element.style.opacity = 0;
         element.style.removeProperty('display');
       }
+      gZenUIManager.updateTabsToolbar();
       await animate('#browser > *', { opacity: [0, 1] });
       gZenUIManager.showToast('zen-welcome-finished');
     }
