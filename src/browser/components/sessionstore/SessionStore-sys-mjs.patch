@@ -1,5 +1,5 @@
 diff --git a/browser/components/sessionstore/SessionStore.sys.mjs b/browser/components/sessionstore/SessionStore.sys.mjs
-index 908743177d9f95e2e6549c689e7a493ca8668701..2dd53f5fdbffb21dfdc8bf68a6771d4ac0acd8be 100644
+index 334c041c1748564094c6a177bb24f146791d96d8..c8f4ad6eeab4bf1ede6f23814d370d839ed83f76 100644
 --- a/browser/components/sessionstore/SessionStore.sys.mjs
 +++ b/browser/components/sessionstore/SessionStore.sys.mjs
 @@ -2174,9 +2174,10 @@ var SessionStoreInternal = {
@@ -22,7 +22,7 @@ index 908743177d9f95e2e6549c689e7a493ca8668701..2dd53f5fdbffb21dfdc8bf68a6771d4a
        // Restore the state into the new tab.
        this.restoreTab(newTab, tabState, {
          restoreImmediately: aRestoreImmediately,
-@@ -5315,7 +5317,7 @@ var SessionStoreInternal = {
+@@ -5315,14 +5317,14 @@ var SessionStoreInternal = {
      }
  
      let tabbrowser = aWindow.gBrowser;
@@ -31,3 +31,11 @@ index 908743177d9f95e2e6549c689e7a493ca8668701..2dd53f5fdbffb21dfdc8bf68a6771d4a
      /** @type {WindowStateData} */
      let winData = this._windows[aWindow.__SSi];
      let tabsData = (winData.tabs = []);
+ 
+     // update the internal state data for this window
+     for (let tab of tabs) {
+-      if (tab == aWindow.FirefoxViewHandler.tab) {
++      if (tab == aWindow.FirefoxViewHandler.tab || tab.hasAttribute("zen-empty-tab")) {
+         continue;
+       }
+       let tabData = lazy.TabState.collect(tab, TAB_CUSTOM_VALUES.get(tab));

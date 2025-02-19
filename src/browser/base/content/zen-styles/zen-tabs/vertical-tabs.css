@@ -256,6 +256,10 @@
   & .tabbrowser-tab {
     transition: scale 0.07s ease;
 
+    &[zen-empty-tab] {
+      display: none;
+    }
+
     &:active {
       scale: 0.98;
     }

@@ -254,7 +254,9 @@
           const container = document.querySelector(
             `#vertical-pinned-tabs-container .zen-workspace-tabs-section[zen-workspace-id="${pin.workspaceUuid}"]`
           );
-          container.insertBefore(newTab, container.lastChild);
+          if (container) {
+            container.insertBefore(newTab, container.lastChild);
+          }
         }
         gBrowser.tabContainer._invalidateCachedTabs();
 
@@ -490,9 +492,8 @@
       let nextTab = findNextTab(1) || findNextTab(-1);
 
       if (!nextTab) {
-        ZenWorkspaces._createNewTabForWorkspace({ uuid: ZenWorkspaces.activeWorkspace });
-
-        nextTab = findNextTab(1) || findNextTab(-1);
+        ZenWorkspaces.selectEmptyTab();
+        return;
       }
 
       if (nextTab) {
