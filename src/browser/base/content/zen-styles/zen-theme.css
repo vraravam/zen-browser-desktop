@@ -171,8 +171,6 @@
   --arrowpanel-background: var(--zen-dialog-background) !important;
 
   --zen-big-shadow: 0 0 9.73px 0px light-dark(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.25));
-  --panel-shadow: var(--zen-big-shadow);
-  --panel-shadow-margin: 10px !important;
 
   /* Nativity */
   --zen-native-content-radius: var(--zen-border-radius);

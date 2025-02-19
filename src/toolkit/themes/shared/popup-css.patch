@@ -1,18 +1,28 @@
 diff --git a/toolkit/themes/shared/popup.css b/toolkit/themes/shared/popup.css
-index 648c65a9c21dc0e670b50c82cbfb237a68a951d9..cdce283353eecf42a70b7ea3a806703ba10d6a17 100644
+index 648c65a9c21dc0e670b50c82cbfb237a68a951d9..ba20bfdd8e6b9cc985977d06e166147e458f2640 100644
 --- a/toolkit/themes/shared/popup.css
 +++ b/toolkit/themes/shared/popup.css
-@@ -30,8 +30,7 @@ panel {
+@@ -21,8 +21,8 @@ panel {
+   --panel-border-color: ThreeDShadow;
+   --panel-width: initial;
+ 
+-  --panel-shadow-margin: 0px;
+-  --panel-shadow: 0 0 var(--panel-shadow-margin) hsla(0,0%,0%,.2);
++  --panel-shadow-margin: 10px !important;
++  --panel-shadow: var(--zen-big-shadow);
+   -moz-window-input-region-margin: var(--panel-shadow-margin);
+   margin: calc(-1 * var(--panel-shadow-margin));
+ 
+@@ -30,8 +30,6 @@ panel {
    --background-color-canvas: var(--panel-background);
  
    @media (-moz-platform: linux) {
 -    --panel-border-radius: 8px;
 -    --panel-padding-block: 3px;
-+
  
      @media (prefers-contrast) {
        --panel-border-color: color-mix(in srgb, currentColor 60%, transparent);
-@@ -49,18 +48,7 @@ panel {
+@@ -49,18 +47,6 @@ panel {
      --panel-border-radius: 0px !important;
    }
  
@@ -28,11 +38,10 @@ index 648c65a9c21dc0e670b50c82cbfb237a68a951d9..cdce283353eecf42a70b7ea3a806703b
 -    /* This should be kept in sync with GetMenuMaskImage() */
 -    --panel-border-radius: 6px;
 -  }
-+
  
    &::part(content) {
      display: flex;
-@@ -198,7 +186,6 @@ panel:where([type="arrow"]) {
+@@ -198,7 +184,6 @@ panel:where([type="arrow"]) {
      }
  
      &[animating] {
