@@ -100,6 +100,7 @@
 
     async _refreshPinnedTabs({ init = false } = {}) {
       await ZenWorkspaces.promiseSectionsInitialized;
+      await SessionStore.promiseAllWindowsRestored;
       await this._initializePinsCache();
       await this._initializePinnedTabs(init);
     }
@@ -565,6 +566,7 @@
         }
         gBrowser.pinTab(tab);
         this.onTabIconChanged(tab);
+        this._onTabMove(tab);
       }
       gZenUIManager.updateTabsToolbar();
     }

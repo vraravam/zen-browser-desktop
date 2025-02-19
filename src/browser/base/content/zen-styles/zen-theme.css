@@ -138,9 +138,6 @@
   --fp-contextmenu-menuitem-border-radius: calc(4px + var(--fp-contextmenu-menuitem-border-width));
   --fp-contextmenu-menuitem-padding-block: 6px;
   --fp-contextmenu-menuitem-padding-inline: 10px;
-  @media (-moz-platform: windows) {
-    --fp-contextmenu-menuitem-padding-inline: 8px;
-  }
   --fp-contextmenu-menuitem-border-width: 2px;
   --fp-contextmenu-menuicon-margin-inline: 12px;
   --fp-contextmenu-menuitem-margin-inline: calc(4px - var(--fp-contextmenu-menuitem-border-width));
