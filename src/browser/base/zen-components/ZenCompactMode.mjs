@@ -282,15 +282,28 @@ var gZenCompactModeManager = {
   },
 
   get hoverableElements() {
+    if (typeof this._showSidebarAndToolbarOnHover === 'undefined') {
+      this._showSidebarAndToolbarOnHover = Services.prefs.getBoolPref(
+        'zen.view.compact.show-sidebar-and-toolbar-on-hover',
+        true
+      );
+    }
     return [
+      ...(!this._showSidebarAndToolbarOnHover
+        ? []
+        : [
+            {
+              element: this.sidebar,
+              screenEdge: this.sidebarIsOnRight ? 'right' : 'left',
+              keepHoverDuration: 100,
+            },
+            {
+              element: document.getElementById('zen-appcontent-navbar-container'),
+              screenEdge: 'top',
+            },
+          ]),
       {
-        element: this.sidebar,
-        screenEdge: this.sidebarIsOnRight ? 'right' : 'left',
-        keepHoverDuration: 100,
-      },
-      {
-        element: document.getElementById('zen-appcontent-navbar-container'),
-        screenEdge: 'top',
+        element: gZenVerticalTabsManager.actualWindowButtons,
       },
       {
         element: gZenVerticalTabsManager.actualWindowButtons,
