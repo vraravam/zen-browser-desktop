@@ -1684,7 +1684,8 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       if (!tabToSelect && gBrowser.visibleTabs.length) {
         tabToSelect = gBrowser.visibleTabs[gBrowser.visibleTabs.length - 1];
       }
-      if (tabToSelect?.hasAttribute('zen-essential')) { // Never select an essential tab
+      if (tabToSelect?.hasAttribute('zen-essential')) {
+        // Never select an essential tab
         tabToSelect = null;
       }
     }
