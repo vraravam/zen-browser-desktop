@@ -467,8 +467,11 @@
             if (selectedTab.hasAttribute('glance-id')) {
               break;
             }
-            gBrowser.explicitUnloadTabs([selectedTab]);
-            selectedTab.removeAttribute('linkedpanel');
+            // Do not unload about:* pages
+            if (!selectedTab.linkedBrowser?.currentURI.spec.startsWith('about:')) {
+              gBrowser.explicitUnloadTabs([selectedTab]);
+              selectedTab.removeAttribute('linkedpanel');
+            }
           }
           break;
         case 'reset':
