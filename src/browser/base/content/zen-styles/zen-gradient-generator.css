@@ -167,7 +167,7 @@
   margin-bottom: 20px;
 
   background: var(--zen-toolbar-element-bg);
-  background-image: radial-gradient(light-dark(rgba(0, 0, 0, 0.05), rgba(0,0,0,.225)) 1px, transparent 0);
+  background-image: radial-gradient(light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.225)) 1px, transparent 0);
   background-position: -19px -19px;
   background-size: 10px 10px;
 
@@ -179,7 +179,7 @@
     border-radius: 50%;
     background: var(--zen-theme-picker-dot-color);
     @media (-prefers-color-scheme: dark) {
-      box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+      box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
     }
     cursor: pointer;
     border: 2px solid #ffffff;

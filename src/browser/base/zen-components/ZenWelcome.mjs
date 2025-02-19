@@ -40,10 +40,7 @@
   }
 
   function openInitialPinTab() {
-    const tabs = [
-      'https://reddit.com/r/zen_browser',
-      'https://x.com/zen_browser',
-    ];
+    const tabs = ['https://reddit.com/r/zen_browser', 'https://x.com/zen_browser'];
     for (const url of tabs) {
       const tab = window.gBrowser.addTrustedTab(url, {
         inBackground: true,
