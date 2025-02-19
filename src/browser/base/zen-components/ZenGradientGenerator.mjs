@@ -1,7 +1,6 @@
 {
   class ZenThemePicker extends ZenMultiWindowFeature {
     static GRADIENT_IMAGE_URL = 'chrome://browser/content/zen-images/gradient.png';
-    static GRADIENT_DISPLAY_URL = 'chrome://browser/content/zen-images/gradient-display.png';
     static MAX_DOTS = 3;
 
     currentOpacity = 0.5;
@@ -90,9 +89,52 @@
 
       // Call the rest of the initialization
       this.initContextMenu();
+      this.initPredefinedColors();
 
       this._hasInitialized = true;
       this.onDarkModeChange(null);
+    }
+
+    initPredefinedColors() {
+      document.getElementById('PanelUI-zen-gradient-generator-predefined').addEventListener('click', async (event) => {
+        const target = event.target;
+        const rawPosition = target.getAttribute('data-position');
+        if (!rawPosition) {
+          return;
+        }
+        const algo = target.getAttribute('data-algo');
+        const numDots = parseInt(target.getAttribute('data-num-dots'));
+        if (algo == 'float') {
+          for (const dot of this.dots) {
+            dot.element.remove();
+          }
+          this.dots = [];
+        }
+        // Generate new gradient from the single color given
+        const [x, y] = rawPosition.split(',').map((pos) => parseInt(pos));
+        let dots = [
+          {
+            ID: 0,
+            position: { x, y },
+          },
+        ];
+        for (let i = 1; i < numDots; i++) {
+          dots.push({
+            ID: i,
+            position: { x: 0, y: 0 },
+          });
+        }
+        this.useAlgo = algo;
+        dots = this.calculateCompliments(dots, 'update', this.useAlgo);
+        if (algo == 'float') {
+          for (const dot of dots) {
+            this.spawnDot(dot.position);
+          }
+          this.dots[0].element.classList.add('primary');
+        }
+        this.handleColorPositions(dots);
+        this.updateCurrentWorkspace();
+      });
     }
 
     initCustomColorInput() {
@@ -113,7 +155,6 @@
       this._onDotMouseUp = this.onDotMouseUp.bind(this);
       this._onDotMouseDown = this.onDotMouseDown.bind(this);
       this._onThemePickerClick = this.onThemePickerClick.bind(this);
-      themePicker.style.setProperty('--zen-theme-picker-gradient-image', `url(${ZenThemePicker.GRADIENT_DISPLAY_URL})`);
       document.addEventListener('mousemove', this._onDotMouseMove);
       document.addEventListener('mouseup', this._onDotMouseUp);
       themePicker.addEventListener('mousedown', this._onDotMouseDown);
@@ -350,7 +391,7 @@
 
       this.useAlgo = harmonyAngles.type;
 
-      if (!harmonyAngles || harmonyAngles.angles.length === 0) return [];
+      if (!harmonyAngles || harmonyAngles.angles.length === 0) return dots;
 
       let primaryDot = dots.find((dot) => dot.ID === 0);
       if (!primaryDot) return [];
@@ -391,8 +432,6 @@
           dot.element.style.zIndex = 999;
 
           let pixelX, pixelY;
-          const rect = this.panel.querySelector('.zen-theme-picker-gradient').getBoundingClientRect();
-
           if (dot.position.x === null) {
             const leftPercentage = parseFloat(dot.element.style.left) / 100;
             const topPercentage = parseFloat(dot.element.style.top) / 100;
