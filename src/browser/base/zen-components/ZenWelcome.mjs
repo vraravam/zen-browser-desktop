@@ -39,6 +39,26 @@
     window.MozXULElement.insertFTLIfNeeded('browser/zen-welcome.ftl');
   }
 
+  function openInitialPinTab() {
+    const tabs = [
+      'https://reddit.com/r/zen_browser',
+      'https://x.com/zen_browser',
+    ];
+    for (const url of tabs) {
+      const tab = window.gBrowser.addTrustedTab(url, {
+        inBackground: true,
+      });
+      gBrowser.pinTab(tab);
+    }
+  }
+
+  function openWelcomeTab() {
+    const tab = window.gBrowser.addTrustedTab('https://zen-browser.app/welcome', {
+      inBackground: true,
+    });
+    gBrowser.selectedTab = tab;
+  }
+
   class ZenWelcomePages {
     constructor(pages) {
       this._currentPage = -1;
@@ -495,6 +515,8 @@
     centerWindowOnScreen();
     initializeZenWelcome();
     animateInitialStage();
+    openInitialPinTab();
+    openWelcomeTab();
   }
 
   startZenWelcome();
