@@ -113,7 +113,6 @@
       }
     }
 
-    #navigator-toolbox:hover,
     #navigator-toolbox[zen-has-hover],
     #navigator-toolbox[zen-user-show],
     #navigator-toolbox[flash-popup],
@@ -303,7 +302,6 @@
         }
       }
 
-      & #zen-appcontent-navbar-container:hover,
       & #zen-appcontent-navbar-container[zen-has-hover],
       & #zen-appcontent-navbar-container:focus-within,
       & #zen-appcontent-navbar-container[zen-user-show],
