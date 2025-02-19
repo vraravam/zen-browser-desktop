@@ -83,6 +83,7 @@ pref('zen.tabs.rename-tabs', true);
 pref('zen.theme.accent-color', "#ffb787");
 pref('zen.theme.content-element-separation', 6); // In pixels
 pref('zen.theme.gradient', true);
+pref('zen.theme.gradient.show-custom-colors', false);
 pref('zen.theme.essentials-favicon-bg', true);
 
 pref('zen.tabs.show-newtab-vertical', true);
