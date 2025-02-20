@@ -309,7 +309,6 @@
           existingPrimaryDot.ID = this.dots.length;
           existingPrimaryDot.element.classList.remove('primary');
         }
-        dot.classList.add('primary');
       }
 
       const colorFromPos = this.getColorFromPosition(relativePosition.x, relativePosition.y);

@@ -164,14 +164,14 @@ jobs:
         if: ${{ !(inputs.generate-gpo && matrix.arch == 'aarch64') }}
         run: |
           cd engine/
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain 1.79
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain 1.80
           source $HOME/.cargo/env
           if test "${{ matrix.arch }}" = "aarch64"; then
             rustup target add aarch64-pc-windows-msvc
           else
             rustup target add x86_64-pc-windows-msvc
           fi
-          cargo install cargo-download
+          cargo install cargo-download --locked
           cargo download -x windows=0.58.0
           export CARGO_INCREMENTAL=0
           echo "" >> ../configs/common/mozconfig

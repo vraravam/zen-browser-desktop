@@ -50,10 +50,12 @@
   }
 
   function openWelcomeTab() {
+    const currentSelectedTab = window.gBrowser.selectedTab;
     const tab = window.gBrowser.addTrustedTab('https://zen-browser.app/welcome', {
       inBackground: true,
     });
     gBrowser.selectedTab = tab;
+    gBrowser.removeTab(currentSelectedTab);
   }
 
   class ZenWelcomePages {
@@ -425,6 +427,8 @@
             });
             gZenPinnedTabManager.addToEssentials(createdTab);
           }
+          openInitialPinTab();
+          openWelcomeTab();
         },
       },
       {
@@ -513,8 +517,6 @@
     centerWindowOnScreen();
     initializeZenWelcome();
     animateInitialStage();
-    openInitialPinTab();
-    openWelcomeTab();
   }
 
   startZenWelcome();

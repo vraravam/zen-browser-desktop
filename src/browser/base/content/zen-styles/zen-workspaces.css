@@ -455,15 +455,16 @@
 }
 
 .zen-current-workspace-indicator {
-  padding: 15px calc(6px + var(--tab-inline-padding));
+  padding: 15px calc(4px + var(--tab-inline-padding));
   font-weight: 600;
   position: absolute;
   max-height: var(--zen-workspace-indicator-height);
   min-height: var(--zen-workspace-indicator-height);
-  gap: 10px;
+  gap: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  align-items: center;
   flex-direction: row !important;
 
   &::before {
@@ -492,7 +493,6 @@
   }
 
   .zen-current-workspace-indicator-name {
-    font-size: 13px;
     opacity: 0.5;
     display: block;
   }
