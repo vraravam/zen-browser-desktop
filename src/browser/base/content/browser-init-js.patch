@@ -1,5 +1,5 @@
 diff --git a/browser/base/content/browser-init.js b/browser/base/content/browser-init.js
-index 63100defacf66c6b3232b9e0a783a5fd14e3a46a..22b79b021ff0baab4dac602447a124308208c828 100644
+index 63100defacf66c6b3232b9e0a783a5fd14e3a46a..398d685b142a47a85619dfc55772ea98ccfad445 100644
 --- a/browser/base/content/browser-init.js
 +++ b/browser/base/content/browser-init.js
 @@ -162,13 +162,15 @@ var gBrowserInit = {
@@ -30,3 +30,11 @@ index 63100defacf66c6b3232b9e0a783a5fd14e3a46a..22b79b021ff0baab4dac602447a12430
      if (gToolbarKeyNavEnabled) {
        ToolbarKeyboardNavigator.init();
      }
+@@ -365,6 +371,7 @@ var gBrowserInit = {
+     TelemetryTimestamps.add("delayedStartupStarted");
+ 
+     this._cancelDelayedStartup();
++    ZenWorkspaces.afterLoadInit();
+ 
+     gBrowser.addEventListener(
+       "PermissionStateChange",

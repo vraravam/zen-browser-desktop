@@ -83,18 +83,11 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     if (!this._hasInitializedTabsStrip) {
       await this.delayedStartup();
     }
-    await this.promiseSectionsInitialized;
-    window.addEventListener(
-      'MozAfterPaint',
-      async () => {
-        await SessionStore.promiseAllWindowsRestored;
-        await this.afterLoadInit();
-      },
-      { once: true }
-    );
   }
 
   async afterLoadInit() {
+    await this.promiseSectionsInitialized;
+    await SessionStore.promiseAllWindowsRestored;
     console.info('ZenWorkspaces: ZenWorkspaces initialized');
 
     await this.initializeWorkspaces();
@@ -209,7 +202,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
         for (const tab of tabs) {
           if (tab.hasAttribute('zen-essential')) {
             essentialsContaienr.appendChild(tab);
-            continue
+            continue;
           } else if (tab.pinned) {
             pinnedContainer.insertBefore(tab, pinnedContainer.lastChild);
             continue;
@@ -595,6 +588,22 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       } catch (e) {
         console.error('ZenWorkspaces: Error initializing theme picker', e);
       }
+      this._selectStartPage();
+    }
+  }
+
+  _selectStartPage() {
+    const currentTab = gBrowser.selectedTab;
+    const isEssential = currentTab.hasAttribute('zen-essential');
+    if (isEssential) {
+      this.selectEmptyTab();
+      return;
+    }
+    const currentTabUrl = currentTab.linkedBrowser?.currentURI.spec;
+    console.log('ZenWorkspaces: Current tab URL', currentTabUrl);
+    if (currentTabUrl === 'about:blank' || currentTabUrl === 'about:newtab' || currentTabUrl === 'about:home') {
+      this.selectEmptyTab();
+      gBrowser.removeTab(currentTab);
     }
   }
 

@@ -104,14 +104,14 @@
         return;
       }
       let userContextId;
-      if (tab.hasAttribute("usercontextid")) {
-        userContextId = tab.getAttribute("usercontextid");
+      if (tab.hasAttribute('usercontextid')) {
+        userContextId = tab.getAttribute('usercontextid');
       }
       const pinnedUrl = Services.io.newURI(pin.url);
       const browser = tab.linkedBrowser;
       browser.loadURI(pinnedUrl, {
         triggeringPrincipal: Services.scriptSecurityManager.createNullPrincipal({
-          userContextId
+          userContextId,
         }),
       });
     }
@@ -397,7 +397,7 @@
       pin.userContextId = userContextId ? parseInt(userContextId, 10) : 0;
 
       await ZenPinnedTabsStorage.savePin(pin);
-      const currentWorkspace = await ZenWorkspaces.getActiveWorkspace();
+      this.resetPinChangedUrl(tab);
       await this._refreshPinnedTabs();
     }
 
@@ -434,7 +434,7 @@
         tab.removeAttribute('zen-pinned-entry');
         return;
       }
-      const currentWorkspace = await ZenWorkspaces.getActiveWorkspace();
+      this.onLocationChange(browser);
       await this._refreshPinnedTabs();
     }
 
@@ -598,6 +598,7 @@
           gBrowser.unpinTab(tab);
         }
         gBrowser.pinTab(tab);
+        this.resetPinChangedUrl(tab);
         this.onTabIconChanged(tab);
         this._onTabMove(tab);
       }
@@ -742,7 +743,7 @@
 
     async onLocationChange(browser) {
       const tab = gBrowser.getTabForBrowser(browser);
-      if (!tab || !tab.pinned || tab.hasAttribute('zen-esential') || !this._pinsCache) {
+      if (!tab || !tab.pinned || tab.hasAttribute('zen-essential') || !this._pinsCache) {
         return;
       }
       const pin = this._pinsCache.find((pin) => pin.uuid === tab.getAttribute('zen-pin-id'));
@@ -759,7 +760,7 @@
 
     resetPinChangedUrl(tab) {
       if (!tab.hasAttribute('zen-pinned-changed')) {
-        return
+        return;
       }
       tab.removeAttribute('zen-pinned-changed');
       tab.style.removeProperty('--zen-original-tab-icon');

@@ -554,12 +554,12 @@
         width: -moz-available;
       }
 
-      &[zen-pinned-changed='true'] .tab-icon-image {
+      &[zen-pinned-changed='true'] .tab-icon-stack {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        /* -4px for the reset tab button extra margin */
-        left: calc(-1 * var(--toolbarbutton-inner-padding) - 16px);
+        /* 16px divided by 2, it's the icon size */
+        left: 8px;
         margin: 0 !important;
         pointer-events: none;
       }
@@ -579,7 +579,7 @@
           opacity: 0.6;
         }
 
-        & ~ .tab-icon-stack .tab-icon-image {
+        & ~ .tab-icon-stack {
           opacity: 0;
         }
 
@@ -839,7 +839,7 @@
   height: calc(100% - var(--tab-block-margin) * 2);
   margin-left: calc(-1 * var(--tab-inline-padding) + var(--tab-block-margin));
   margin-right: 4px;
-  padding: 0 calc(var(--toolbarbutton-inner-padding) - 5px) 0 calc(var(--toolbarbutton-inner-padding) / 4 + var(--tab-inline-padding) - 2px);
+  padding: 0 calc(var(--toolbarbutton-inner-padding) - 4px) 0 calc(var(--toolbarbutton-inner-padding) / 4 + var(--tab-inline-padding) - 2px);
   border-radius: 0;
   border-top-left-radius: var(--border-radius-medium);
   width: unset;
@@ -863,10 +863,10 @@
     height: 16px;
     background: light-dark(rgba(88, 79, 79, 0.02), rgba(255, 255, 255, 0.3));
     position: absolute;
-    right: calc(var(--tab-inline-padding) / 1.5 - 4px);
+    right: calc(var(--tab-inline-padding) / 2 - 2px);
     top: 50%;
     border-radius: 2px;
-    transform: rotate(15deg) translateY(-50%);
+    transform: rotate(12deg) translateY(-50%);
   }
 
   &:hover::after {
