@@ -631,6 +631,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
    * @param {string} gridType - The type of grid layout.
    */
   splitTabs(tabs, gridType) {
+    tabs = tabs.filter((tab) => !tab.hasAttribute("zen-empty-tab"));
     if (tabs.length < 2) {
       return;
     }
