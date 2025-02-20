@@ -1491,7 +1491,14 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
     // Second pass: Handle tab selection
     this.tabContainer._invalidateCachedTabs();
-    const tabToSelect = await this._handleTabSelection(window, onInit, containerId, workspaces, previousWorkspace.uuid, prevTabUsed);
+    const tabToSelect = await this._handleTabSelection(
+      window,
+      onInit,
+      containerId,
+      workspaces,
+      previousWorkspace.uuid,
+      prevTabUsed
+    );
 
     // Update UI and state
     await this._updateWorkspaceState(window, onInit, tabToSelect);
@@ -1661,7 +1668,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   async _handleTabSelection(window, onInit, containerId, workspaces, previousWorkspaceId, prevTabUsed) {
-    const currentSelectedTab = prevTabUsed || gBrowser.selectedTab;
+    const currentSelectedTab = prevTabUsed || gBrowser.selectedTab;
     const oldWorkspaceId = previousWorkspaceId;
     const lastSelectedTab = this._lastSelectedWorkspaceTabs[window.uuid];
 
@@ -1737,7 +1744,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     await this.updateWorkspaceIndicator(window, this.workspaceIndicator);
 
     // Fix ctrl+tab behavior. Note, we dont call it with "await" because we dont want to wait for it
-    this._fixCtrlTabBehavior(); 
+    this._fixCtrlTabBehavior();
   }
 
   async _fixCtrlTabBehavior() {
@@ -1916,7 +1923,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       const contaienr = document.querySelector(
         `#vertical-pinned-tabs-container .zen-workspace-tabs-section[zen-workspace-id="${workspaceId}"]`
       );
-      console.log(tab)
+      console.log(tab);
       contaienr.insertBefore(tab, contaienr.firstChild);
       changed = true;
     }
@@ -1987,7 +1994,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   findTabToBlur(tab) {
-    return (tab.hasAttribute('zen-essential') && this._emptyTab) ? this._emptyTab : tab;
+    return tab.hasAttribute('zen-essential') && this._emptyTab ? this._emptyTab : tab;
   }
 
   async setDefaultWorkspace() {
