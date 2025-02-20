@@ -20,7 +20,7 @@ do_icons() {
   echo "#endif" >> jar.inc.mn
 }
 
-do_icons win WIN
+do_icons lin WIN
 do_icons lin MACOSX # TODO: use macos icons
 do_icons lin LINUX
 
