@@ -598,8 +598,6 @@
 
         this.updateCurrentWorkspace(true);
       } else if (!clickedDot && existingPrimaryDot) {
-        existingPrimaryDot.element.style.left = `${relativeX}px`;
-        existingPrimaryDot.element.style.top = `${relativeY}px`;
         existingPrimaryDot.position = {
           x: relativeX,
           y: relativeY,
