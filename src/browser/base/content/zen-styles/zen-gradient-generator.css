@@ -188,7 +188,7 @@
     transition: transform 0.2s;
     transform: translate(-50%, -50%);
 
-    &.primary {
+    &:first-of-type {
       width: 28px;
       height: 28px;
       border-width: 3px;
