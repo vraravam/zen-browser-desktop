@@ -6,12 +6,11 @@
 :root:not([inDOMFullscreen='true']):not([chromehidden~='location']):not([chromehidden~='toolbar']) {
   & #tabbrowser-tabbox #tabbrowser-tabpanels .browserSidebarContainer {
     width: -moz-available;
-    border-radius: var(--zen-native-inner-radius);
     position: relative;
-
     overflow: hidden;
 
     :root:not([zen-no-padding='true']) & {
+      border-radius: var(--zen-native-inner-radius);
       box-shadow: var(--zen-big-shadow);
     }
 

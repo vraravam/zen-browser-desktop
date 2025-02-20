@@ -45,7 +45,9 @@
       const tab = window.gBrowser.addTrustedTab(url, {
         inBackground: true,
       });
-      gBrowser.pinTab(tab);
+      setTimeout((tab) => {
+        gBrowser.pinTab(tab);
+      }, 1000, tab);
     }
   }
 
@@ -425,7 +427,9 @@
             const createdTab = window.gBrowser.addTrustedTab(url, {
               inBackground: true,
             });
-            gZenPinnedTabManager.addToEssentials(createdTab);
+            setTimeout((tab) => {
+              gZenPinnedTabManager.addToEssentials(tab);
+            }, 1000, createdTab);
           }
           openInitialPinTab();
           openWelcomeTab();

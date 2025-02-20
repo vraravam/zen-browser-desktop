@@ -85,6 +85,35 @@
       if (tab.hasAttribute('zen-essential')) {
         tab.querySelector('.tab-background').style.setProperty('--zen-tab-icon', `url(${iconUrl})`);
       }
+      // TODO: work on this
+      //if (tab.hasAttribute('zen-pinned-changed') || !this._pinsCache) {
+      //  return;
+      //}
+      // Save if the url is the same as the pinned tab
+      //const pin = this._pinsCache.find((pin) => pin.uuid === tab.getAttribute('zen-pin-id'));
+      //if (pin) {
+      //  pin.iconUrl = iconUrl;
+      //  ZenPinnedTabsStorage.savePin(pin);
+      //}
+    }
+
+    _onTabResetPinButton(event, tab) {
+      event.stopPropagation();
+      const pin = this._pinsCache?.find((pin) => pin.uuid === tab.getAttribute('zen-pin-id'));
+      if (!pin) {
+        return;
+      }
+      let userContextId;
+      if (tab.hasAttribute("usercontextid")) {
+        userContextId = tab.getAttribute("usercontextid");
+      }
+      const pinnedUrl = Services.io.newURI(pin.url);
+      const browser = tab.linkedBrowser;
+      browser.loadURI(pinnedUrl, {
+        triggeringPrincipal: Services.scriptSecurityManager.createNullPrincipal({
+          userContextId
+        }),
+      });
     }
 
     get enabled() {
@@ -421,6 +450,7 @@
 
       this.log(`Removing pinned attributes for tab ${tab.getAttribute('zen-pin-id')}`);
       await ZenPinnedTabsStorage.removePin(tab.getAttribute('zen-pin-id'));
+      this.resetPinChangedUrl(tab);
 
       if (!isClosing) {
         tab.removeAttribute('zen-pin-id');
@@ -430,7 +460,6 @@
           tab.setAttribute('zen-workspace-id', workspace.uuid);
         }
       }
-      const currentWorkspace = await ZenWorkspaces.getActiveWorkspace();
       await this._refreshPinnedTabs();
     }
 
@@ -709,6 +738,39 @@
       }
 
       return moved;
+    }
+
+    async onLocationChange(browser) {
+      const tab = gBrowser.getTabForBrowser(browser);
+      if (!tab || !tab.pinned || tab.hasAttribute('zen-esential') || !this._pinsCache) {
+        return;
+      }
+      const pin = this._pinsCache.find((pin) => pin.uuid === tab.getAttribute('zen-pin-id'));
+      if (!pin) {
+        return;
+      }
+      // Add an indicator that the pin has been changed
+      if (pin.url === browser.currentURI.spec) {
+        this.resetPinChangedUrl(tab);
+        return;
+      }
+      this.pinHasChangedUrl(tab, pin);
+    }
+
+    resetPinChangedUrl(tab) {
+      if (!tab.hasAttribute('zen-pinned-changed')) {
+        return
+      }
+      tab.removeAttribute('zen-pinned-changed');
+      tab.style.removeProperty('--zen-original-tab-icon');
+    }
+
+    pinHasChangedUrl(tab, pin) {
+      if (tab.hasAttribute('zen-pinned-changed')) {
+        return;
+      }
+      tab.setAttribute('zen-pinned-changed', 'true');
+      tab.style.setProperty('--zen-original-tab-icon', `url(${pin.iconUrl})`);
     }
 
     removeTabContainersDragoverClass() {

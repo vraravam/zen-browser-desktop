@@ -306,7 +306,8 @@
       }
       & label { display: none !important; }
       & .tab-close-button,
-      & .tab-reset-button {
+      & .tab-reset-button,
+      & .tab-reset-pin-button {
         display: none !important;
       }
 
@@ -398,6 +399,16 @@
   .tabbrowser-tab[zen-glance-tab='true'] {
     width: fit-content !important;
   }
+}
+
+.tab-reset-pin-label {
+  pointer-events: none;
+  transition: opacity 0.1s ease-in-out, margin 0.1s ease-in-out, max-height 0.1s ease-in-out;
+  max-height: 0px;
+  opacity: 0;
+  transform: translateY(-5px);
+  font-size: x-small;
+  margin: 0;
 }
 
 /* Mark: toolbox as expanded */
@@ -543,6 +554,40 @@
         width: -moz-available;
       }
 
+      &[zen-pinned-changed='true'] .tab-icon-image {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        /* -4px for the reset tab button extra margin */
+        left: calc(-1 * var(--toolbarbutton-inner-padding) - 16px);
+        margin: 0 !important;
+        pointer-events: none;
+      }
+
+      &[zen-pinned-changed='true'] .tab-reset-pin-button image {
+        opacity: 0;
+      }
+
+      &[zen-pinned-changed='true'] .tab-reset-pin-button:hover {
+        & ~ .tab-label-container .tab-reset-pin-label {
+          max-height: 10px;
+          opacity: 0.6;
+        }
+
+        & ~ .tab-label-container .tab-reset-pin-label {
+          max-height: 10px;
+          opacity: 0.6;
+        }
+
+        & ~ .tab-icon-stack .tab-icon-image {
+          opacity: 0;
+        }
+
+        & image {
+          opacity: 1;
+        }
+      }
+
       &:is(:hover, [visuallyselected]) .tab-close-button {
         display: block;
         --tab-inline-padding: 0; /* Avoid weird padding */
@@ -647,7 +692,8 @@
       & .tab-background {
         margin-inline: auto !important;
       }
-      & .tab-reset-button {
+      & .tab-reset-button,
+      & .tab-reset-pin-button {
         display: none !important;
       }
       & .tab-content {
@@ -747,7 +793,12 @@
       }
     }
 
-    &[zen-essential] .tab-reset-button {
+    &:not([zen-pinned-changed='true']) .tab-reset-pin-button {
+      display: none;
+    }
+
+    &[zen-essential] .tab-reset-button,
+    &[zen-essential] .tab-reset-pin-button {
       display: none;
     }
 
@@ -761,7 +812,8 @@
   }
 }
 
-.tab-reset-button {
+.tab-reset-button,
+.tab-reset-pin-button {
   display: none;
   -moz-context-properties: fill, fill-opacity;
   border-radius: var(--tab-border-radius);
@@ -781,42 +833,83 @@
   }
 }
 
-.reset-icon {
+.tab-reset-pin-button {
+  display: flex;
+  position: relative;
+  height: calc(100% - var(--tab-block-margin) * 2);
+  margin-left: calc(-1 * var(--tab-inline-padding) + var(--tab-block-margin));
+  margin-right: 4px;
+  padding: 0 calc(var(--toolbarbutton-inner-padding) - 5px) 0 calc(var(--toolbarbutton-inner-padding) / 4 + var(--tab-inline-padding) - 2px);
+  border-radius: 0;
+  border-top-left-radius: var(--border-radius-medium);
+  width: unset;
+  border-bottom-left-radius: var(--border-radius-medium);
+  align-items: center;
+  justify-content: center;
+
+  & > image {
+    list-style-image: var(--zen-original-tab-icon);
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    width: 16px;
+    height: 16px;
+  }
+
+  &::after {
+    content: '';
+    display: block;
+    width: 2px;
+    height: 16px;
+    background: light-dark(rgba(88, 79, 79, 0.02), rgba(255, 255, 255, 0.3));
+    position: absolute;
+    right: calc(var(--tab-inline-padding) / 1.5 - 4px);
+    top: 50%;
+    border-radius: 2px;
+    transform: rotate(15deg) translateY(-50%);
+  }
+
+  &:hover::after {
+    opacity: 0;
+  }
+}
+
+.reset-icon,
+.tab-reset-pin-button {
   appearance: none;
 
 }
 
 @media not (forced-colors) {
-  .tab-reset-button:hover {
+  .tab-reset-button:hover,
+  .tab-reset-pin-button:hover {
     background-color: color-mix(in srgb, currentColor 10%, transparent);
   }
 
-  .tab-reset-button:hover:active {
+  .tab-reset-button:hover:active,
+  .tab-reset-pin-button:hover:active {
     background-color: color-mix(in srgb, currentColor 20%, transparent);
   }
 }
 
 .tab-reset-button> .button-icon,
 .tab-reset-button > .button-box > .button-icon,
-.tab-reset-button > .toolbarbutton-icon {
+.tab-reset-button > .toolbarbutton-icon,
+.tab-reset-pin-button > .button-icon,
+.tab-reset-pin-button > .button-box > .button-icon,
+.tab-reset-pin-button > .toolbarbutton-icon {
   margin: 0;
 }
 
 .tab-reset-button > .button-box > .button-text,
-.tab-reset-button > .toolbarbutton-text {
+.tab-reset-button > .toolbarbutton-text,
+.tab-reset-pin-button > .button-box > .button-text,
+.tab-reset-pin-button > .toolbarbutton-text {
   display: none;
 }
 
 
 /* Customization mode */
-/*:root[customizing] #TabsToolbar > *:not(#zen-sidebar-bottom-buttons) {
-  overflow: hidden;
-  max-width: 0 !important;
-  margin-right: var(--zen-element-separation);
-  padding: 0 !important;
-  opacity: 0;
-  display: none;
-}*/
 
 :root[customizing] #TabsToolbar > *,
 :root[customizing] #TabsToolbar-customization-target {

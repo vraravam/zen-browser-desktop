@@ -218,6 +218,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
           defaultSelectedContainer.insertBefore(tab, defaultSelectedContainer.lastChild);
         }
       }
+      gBrowser.tabContainer._invalidateCachedTabs();
     }
     perifery.setAttribute('hidden', 'true');
     this._hasInitializedTabsStrip = true;
