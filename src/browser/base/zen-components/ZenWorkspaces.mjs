@@ -200,13 +200,17 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       const defaultSelectedContainer = document.querySelector(
         `#tabbrowser-arrowscrollbox .zen-workspace-tabs-section[zen-workspace-id="${this.activeWorkspace}"]`
       );
+      const essentialsContaienr = document.getElementById('zen-essentials-container');
       // New profile with no workspaces does not have a default selected container
       if (defaultSelectedContainer) {
         const pinnedContainer = document.querySelector(
           `#vertical-pinned-tabs-container .zen-workspace-tabs-section[zen-workspace-id="${this.activeWorkspace}"]`
         );
         for (const tab of tabs) {
-          if (tab.pinned) {
+          if (tab.hasAttribute('zen-essential')) {
+            essentialsContaienr.appendChild(tab);
+            continue
+          } else if (tab.pinned) {
             pinnedContainer.insertBefore(tab, pinnedContainer.lastChild);
             continue;
           }
@@ -1923,7 +1927,6 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       const contaienr = document.querySelector(
         `#vertical-pinned-tabs-container .zen-workspace-tabs-section[zen-workspace-id="${workspaceId}"]`
       );
-      console.log(tab);
       contaienr.insertBefore(tab, contaienr.firstChild);
       changed = true;
     }

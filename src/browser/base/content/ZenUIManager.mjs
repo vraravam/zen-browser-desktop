@@ -685,6 +685,7 @@ var gZenVerticalTabsManager = {
         // Update pin title in storage
         await gZenPinnedTabManager.updatePinTitle(this._tabEdited, this._tabEdited.label, !!newName);
       }
+      document.documentElement.removeAttribute('zen-renaming-tab');
 
       // Maybe add some confetti here?!?
       gZenUIManager.motion.animate(
@@ -714,6 +715,7 @@ var gZenVerticalTabsManager = {
       !gZenVerticalTabsManager._prefsSidebarExpanded
     )
       return;
+    document.documentElement.setAttribute('zen-renaming-tab', 'true');
     this._tabEdited = event.target.closest('.tabbrowser-tab');
     if (!this._tabEdited || !this._tabEdited.pinned || this._tabEdited.hasAttribute('zen-essential')) {
       this._tabEdited = null;
@@ -743,6 +745,7 @@ var gZenVerticalTabsManager = {
     if (document.activeElement === event.target || !this._tabEdited) {
       return;
     }
+    document.documentElement.removeAttribute('zen-renaming-tab');
     this._tabEdited.querySelector('.tab-editor-container').remove();
     const label = this._tabEdited.querySelector('.tab-label-container-editing');
     label.classList.remove('tab-label-container-editing');

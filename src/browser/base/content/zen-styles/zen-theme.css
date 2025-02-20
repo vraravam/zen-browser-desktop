@@ -125,6 +125,7 @@
   --zen-main-browser-background-toolbar: var(--zen-main-browser-background);
 
   --browser-area-z-index-toolbox: 2 !important;
+  --attention-dot-color: transparent !important;
 
   --zen-appcontent-border: 1px solid var(--zen-colors-border);
 

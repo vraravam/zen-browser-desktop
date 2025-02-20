@@ -106,7 +106,7 @@
         background-attachment: fixed !important;
         background-size: 2000px !important; /* Dont ask me why */
         /* NOTE: We MUST not add a backdrop-filter if we want the URL
-         * bar to be floating correctly: 
+         * bar to be floating correctly:
          * https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Containing_block#identifying_the_containing_block */
       }
 
@@ -139,6 +139,7 @@
     #navigator-toolbox[has-popup-menu],
     #navigator-toolbox[movingtab],
     #navigator-toolbox:has(.tabbrowser-tab:active),
+    &[zen-renaming-tab='true'] #navigator-toolbox,
     #navigator-toolbox:has(
         *:is([panelopen='true'], [open='true'], #urlbar:not([zen-floating-urlbar='true']):focus-within):not(tab):not(.zen-compact-mode-ignore)
       ) {
