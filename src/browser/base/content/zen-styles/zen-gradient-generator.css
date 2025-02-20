@@ -60,7 +60,11 @@
     font-weight: 600;
   }
 
-  gap: 10px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
+  align-items: center;
 }
 
 #PanelUI-zen-gradient-generator-predefined {
@@ -135,14 +139,16 @@
 #PanelUI-zen-gradient-generator-opacity,
 #PanelUI-zen-gradient-generator-texture {
   margin: 0 !important;
+  margin-top: 5px !important;
   background: transparent;
 
   &::-moz-range-thumb {
     background: var(--zen-colors-tertiary);
     border: 2px solid var(--zen-colors-border);
-    border-radius: 50%;
-    height: 13px;
+    border-radius: 12px;
+    height: 25px;
     width: 13px;
+    cursor: pointer;
   }
 
   &::-moz-range-track {
@@ -154,7 +160,7 @@
   &::-moz-range-progress {
     background: var(--zen-primary-color);
     border-radius: 999px;
-    height: 6px;
+    height: 8px;
   }
 }
 
@@ -168,15 +174,15 @@
   margin-bottom: 20px;
 
   background: var(--zen-toolbar-element-bg);
-  background-image: radial-gradient(light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.225)) 1px, transparent 0);
+  background-image: radial-gradient(light-dark(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.4)) 1px, transparent 0);
   background-position: -19px -19px;
-  background-size: 10px 10px;
+  background-size: 5px 5px;
 
   & .zen-theme-picker-dot {
     position: absolute;
     z-index: 2;
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     background: var(--zen-theme-picker-dot-color);
     @media (-prefers-color-scheme: dark) {
@@ -185,13 +191,17 @@
     cursor: pointer;
     border: 2px solid #ffffff;
     animation: zen-theme-picker-dot-animation 0.5s;
-    transition: transform 0.2s;
     transform: translate(-50%, -50%);
 
     &:first-of-type {
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       border-width: 3px;
+      z-index: 2;
+      transition: transform 0.1s;
+      &:hover {
+        transform: scale(1.05) translate(-50%, -50%);
+      }
     }
 
     &[dragging='true'] {
@@ -222,7 +232,7 @@
   z-index: 1;
   transform: translateX(-50%);
   & .separator,
-  & button {
+  & #PanelUI-zen-gradient-generator-color-toggle-algo {
     background: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
   }
 
@@ -261,5 +271,71 @@
 @media not (-moz-bool-pref: 'zen.theme.gradient.show-custom-colors') {
   #PanelUI-zen-gradient-generator-custom-colors {
     display: none !important;
+  }
+}
+
+#PanelUI-zen-gradient-generator-texture-wrapper {
+  width: 4rem;
+  height: 4rem;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 2.7rem;
+    height: 2.7rem;
+    border: 1px solid color-mix(in srgb, var(--zen-colors-border) 50%, transparent 50%);
+    border-radius: 50%;
+    /* 3d effect */
+    background: linear-gradient(-45deg, transparent -10%, light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1)) 110%);
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  &::before {
+    background-image: url(chrome://browser/content/zen-images/grain-bg.png);
+    opacity: var(--zen-grainy-background-opacity, 0);
+    mix-blend-mode: hard-light;
+    width: 2.7rem;
+    height: 2.7rem;
+    pointer-events: none;
+    top: 50%;
+    border-radius: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    content: '';
+    position: absolute;
+  }
+
+  & .zen-theme-picker-texture-dot {
+    height: 4px;
+    width: 4px;
+    border-radius: 50%;
+    background: light-dark(rgba(0, 0, 0, 0.2), rgba(255, 255, 255, 0.2));
+    position: absolute;
+    transition: opacity 0.2s;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    &:not(.active) {
+      opacity: 0.2;
+    }
+  }
+
+  & #PanelUI-zen-gradient-generator-texture-handler {
+    width: 6px;
+    height: 12px;
+    background: light-dark(#757575, #d1d1d1);
+    position: absolute;
+    transition: height 0.1s;
+    z-index: 2;
+    border-radius: 2px;
+    cursor: pointer;
+    &:hover {
+      height: 14px;
+    }
   }
 }

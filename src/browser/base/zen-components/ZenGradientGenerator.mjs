@@ -33,6 +33,7 @@
 
       this.initCanvas();
       this.initCustomColorInput();
+      this.initTextureInput();
 
       window.matchMedia('(prefers-color-scheme: dark)').addListener(this.onDarkModeChange.bind(this));
     }
@@ -139,6 +140,67 @@
 
     initCustomColorInput() {
       this.customColorInput.addEventListener('keydown', this.onCustomColorKeydown.bind(this));
+    }
+
+    initTextureInput() {
+      const wrapper = document.getElementById('PanelUI-zen-gradient-generator-texture-wrapper');
+      const wrapperWidth = wrapper.getBoundingClientRect().width;
+      // Add elements in a circular pattern, where the center is the center of the wrapper
+      for (let i = 0; i < 16; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('zen-theme-picker-texture-dot');
+        const position = (i / 16) * Math.PI * 2 + wrapperWidth;
+        dot.style.left = `${Math.cos(position) * 50 + 50}%`;
+        dot.style.top = `${Math.sin(position) * 50 + 50}%`;
+        wrapper.appendChild(dot);
+      }
+      this._textureHandler = document.createElement('div');
+      this._textureHandler.id = 'PanelUI-zen-gradient-generator-texture-handler';
+      this._textureHandler.addEventListener('mousedown', this.onTextureHandlerMouseDown.bind(this));
+      wrapper.appendChild(this._textureHandler);
+    }
+
+    onTextureHandlerMouseDown(event) {
+      event.preventDefault();
+      this._onTextureMouseMove = this.onTextureMouseMove.bind(this);
+      this._onTextureMouseUp = this.onTextureMouseUp.bind(this);
+      document.addEventListener('mousemove', this._onTextureMouseMove);
+      document.addEventListener('mouseup', this._onTextureMouseUp);
+    }
+
+    onTextureMouseMove(event) {
+      event.preventDefault();
+      const wrapper = document.getElementById('PanelUI-zen-gradient-generator-texture-wrapper');
+      const wrapperRect = wrapper.getBoundingClientRect();
+      // Determine how much rotation there is based on the mouse position and the center of the wrapper
+      const rotation = Math.atan2(
+        event.clientY - wrapperRect.top - wrapperRect.height / 2,
+        event.clientX - wrapperRect.left - wrapperRect.width / 2
+      );
+      const previousTexture = this.currentTexture;
+      this.currentTexture = (rotation * 180) / Math.PI + 90;
+      // if it's negative, add 360 to make it positive
+      if (this.currentTexture < 0) {
+        this.currentTexture += 360;
+      }
+      // make it go from 1 to 0 instead of being in degrees
+      this.currentTexture /= 360;
+      // We clip it to the closest button out of 16 possible buttons
+      this.currentTexture = Math.round(this.currentTexture * 16) / 16;
+      if (this.currentTexture === 1) {
+        this.currentTexture = 0;
+      }
+      if (previousTexture !== this.currentTexture) {
+        this.updateCurrentWorkspace();
+      }
+    }
+
+    onTextureMouseUp(event) {
+      event.preventDefault();
+      document.removeEventListener('mousemove', this._onTextureMouseMove);
+      document.removeEventListener('mouseup', this._onTextureMouseUp);
+      this._onTextureMouseMove = null;
+      this._onTextureMouseUp = null;
     }
 
     onCustomColorKeydown(event) {
@@ -381,7 +443,7 @@
 
       const dotPad = this.panel.querySelector('.zen-theme-picker-gradient');
       const rect = dotPad.getBoundingClientRect();
-      const padding = 90;
+      const padding = 20;
 
       let updatedDots = [...dots];
       const centerPosition = { x: rect.width / 2, y: rect.height / 2 };
@@ -554,7 +616,7 @@
 
       const gradient = this.panel.querySelector('.zen-theme-picker-gradient');
       const rect = gradient.getBoundingClientRect();
-      const padding = 90;
+      const padding = 20;
 
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
@@ -688,7 +750,7 @@
       if (this.dragging) {
         event.preventDefault();
         const rect = this.panel.querySelector('.zen-theme-picker-gradient').getBoundingClientRect();
-        const padding = 90; // each side
+        const padding = 20; // each side
         // do NOT let the ball be draged outside of an imaginary circle. You can drag it anywhere inside the circle
         // if the distance between the center of the circle and the dragged ball is bigger than the radius, then the ball
         // should be placed on the edge of the circle. If it's inside the circle, then the ball just follows the mouse
@@ -741,11 +803,6 @@
       this.updateCurrentWorkspace();
     }
 
-    onTextureChange(event) {
-      this.currentTexture = event.target.value;
-      this.updateCurrentWorkspace();
-    }
-
     getToolbarModifiedBase() {
       return this.isDarkMode
         ? 'color-mix(in srgb, var(--zen-themed-toolbar-bg) 80%, #fff 20%)'
@@ -783,8 +840,7 @@
     }
     //TODO: add a better noise system that adds noise not just changes transparency
     updateNoise(texture) {
-      const wrapper = document.getElementById('zen-main-app-wrapper');
-      wrapper.style.setProperty('--zen-grainy-background-opacity', texture);
+      document.documentElement.style.setProperty('--zen-grainy-background-opacity', texture);
     }
 
     hexToRgb(hex) {
@@ -941,8 +997,33 @@
 
         browser.document.getElementById('PanelUI-zen-gradient-generator-opacity').value =
           browser.gZenThemePicker.currentOpacity;
-        browser.document.getElementById('PanelUI-zen-gradient-generator-texture').value =
-          browser.gZenThemePicker.currentTexture;
+        const textureSelectWrapper = browser.document.getElementById('PanelUI-zen-gradient-generator-texture-wrapper');
+        const textureWrapperWidth = textureSelectWrapper.getBoundingClientRect().width;
+        // Dont show when hidden
+        if (textureWrapperWidth) {
+          // rotate and trasnform relative to the wrapper width depending on the texture value
+          const textureValue = this.currentTexture;
+          const textureHandler = browser.gZenThemePicker._textureHandler;
+          const rotation = textureValue * 360 - 90;
+          textureHandler.style.transform = `rotate(${rotation + 90}deg)`;
+          // add top and left to center the texture handler in relation with textureWrapperWidth
+          // based on the rotation
+          const top = Math.sin((rotation * Math.PI) / 180) * (textureWrapperWidth / 2) - 6;
+          const left = Math.cos((rotation * Math.PI) / 180) * (textureWrapperWidth / 2) - 3;
+          textureHandler.style.top = `${textureWrapperWidth / 2 + top}px`;
+          textureHandler.style.left = `${textureWrapperWidth / 2 + left}px`;
+          // Highlight the 16 buttons based on the texture value
+          const buttons = browser.document.querySelectorAll('.zen-theme-picker-texture-dot');
+          let i = 4;
+          for (const button of buttons) {
+            button.classList.toggle('active', i / 16 <= textureValue);
+            i++;
+            // We start at point 4 because that's the first point that is not in the middle of the texture
+            if (i === 16) {
+              i = 0;
+            }
+          }
+        }
 
         const gradient = browser.gZenThemePicker.getGradient(workspaceTheme.gradientColors);
         const gradientToolbar = browser.gZenThemePicker.getGradient(workspaceTheme.gradientColors, true);
@@ -1070,6 +1151,9 @@
 
     handlePanelOpen() {
       this.initThemePicker();
+      setTimeout(() => {
+        this.updateCurrentWorkspace();
+      }, 200);
     }
   }
 
