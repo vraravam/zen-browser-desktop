@@ -58,10 +58,6 @@
       &:not([zen-right-side='true']) #nav-bar {
         margin-left: 0 !important;
       }
-
-      & #urlbar[open]:not([zen-floating-urlbar='true']) {
-        top: 0 !important;
-      }
     }
 
     &:not([zen-right-side='true']) #navigator-toolbox {
@@ -109,11 +105,12 @@
         background: var(--zen-main-browser-background-toolbar) !important;
         background-attachment: fixed !important;
         background-size: 2000px !important; /* Dont ask me why */
-        backdrop-filter: blur(5px) !important;
+        /* NOTE: We MUST not add a backdrop-filter if we want the URL
+         * bar to be floating correctly: 
+         * https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Containing_block#identifying_the_containing_block */
       }
 
       & #urlbar[open][zen-floating-urlbar='true'] {
-        --zen-urlbar-offset: var(--zen-sidebar-width);
         transition: left 0.05s ease;
 
         #navigator-toolbox:has(&) {
@@ -261,10 +258,6 @@
             right: -1px;
             left: auto;
           }
-
-          & #urlbar[open][zen-floating-urlbar='true'] {
-            --zen-urlbar-offset: 0px;
-          }
         }
       }
     }
@@ -347,10 +340,6 @@
 
         & #urlbar {
           transform: translateY(0);
-
-          &[open]:not([zen-floating-urlbar='true']) {
-            top: 0 !important;
-          }
         }
 
         &::before {

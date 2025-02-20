@@ -416,22 +416,21 @@ button.popup-notification-dropmarker {
   min-width: 45vw !important;
   --urlbar-container-height: 55px !important;
   --urlbar-margin-inline: 10px !important;
-  position: absolute;
+  position: fixed;
 
   font-size: 1.15em !important;
   @media (-moz-platform: macos) {
     font-size: 1.5em !important;
   }
-  top: calc(var(--zen-toolbar-height) * 2) !important;
-
-  --zen-urlbar-center: calc(var(--zen-urlbar-offset, 0px) + 28vw);
+  top: 50% !important;
+  transform: translate(-50%, -50%);
 
   :root[zen-right-side='true'] & {
-    right: var(--zen-urlbar-center) !important;
+    right: 50% !important;
   }
 
   :root:not([zen-right-side='true']) & {
-    left: var(--zen-urlbar-center) !important;
+    left: 50% !important;
   }
 
   #urlbar-container:has(&) {
