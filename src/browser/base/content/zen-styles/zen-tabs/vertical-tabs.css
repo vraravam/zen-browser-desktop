@@ -236,6 +236,10 @@
   overflow-x: clip;
   overflow-clip-margin: var(--zen-toolbox-padding);
 
+  @media (-moz-platform: macos) {
+    font-size: 1.1rem;
+  }
+
   --tab-inner-inline-margin: 0;
 
   position: relative;

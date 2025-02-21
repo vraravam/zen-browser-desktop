@@ -54,24 +54,28 @@
 }
 
 #PanelUI-zen-gradient-colors-wrapper {
-  & label {
-    font-size: 12px;
-    margin-left: 0;
-    font-weight: 600;
-  }
-
   display: flex;
   justify-content: space-between;
   width: 100%;
   margin-bottom: 10px;
   align-items: center;
+  gap: 3rem;
+  padding: 0 var(--panel-padding);
+
+  & label {
+    font-size: larger;
+    margin-left: 0;
+    font-weight: 600;
+    margin-inline: 0;
+    margin-bottom: 2px;
+  }
 }
 
 #PanelUI-zen-gradient-generator-predefined {
   display: flex;
-  gap: 5px;
+  justify-content: space-around;
   align-items: center;
-  margin: 5px 5px 10px 0;
+  margin: 5px auto 10px auto;
 
   & > box {
     width: 18px;
@@ -275,15 +279,15 @@
 }
 
 #PanelUI-zen-gradient-generator-texture-wrapper {
-  width: 4rem;
-  height: 4rem;
+  width: 25%;
+  aspect-ratio: 1;
   position: relative;
 
   &::after {
     content: '';
     position: absolute;
-    width: 2.7rem;
-    height: 2.7rem;
+    width: 60%;
+    height: 60%;
     border: 1px solid color-mix(in srgb, var(--zen-colors-border) 50%, transparent 50%);
     border-radius: 50%;
     /* 3d effect */
@@ -299,8 +303,8 @@
     background-image: url(chrome://browser/content/zen-images/grain-bg.png);
     opacity: var(--zen-grainy-background-opacity, 0);
     mix-blend-mode: hard-light;
-    width: 2.7rem;
-    height: 2.7rem;
+    width: 60%;
+    height: 60%;
     pointer-events: none;
     top: 50%;
     border-radius: 50%;
