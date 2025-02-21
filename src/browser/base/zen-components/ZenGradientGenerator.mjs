@@ -110,6 +110,11 @@
             dot.element.remove();
           }
           this.dots = [];
+        } else if (numDots < this.dots.length) {
+          for (let i = numDots; i < this.dots.length; i++) {
+            this.dots[i].element.remove();
+          }
+          this.dots = this.dots.slice(0, numDots);
         }
         // Generate new gradient from the single color given
         const [x, y] = rawPosition.split(',').map((pos) => parseInt(pos));
@@ -449,10 +454,9 @@
       const centerPosition = { x: rect.width / 2, y: rect.height / 2 };
 
       const harmonyAngles = getColorHarmonyType(dots.length + (action === 'add' ? 1 : action === 'remove' ? -1 : 0), this.dots);
+      if (!harmonyAngles || harmonyAngles.angles.length === 0) return dots;
 
       this.useAlgo = harmonyAngles.type;
-
-      if (!harmonyAngles || harmonyAngles.angles.length === 0) return dots;
 
       let primaryDot = dots.find((dot) => dot.ID === 0);
       if (!primaryDot) return [];
@@ -916,7 +920,11 @@
         this.isDarkMode ? 0.2 : -0.5,
         `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
       );
-      return result?.match(/\d+/g).map(Number);
+      const color = result?.match(/\d+/g).map(Number);
+      if (!color || color.length !== 3) {
+        return this.getNativeAccentColor();
+      }
+      return color;
     }
 
     async onWorkspaceChange(workspace, skipUpdate = false, theme = null) {
@@ -1043,6 +1051,7 @@
         if (dominantColor) {
           browser.document.documentElement.style.setProperty(
             '--zen-primary-color',
+            typeof dominantColor === 'string' ? dominantColor :
             `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
           );
         }

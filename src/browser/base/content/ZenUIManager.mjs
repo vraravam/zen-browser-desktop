@@ -678,6 +678,7 @@ var gZenVerticalTabsManager = {
       if (newName) {
         gBrowser._setTabLabel(this._tabEdited, newName);
         this._tabEdited.setAttribute('zen-has-static-label', 'true');
+        gZenUIManager.showToast('zen-tabs-renamed');
       } else {
         gBrowser.setTabTitle(this._tabEdited);
       }

@@ -399,6 +399,7 @@
       await ZenPinnedTabsStorage.savePin(pin);
       this.resetPinChangedUrl(tab);
       await this._refreshPinnedTabs();
+      gZenUIManager.showToast('zen-pinned-tab-replaced');
     }
 
     async _setPinnedAttributes(tab) {
