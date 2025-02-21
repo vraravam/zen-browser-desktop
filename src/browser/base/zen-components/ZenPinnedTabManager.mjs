@@ -130,7 +130,6 @@
 
     async _refreshPinnedTabs({ init = false } = {}) {
       await ZenWorkspaces.promiseSectionsInitialized;
-      await SessionStore.promiseAllWindowsRestored;
       await this._initializePinsCache();
       await this._initializePinnedTabs(init);
     }
@@ -175,7 +174,7 @@
 
     async _initializePinnedTabs(init = false) {
       const pins = this._pinsCache;
-      if (!pins?.length) {
+      if (!pins?.length || !init) {
         return;
       }
 
