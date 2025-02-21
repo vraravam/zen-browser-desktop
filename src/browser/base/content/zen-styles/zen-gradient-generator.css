@@ -58,15 +58,21 @@
   width: 100%;
   margin-bottom: 10px;
   align-items: center;
-  gap: 3rem;
+  gap: 1.5rem;
   padding: 0 var(--panel-padding);
 
+  @media (-moz-platform: macos) {
+    gap: 3rem;
+  }
+
   & label {
-    font-size: larger;
     margin-left: 0;
     font-weight: 600;
     margin-inline: 0;
     margin-bottom: 2px;
+    @media (-moz-platform: macos) {
+      font-size: larger;
+    }
   }
 }
 
@@ -75,6 +81,7 @@
   justify-content: space-around;
   align-items: center;
   margin: 5px auto 10px auto;
+  width: 100%;
 
   & > box {
     width: 18px;
@@ -278,9 +285,14 @@
 }
 
 #PanelUI-zen-gradient-generator-texture-wrapper {
-  width: 25%;
-  aspect-ratio: 1;
+  width: 4rem;
+  height: 4rem;
   position: relative;
+
+  @media (-moz-platform: macos) {
+    width: 25%;
+    aspect-ratio: 1;
+  }
 
   &::after {
     content: '';
