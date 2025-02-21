@@ -438,6 +438,7 @@
     }
 
     async _removePinnedAttributes(tab, isClosing = false) {
+      tab.removeAttribute('zen-has-static-label');
       if (!tab.getAttribute('zen-pin-id') || this._temporarilyUnpiningEssential) {
         this._temporarilyUnpiningEssential = false;
         return;
