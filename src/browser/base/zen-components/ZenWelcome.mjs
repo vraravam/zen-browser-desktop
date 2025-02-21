@@ -435,15 +435,23 @@
           document.getElementById('zen-welcome-page-content').appendChild(anchor);
           gZenThemePicker.panel.setAttribute('noautohide', 'true');
           gZenThemePicker.panel.setAttribute('consumeoutsideclicks', 'false');
+          gZenThemePicker.panel.addEventListener('popupshowing', () => {
+            const panelRect = gZenThemePicker.panel.getBoundingClientRect();
+            // 20 is the shadow width * 2
+            anchor.style.height = panelRect.height - 20 + 'px';
+            anchor.style.width = panelRect.width - 20 + 'px';
+          }, { once: true });
           PanelMultiView.openPopup(gZenThemePicker.panel, anchor, {
-            position: 'top',
+            position: 'overlap',
           });
         },
         dontFadeOut: true,
         async fadeOut() {
           gZenThemePicker.panel.removeAttribute('noautohide');
           gZenThemePicker.panel.removeAttribute('consumeoutsideclicks');
-          await animate(gZenThemePicker.panel, { opacity: [1, 0] });
+          if (AppConstants.platform != "macosx") {
+            await animate(gZenThemePicker.panel, { opacity: [1, 0] });
+          }
           gZenThemePicker.panel.hidePopup();
           gZenThemePicker.panel.removeAttribute('style');
         },

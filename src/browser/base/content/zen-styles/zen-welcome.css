@@ -166,10 +166,6 @@
     #zen-welcome-workspace-colors-anchor {
       width: 1px;
       height: 1px;
-      margin: 8rem auto auto 13.4rem;
-      @media (-moz-platform: macos) {
-        margin: 4rem auto auto 10.5rem;
-      }
     }
 
     #zen-welcome-initial-essentials-browser {
