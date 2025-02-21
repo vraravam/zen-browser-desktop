@@ -177,7 +177,14 @@
     async next() {
       if (this._currentPage !== -1) {
         const previousPage = this._pages[this._currentPage];
-        await Promise.all([this.fadeOutTitles(), this.fadeOutButtons(), this.fadeOutContent()]);
+        const promises = [
+          this.fadeOutTitles(),
+          this.fadeOutButtons(),
+        ];
+        if (!previousPage.dontFadeOut) {
+          promises.push(this.fadeOutContent());
+        }
+        await Promise.all(promises);
         await previousPage.fadeOut();
         document.getElementById('zen-welcome-page-content').innerHTML = '';
       }
@@ -193,6 +200,7 @@
     }
 
     async finish() {
+      ZenWorkspaces.reorganizeTabsAfterWelcome();
       await animate('#zen-welcome-page-content', { x: [0, '100%'] }, { bounce: 0 });
       document.getElementById('zen-welcome-page-content').remove();
       await this.animHeart();
@@ -319,6 +327,7 @@
             position: 'top',
           });
         },
+        dontFadeOut: true,
         async fadeOut() {
           gZenThemePicker.panel.removeAttribute('noautohide');
           gZenThemePicker.panel.removeAttribute('consumeoutsideclicks');

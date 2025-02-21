@@ -2229,4 +2229,12 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       (tab) => tab.hasAttribute('zen-essential') || tab.getAttribute('zen-workspace-id') === currentWorkspace
     );
   }
+
+  reorganizeTabsAfterWelcome() {
+    const children = gBrowser.tabContainer.arrowScrollbox.children;
+    const remainingTabs = Array.from(children).filter((child) => child.tagName === 'tab');
+    for (const tab of remainingTabs) {
+      this.moveTabToWorkspace(tab, this.activeWorkspace);
+    }
+  }
 })();
