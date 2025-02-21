@@ -18,7 +18,6 @@
 }
 
 #PanelUI-zen-gradient-generator-controls {
-  padding-right: var(--panel-padding);
   align-items: center;
   gap: var(--panel-padding);
 }

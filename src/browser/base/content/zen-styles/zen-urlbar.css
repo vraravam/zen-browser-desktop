@@ -416,11 +416,12 @@ button.popup-notification-dropmarker {
   --urlbar-container-height: 55px !important;
   --urlbar-margin-inline: 10px !important;
   position: fixed;
-  width: min(90%, 45rem) !important;
 
+  width: min(90%, 45rem) !important;
   font-size: 1.15em !important;
   @media (-moz-platform: macos) {
     font-size: 1.5em !important;
+    width: min(90%, 60rem) !important;
   }
   top: 50% !important;
   transform: translate(-50%, -50%);
