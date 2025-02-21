@@ -524,6 +524,7 @@
         window.focus();
         const appWin = window.docShell.treeOwner.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIAppWindow);
         appWin.rollupAllPopups();
+        appWin.center(null, true, false);
       },
       { once: true }
     );
