@@ -71,6 +71,7 @@
 
       if (onInit) {
         await this._refreshPinnedTabs({ init: onInit });
+        this._hasFinishedLoading = true;
       }
     }
 
@@ -130,6 +131,7 @@
 
     async _refreshPinnedTabs({ init = false } = {}) {
       await ZenWorkspaces.promiseSectionsInitialized;
+      console.log('Refreshing pinned tabs');
       await this._initializePinsCache();
       await this._initializePinnedTabs(init);
     }
@@ -400,7 +402,7 @@
     }
 
     async _setPinnedAttributes(tab) {
-      if (tab.hasAttribute('zen-pin-id')) {
+      if (tab.hasAttribute('zen-pin-id') || !this._hasFinishedLoading) {
         return;
       }
 

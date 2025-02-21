@@ -107,6 +107,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   selectEmptyTab() {
+    console.log(new Error().stack);
     if (this._emptyTab && Services.prefs.getBoolPref('zen.urlbar.replace-newtab')) {
       gBrowser.selectedTab = this._emptyTab;
       return this._emptyTab;
@@ -596,15 +597,20 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
   _selectStartPage() {
     const currentTab = gBrowser.selectedTab;
-    const isEssential = currentTab.hasAttribute('zen-essential');
-    if (isEssential) {
+    let showed = false;
+    if (currentTab.pinned) {
       this.selectEmptyTab();
-      return;
+      showed = true;
+    } else {
+      const currentTabUrl = currentTab.linkedBrowser?.currentURI.spec;
+      if (currentTabUrl === 'about:newtab' || currentTabUrl === 'about:home') {
+        this.selectEmptyTab();
+        gBrowser.removeTab(currentTab);
+        showed = true;
+      }
     }
-    const currentTabUrl = currentTab.linkedBrowser?.currentURI.spec;
-    if (currentTabUrl === 'about:blank' || currentTabUrl === 'about:newtab' || currentTabUrl === 'about:home') {
-      this.selectEmptyTab();
-      gBrowser.removeTab(currentTab);
+    if (Services.prefs.getBoolPref('zen.urlbar.replace-newtab') && showed) {
+      BrowserCommands.openTab();
     }
   }
 
@@ -2223,10 +2229,6 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
   get pinnedTabCount() {
     return this.pinnedTabsContainer.children.length - 1;
-  }
-
-  get normalTabCount() {
-    return this.tabboxChildren.length - 1;
   }
 
   get allWorkspaceTabs() {

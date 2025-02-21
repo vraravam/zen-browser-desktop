@@ -875,7 +875,7 @@
     right: calc(var(--tab-inline-padding) / 2 - 1px);
     top: 50%;
     border-radius: 2px;
-    transform: rotate(12deg) translateY(-50%);
+    transform: rotate(10deg) translateY(-50%);
   }
 
   &:hover::after {

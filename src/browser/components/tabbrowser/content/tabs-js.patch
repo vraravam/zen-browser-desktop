@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabs.js b/browser/components/tabbrowser/content/tabs.js
-index 8aeb244ffca9f48661805f5b7d860b5896055562..c96e563a31b4c32c855cc2d250d702361b427f88 100644
+index 8aeb244ffca9f48661805f5b7d860b5896055562..2b988219f279f7b6e1178518e436a7f2b437ce20 100644
 --- a/browser/components/tabbrowser/content/tabs.js
 +++ b/browser/components/tabbrowser/content/tabs.js
 @@ -94,7 +94,7 @@
@@ -276,9 +276,10 @@ index 8aeb244ffca9f48661805f5b7d860b5896055562..c96e563a31b4c32c855cc2d250d70236
 -      );
 +      let verticalTabsContainer = this.verticalPinnedTabsContainer;
        let numPinned = gBrowser.pinnedTabCount;
- 
+-
 -      if (gBrowser.pinnedTabCount !== verticalTabsContainer.children.length) {
 -        let tabs = this.visibleTabs;
++      if (!ZenWorkspaces._hasInitializedTabsStrip) return;
 +      let count = ZenWorkspaces.makeSurePinTabIsInCorrectPosition();
 +      if (gBrowser.pinnedTabCount !== (verticalTabsContainer.children.length - count - 1 + document.getElementById("zen-essentials-container").children.length)) {
 +        let tabs = this.allTabs.filter(tab => !tab.hasAttribute("zen-glance-tab"));
