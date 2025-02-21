@@ -1,5 +1,4 @@
 {
-  const lazy = {};
   var ZenStartup = {
     init() {
       this.openWatermark();
@@ -49,18 +48,30 @@
       if (!Services.prefs.getBoolPref('zen.watermark.enabled', false)) {
         return;
       }
-      const watermark = window.MozXULElement.parseXULToFragment(`
-        <html:div id="zen-watermark">
-          <image src="chrome://branding/content/about-logo.png" />
-        </html:div>
-      `);
-      document.body.appendChild(watermark);
+      for (let elem of document.querySelectorAll('#browser > *, #urlbar')) {
+        elem.style.opacity = 0;
+      }
     },
 
     closeWatermark() {
-      const watermark = document.getElementById('zen-watermark');
-      if (watermark) {
-        watermark.setAttribute('hidden', 'true');
+      document.documentElement.removeAttribute('zen-before-loaded');
+      if (Services.prefs.getBoolPref('zen.watermark.enabled', false)) {
+        gZenUIManager.motion
+          .animate(
+            '#browser > *, #urlbar',
+            {
+              opacity: [0, 1],
+            },
+            {
+              delay: 0.6,
+              easing: 'ease-in-out',
+            }
+          )
+          .then(() => {
+            for (let elem of document.querySelectorAll('#browser > *, #urlbar')) {
+              elem.style.removeProperty('opacity');
+            }
+          });
       }
     },
 

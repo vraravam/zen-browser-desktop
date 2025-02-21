@@ -318,7 +318,6 @@
 
         @media (-moz-bool-pref: 'zen.view.compact.color-toolbar') {
           background-attachment: fixed;
-          backdrop-filter: blur(5px);
           background: var(--zen-main-browser-background-toolbar);
           background-size: 100% 2000px;
           border-bottom: 1px solid var(--zen-colors-border);

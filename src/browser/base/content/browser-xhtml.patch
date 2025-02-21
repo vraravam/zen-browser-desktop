@@ -1,8 +1,16 @@
 diff --git a/browser/base/content/browser.xhtml b/browser/base/content/browser.xhtml
-index 891c067d6ad718061c410c04743bed25744504b5..b7ded9691225068b23e4d6a5113242d0c0f5f842 100644
+index 891c067d6ad718061c410c04743bed25744504b5..135c8515bbcb534c3f900e7ba1ee4d3b9fe17436 100644
 --- a/browser/base/content/browser.xhtml
 +++ b/browser/base/content/browser.xhtml
-@@ -99,6 +99,8 @@
+@@ -25,6 +25,7 @@
+         sizemode="normal"
+         retargetdocumentfocus="urlbar-input"
+         scrolling="false"
++        zen-before-loaded="true"
+         persist="screenX screenY width height sizemode"
+         data-l10n-sync="true">
+ <head>
+@@ -99,6 +100,8 @@
  
    <title data-l10n-id="browser-main-window-default-title"></title>
  
@@ -11,7 +19,7 @@ index 891c067d6ad718061c410c04743bed25744504b5..b7ded9691225068b23e4d6a5113242d0
  # All JS files which are needed by browser.xhtml and other top level windows to
  # support MacOS specific features *must* go into the global-scripts.inc file so
  # that they can be shared with macWindow.inc.xhtml.
-@@ -143,6 +145,7 @@
+@@ -143,6 +146,7 @@
    window.addEventListener("DOMContentLoaded",
      gBrowserInit.onDOMContentLoaded.bind(gBrowserInit), { once: true });
  </script>
@@ -19,7 +27,7 @@ index 891c067d6ad718061c410c04743bed25744504b5..b7ded9691225068b23e4d6a5113242d0
  </head>
  <html:body xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
  # All sets except for popupsets (commands, keys, and stringbundles)
-@@ -164,9 +167,13 @@
+@@ -164,9 +168,13 @@
      </vbox>
    </html:template>
  
