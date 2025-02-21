@@ -1051,8 +1051,9 @@
         if (dominantColor) {
           browser.document.documentElement.style.setProperty(
             '--zen-primary-color',
-            typeof dominantColor === 'string' ? dominantColor :
-            `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
+            typeof dominantColor === 'string'
+              ? dominantColor
+              : `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
           );
         }
 
