@@ -848,7 +848,7 @@
   height: calc(100% - var(--tab-block-margin) * 2);
   margin-left: calc(-1 * var(--tab-inline-padding) + var(--tab-block-margin));
   margin-right: 4px;
-  padding: 0 calc(var(--toolbarbutton-inner-padding) - 4px) 0 calc(var(--toolbarbutton-inner-padding) / 4 + var(--tab-inline-padding) - 2px);
+  padding: 0 calc(var(--toolbarbutton-inner-padding)) 0 calc(var(--toolbarbutton-inner-padding) / 4 + var(--tab-inline-padding));
   border-radius: 0;
   border-top-left-radius: var(--border-radius-medium);
   width: unset;
@@ -868,11 +868,11 @@
   &::after {
     content: '';
     display: block;
-    width: 2px;
+    width: 2.5px;
     height: 16px;
     background: light-dark(rgba(88, 79, 79, 0.02), rgba(255, 255, 255, 0.3));
     position: absolute;
-    right: calc(var(--tab-inline-padding) / 2 - 2px);
+    right: calc(var(--tab-inline-padding) / 2);
     top: 50%;
     border-radius: 2px;
     transform: rotate(12deg) translateY(-50%);

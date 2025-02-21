@@ -216,16 +216,6 @@
           gBrowser._setTabLabel(tab, pin.title);
           tab.setAttribute('zen-has-static-label', 'true');
         }
-
-        // Reorder the tab if needed
-        if (tab._tPos !== pin.position) {
-          const parent = tab.parentNode;
-          const isEssential = tab.hasAttribute('zen-essential');
-          // If we arent an essential, we need to take into account
-          // that the last child is a separator
-          const childIndex = isEssential ? pin.position : Math.min(pin.position, parent.children.length - 1);
-          parent.insertBefore(tab, parent.children[childIndex]);
-        }
       }
 
       // Third pass: create new tabs for pins that don't have tabs
@@ -295,7 +285,7 @@
             `#vertical-pinned-tabs-container .zen-workspace-tabs-section[zen-workspace-id="${pin.workspaceUuid}"]`
           );
           if (container) {
-            container.insertBefore(newTab, container.lastChild);
+            container.prepend(newTab);
           }
         }
         gBrowser.tabContainer._invalidateCachedTabs();
