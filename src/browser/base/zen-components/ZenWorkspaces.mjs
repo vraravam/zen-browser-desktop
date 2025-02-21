@@ -1689,6 +1689,10 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     return tabWorkspaceId === workspaceUuid;
   }
 
+  _shouldChangeToTab(aTab) {
+    return !(aTab.hasAttribute('zen-essential') || (aTab.pinned && aTab.hasAttribute('pending')));
+  }
+
   async _handleTabSelection(window, onInit, containerId, workspaces, previousWorkspaceId, prevTabUsed) {
     const currentSelectedTab = prevTabUsed || gBrowser.selectedTab;
     const oldWorkspaceId = previousWorkspaceId;
@@ -1710,7 +1714,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       if (!tabToSelect && gBrowser.visibleTabs.length) {
         tabToSelect = gBrowser.visibleTabs[gBrowser.visibleTabs.length - 1];
       }
-      if (tabToSelect?.hasAttribute('zen-essential') || (tabToSelect?.pinned && tabToSelect?.hasAttribute('pending'))) {
+      if (!tabToSelect || !this._shouldChangeToTab(tabToSelect)) {
         // Never select an essential tab
         tabToSelect = null;
       }
@@ -2021,7 +2025,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   findTabToBlur(tab) {
-    return tab.hasAttribute('zen-essential') && this._emptyTab ? this._emptyTab : tab;
+    return !this._shouldChangeToTab(tab) && this._emptyTab ? this._emptyTab : tab;
   }
 
   async setDefaultWorkspace() {
