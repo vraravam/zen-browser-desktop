@@ -2025,7 +2025,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   findTabToBlur(tab) {
-    return (!this._shouldChangeToTab(tab)) && this._emptyTab ? this._emptyTab : tab;
+    return !this._shouldChangeToTab(tab) && this._emptyTab ? this._emptyTab : tab;
   }
 
   async setDefaultWorkspace() {
