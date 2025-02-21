@@ -292,6 +292,7 @@
   @media (-moz-platform: macos) {
     width: 25%;
     aspect-ratio: 1;
+    height: unset;
   }
 
   &::after {
