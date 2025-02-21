@@ -58,7 +58,6 @@
   background: transparent !important;
 }
 
-#urlbar:is([focused], [open]) > #urlbar-background,
 #searchbar:focus-within {
   background: var(--urlbar-box-bgcolor);
 }
@@ -110,6 +109,10 @@
 #tracking-protection-icon-container,
 #page-action-buttons {
   order: 2 !important;
+}
+
+#urlbar[breakout] {
+  position: fixed;
 }
 
 #urlbar[breakout-extend='true'] #urlbar-background {
@@ -419,7 +422,6 @@ button.popup-notification-dropmarker {
   min-width: unset !important;
   --urlbar-container-height: 55px !important;
   --urlbar-margin-inline: 10px !important;
-  position: fixed;
 
   width: min(90%, 45rem) !important;
   font-size: 1.15em !important;
@@ -427,8 +429,9 @@ button.popup-notification-dropmarker {
     font-size: 1.5em !important;
     width: min(90%, 60rem) !important;
   }
-  top: 50% !important;
-  transform: translate(-50%, -50%);
+  top: 50vh !important;
+  transform: translateX(-50%);
+  margin-top: -20%;
   left: 50% !important;
 
   #urlbar-container:has(&) {
