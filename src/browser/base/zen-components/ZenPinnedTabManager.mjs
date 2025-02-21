@@ -237,6 +237,7 @@
 
         // Create and initialize the tab
         let newTab = gBrowser.addTrustedTab(pin.url, params);
+        newTab.setAttribute('zenDefaultUserContextId', true);
 
         // Set initial label/title
         if (pin.title) {
@@ -286,7 +287,7 @@
             `#vertical-pinned-tabs-container .zen-workspace-tabs-section[zen-workspace-id="${pin.workspaceUuid}"]`
           );
           if (container) {
-            container.prepend(newTab);
+            container.insertBefore(newTab, container.lastChild);
           }
         }
         gBrowser.tabContainer._invalidateCachedTabs();
