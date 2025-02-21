@@ -530,8 +530,6 @@
 
         if (existingDot) {
           existingDot.position = dotPosition.position;
-          existingDot.element.style.left = `${dotPosition.position.x}px`;
-          existingDot.element.style.top = `${dotPosition.position.y}px`;
           const colorFromPos = this.getColorFromPosition(dotPosition.position.x, dotPosition.position.y);
           existingDot.element.style.setProperty(
             '--zen-theme-picker-dot-color',
@@ -551,6 +549,9 @@
                 bounce: 0.3,
               }
             );
+          } else {
+            existingDot.element.style.left = `${dotPosition.position.x}px`;
+            existingDot.element.style.top = `${dotPosition.position.y}px`;
           }
         } else {
           this.spawnDot(dotPosition.position);
