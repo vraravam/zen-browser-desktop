@@ -307,42 +307,6 @@
       {
         text: [
           {
-            id: 'zen-welcome-workspace-colors-title',
-          },
-          {
-            id: 'zen-welcome-workspace-colors-description',
-          },
-        ],
-        buttons: [
-          {
-            l10n: 'zen-welcome-next-action',
-            onclick: async () => {
-              return true;
-            },
-          },
-        ],
-        fadeIn() {
-          const anchor = document.createElement('div');
-          anchor.id = 'zen-welcome-workspace-colors-anchor';
-          document.getElementById('zen-welcome-page-content').appendChild(anchor);
-          gZenThemePicker.panel.setAttribute('noautohide', 'true');
-          gZenThemePicker.panel.setAttribute('consumeoutsideclicks', 'false');
-          PanelMultiView.openPopup(gZenThemePicker.panel, anchor, {
-            position: 'top',
-          });
-        },
-        dontFadeOut: true,
-        async fadeOut() {
-          gZenThemePicker.panel.removeAttribute('noautohide');
-          gZenThemePicker.panel.removeAttribute('consumeoutsideclicks');
-          await animate(gZenThemePicker.panel, { opacity: [1, 0] });
-          gZenThemePicker.panel.hidePopup();
-          gZenThemePicker.panel.removeAttribute('style');
-        },
-      },
-      {
-        text: [
-          {
             id: 'zen-welcome-initial-essentials-title',
           },
           {
@@ -446,6 +410,42 @@
           }
           openInitialPinTab();
           openWelcomeTab();
+        },
+      },
+      {
+        text: [
+          {
+            id: 'zen-welcome-workspace-colors-title',
+          },
+          {
+            id: 'zen-welcome-workspace-colors-description',
+          },
+        ],
+        buttons: [
+          {
+            l10n: 'zen-welcome-next-action',
+            onclick: async () => {
+              return true;
+            },
+          },
+        ],
+        fadeIn() {
+          const anchor = document.createElement('div');
+          anchor.id = 'zen-welcome-workspace-colors-anchor';
+          document.getElementById('zen-welcome-page-content').appendChild(anchor);
+          gZenThemePicker.panel.setAttribute('noautohide', 'true');
+          gZenThemePicker.panel.setAttribute('consumeoutsideclicks', 'false');
+          PanelMultiView.openPopup(gZenThemePicker.panel, anchor, {
+            position: 'top',
+          });
+        },
+        dontFadeOut: true,
+        async fadeOut() {
+          gZenThemePicker.panel.removeAttribute('noautohide');
+          gZenThemePicker.panel.removeAttribute('consumeoutsideclicks');
+          await animate(gZenThemePicker.panel, { opacity: [1, 0] });
+          gZenThemePicker.panel.hidePopup();
+          gZenThemePicker.panel.removeAttribute('style');
         },
       },
       {
