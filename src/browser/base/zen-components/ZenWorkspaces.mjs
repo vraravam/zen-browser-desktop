@@ -79,15 +79,14 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     );
     ChromeUtils.defineLazyGetter(this, 'tabContainer', () => document.getElementById('tabbrowser-tabs'));
     this._activeWorkspace = Services.prefs.getStringPref('zen.workspaces.active', '');
+  }
+
+  async afterLoadInit() {
     await SessionStore.promiseInitialized;
     if (!this._hasInitializedTabsStrip) {
       await this.delayedStartup();
     }
-  }
-
-  async afterLoadInit() {
     await this.promiseSectionsInitialized;
-    await SessionStore.promiseAllWindowsRestored;
     console.info('ZenWorkspaces: ZenWorkspaces initialized');
 
     await this.initializeWorkspaces();
@@ -2205,6 +2204,10 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       for (const tab of container.children) {
         if (tab.tagName === 'tab' || tab.tagName == 'tab-group') {
           tabs.push(tab);
+          const glance = tab.querySelector('.tabbrowser-tab[glance-id]');
+          if (glance) {
+            tabs.push(glance);
+          }
         }
       }
     }

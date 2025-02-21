@@ -1,7 +1,16 @@
 diff --git a/browser/components/tabbrowser/content/browser-ctrlTab.js b/browser/components/tabbrowser/content/browser-ctrlTab.js
-index e5d16e605b7edf11fc9f52b93e415087b76398f1..feb7ccfc0562efda56177a75454a9f83a332e8d1 100644
+index e5d16e605b7edf11fc9f52b93e415087b76398f1..40b6e29d26c7f8d692a2a9a7d924b289ec7a3d03 100644
 --- a/browser/components/tabbrowser/content/browser-ctrlTab.js
 +++ b/browser/components/tabbrowser/content/browser-ctrlTab.js
+@@ -459,7 +459,7 @@ var ctrlTab = {
+     // If the tab is hidden, don't add it to the list unless it's selected
+     // (Normally hidden tabs would be unhidden when selected, but that doesn't
+     // happen for Firefox View).
+-    if (aTab.closing || (aTab.hidden && !aTab.selected)) {
++    if (aTab.closing || (aTab.hidden && !aTab.selected) || aTab.hasAttribute("zen-empty-tab")) {
+       return;
+     }
+ 
 @@ -761,7 +761,7 @@ var ctrlTab = {
    _initRecentlyUsedTabs() {
      this._recentlyUsedTabs = Array.prototype.filter.call(

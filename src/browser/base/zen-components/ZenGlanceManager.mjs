@@ -486,6 +486,7 @@
     }
 
     finishOpeningGlance() {
+      ZenWorkspaces.updateTabsContainers();
       this.browserWrapper.removeAttribute('animate-full');
       this.overlay.classList.remove('zen-glance-overlay');
       this.browserWrapper.removeAttribute('style');

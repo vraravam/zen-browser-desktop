@@ -558,7 +558,7 @@
         width: -moz-available;
       }
 
-      &[zen-pinned-changed='true'] .tab-icon-stack {
+      &[zen-pinned-changed='true'] > .tab-stack > .tab-content > .tab-icon-stack {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
@@ -566,6 +566,10 @@
         left: 8px;
         margin: 0 !important;
         pointer-events: none;
+
+        & > *:not(.tab-icon-image) {
+          pointer-events: all;
+        }
       }
 
       &[zen-pinned-changed='true'] .tab-reset-pin-button image {
@@ -583,7 +587,8 @@
           opacity: 0.6;
         }
 
-        & ~ .tab-icon-stack {
+
+        & ~ .tab-icon-stack .tab-icon-image {
           opacity: 0;
         }
 
