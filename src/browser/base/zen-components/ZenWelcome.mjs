@@ -1,4 +1,7 @@
 {
+  var _tabsToPin = [];
+  var _tabsToPinEssentials = [];
+
   function clearBrowserElements() {
     for (const element of document.getElementById('browser').children) {
       element.style.display = 'none';
@@ -45,13 +48,7 @@
       const tab = window.gBrowser.addTrustedTab(url, {
         inBackground: true,
       });
-      setTimeout(
-        (tab) => {
-          gBrowser.pinTab(tab);
-        },
-        1000,
-        tab
-      );
+      _tabsToPin.push(tab);
     }
   }
 
@@ -177,10 +174,7 @@
     async next() {
       if (this._currentPage !== -1) {
         const previousPage = this._pages[this._currentPage];
-        const promises = [
-          this.fadeOutTitles(),
-          this.fadeOutButtons(),
-        ];
+        const promises = [this.fadeOutTitles(), this.fadeOutButtons()];
         if (!previousPage.dontFadeOut) {
           promises.push(this.fadeOutContent());
         }
@@ -204,6 +198,7 @@
       await animate('#zen-welcome-page-content', { x: [0, '100%'] }, { bounce: 0 });
       document.getElementById('zen-welcome-page-content').remove();
       await this.animHeart();
+      this._pinRemainingTabs();
       await animate('#zen-welcome-pages', { opacity: [1, 0] });
       document.getElementById('zen-welcome').remove();
       document.documentElement.removeAttribute('zen-welcome-stage');
@@ -214,6 +209,15 @@
       gZenUIManager.updateTabsToolbar();
       await animate('#browser > *', { opacity: [0, 1] });
       gZenUIManager.showToast('zen-welcome-finished');
+    }
+
+    _pinRemainingTabs() {
+      for (const tab of _tabsToPin) {
+        gBrowser.pinTab(tab);
+      }
+      for (const tab of _tabsToPinEssentials) {
+        gZenPinnedTabManager.addToEssentials(tab);
+      }
     }
 
     async animHeart() {
@@ -438,13 +442,7 @@
             const createdTab = window.gBrowser.addTrustedTab(url, {
               inBackground: true,
             });
-            setTimeout(
-              (tab) => {
-                gZenPinnedTabManager.addToEssentials(tab);
-              },
-              1000,
-              createdTab
-            );
+            _tabsToPinEssentials.push(createdTab);
           }
           openInitialPinTab();
           openWelcomeTab();
