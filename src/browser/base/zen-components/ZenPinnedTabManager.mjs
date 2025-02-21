@@ -561,6 +561,7 @@
       state.index = 0;
 
       SessionStore.setTabState(tab, state);
+      this.resetPinChangedUrl(tab);
     }
 
     async getFaviconAsBase64(pageUrl) {

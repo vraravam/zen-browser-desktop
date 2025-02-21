@@ -165,8 +165,7 @@ var gZenUIManager = {
   _lastTab: null,
 
   handleNewTab(werePassedURL, searchClipboard, where) {
-    const shouldOpenURLBar =
-      Services.prefs.getBoolPref('zen.urlbar.replace-newtab') && !werePassedURL && !searchClipboard && where === 'tab';
+    const shouldOpenURLBar = gZenVerticalTabsManager._canReplaceNewTab && !werePassedURL && !searchClipboard && where === 'tab';
     if (shouldOpenURLBar) {
       if (this._clearTimeout) {
         clearTimeout(this._clearTimeout);
@@ -279,6 +278,7 @@ var gZenVerticalTabsManager = {
       );
     });
 
+    XPCOMUtils.defineLazyPreferenceGetter(this, '_canReplaceNewTab', 'zen.urlbar.replace-newtab', true);
     var updateEvent = this._updateEvent.bind(this);
     var onPrefChange = this._onPrefChange.bind(this);
 

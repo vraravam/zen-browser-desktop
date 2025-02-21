@@ -107,7 +107,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   selectEmptyTab() {
-    if (this._emptyTab && Services.prefs.getBoolPref('zen.urlbar.replace-newtab')) {
+    if (this._emptyTab && gZenVerticalTabsManager._canReplaceNewTab) {
       gBrowser.selectedTab = this._emptyTab;
       return this._emptyTab;
     }
@@ -608,7 +608,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
         showed = true;
       }
     }
-    if (Services.prefs.getBoolPref('zen.urlbar.replace-newtab') && showed) {
+    if (gZenVerticalTabsManager._canReplaceNewTab && showed) {
       BrowserCommands.openTab();
     }
   }
@@ -1640,9 +1640,10 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     // tab hidden, select a new tab
     let prevTabUsed = null;
     if (
-      hiddenTabs.length === visibleTabs.length ||
-      visibleTabs.every((tab) => tab.getAttribute('zen-essential') === 'true') ||
-      hiddenTabs.includes(gBrowser.selectedTab)
+      (hiddenTabs.length === visibleTabs.length ||
+        visibleTabs.every((tab) => tab.getAttribute('zen-essential') === 'true') ||
+        hiddenTabs.includes(gBrowser.selectedTab)) &&
+      gZenVerticalTabsManager._canReplaceNewTab
     ) {
       prevTabUsed = gBrowser.selectedTab;
       this.selectEmptyTab();
@@ -1733,6 +1734,12 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     // Always make sure we always unselect the tab from the old workspace
     if (currentSelectedTab && currentSelectedTab !== tabToSelect) {
       currentSelectedTab._selected = false;
+      if (
+        !this._shouldShowTab(currentSelectedTab, window.uuid, containerId, workspaces) &&
+        currentSelectedTab.hasAttribute('zen-essential')
+      ) {
+        gBrowser.hideTab(currentSelectedTab, undefined, true);
+      }
     }
     return tabToSelect;
   }
@@ -2025,7 +2032,10 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   findTabToBlur(tab) {
-    return !this._shouldChangeToTab(tab) && this._emptyTab ? this._emptyTab : tab;
+    if (!this._shouldChangeToTab(tab) && this._emptyTab) {
+      return this._emptyTab;
+    }
+    return tab;
   }
 
   async setDefaultWorkspace() {
