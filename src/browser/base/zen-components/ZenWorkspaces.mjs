@@ -601,8 +601,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       this.selectEmptyTab();
       showed = true;
     } else {
-      const currentTabUrl = currentTab.linkedBrowser?.currentURI.spec;
-      if (currentTabUrl === 'about:newtab' || currentTabUrl === 'about:home') {
+      if (currentTab.isEmpty) {
         this.selectEmptyTab();
         gBrowser.removeTab(currentTab);
         showed = true;

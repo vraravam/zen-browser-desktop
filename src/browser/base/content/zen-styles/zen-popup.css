@@ -364,7 +364,7 @@ menuitem {
     color: var(--button-primary-color);
     box-shadow: var(--zen-big-shadow);
     display: flex;
-    font-weight: 600;
+    font-weight: 500;
     gap: 5px;
     flex-direction: column;
     gap: 2px;

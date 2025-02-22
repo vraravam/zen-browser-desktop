@@ -142,6 +142,10 @@
     visibility: collapse;
   }
 
+  #identity-icon-label {
+    display: none;
+  }
+
   #urlbar[open]
     :is(#tracking-protection-icon-container, .urlbar-page-action, .identity-box-button):not([hidden='true']):not(
       #identity-permission-box
