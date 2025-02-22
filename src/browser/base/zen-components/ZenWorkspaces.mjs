@@ -2273,10 +2273,13 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   switchIfNeeded(browser) {
-    const tab = gBrowser.getTabForBrowser(browser);
-    const workspaceId = tab.getAttribute('zen-workspace-id');
-    if (!tab.hasAttribute('zen-essential') && workspaceId !== this.activeWorkspace) {
-      this.changeWorkspace({ uuid: workspaceId });
-    }
+    return new Promise(async(resolve) => {
+      const tab = gBrowser.getTabForBrowser(browser);
+      const workspaceId = tab.getAttribute('zen-workspace-id');
+      if (!tab.hasAttribute('zen-essential') && workspaceId !== this.activeWorkspace) {
+        await this.changeWorkspace({ uuid: workspaceId });
+      }
+      resolve();
+    });
   }
 })();
