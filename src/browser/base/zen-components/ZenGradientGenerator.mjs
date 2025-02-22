@@ -4,7 +4,7 @@
     static MAX_DOTS = 3;
 
     currentOpacity = 0.5;
-    currentRotation = 45;
+    currentRotation = -45;
     dots = [];
     useAlgo = '';
     constructor() {
@@ -34,6 +34,7 @@
       this.initCanvas();
       this.initCustomColorInput();
       this.initTextureInput();
+      this.initRotationInput();
 
       window.matchMedia('(prefers-color-scheme: dark)').addListener(this.onDarkModeChange.bind(this));
     }
@@ -145,6 +146,51 @@
 
     initCustomColorInput() {
       this.customColorInput.addEventListener('keydown', this.onCustomColorKeydown.bind(this));
+    }
+
+    initRotationInput() {
+      const rotationInput = document.getElementById('PanelUI-zen-gradient-generator-rotation-dot');
+      this._onRotationMouseDown = this.onRotationMouseDown.bind(this);
+      this._onRotationMouseMove = this.onRotationMouseMove.bind(this);
+      this._onRotationMouseUp = this.onRotationMouseUp.bind(this);
+      rotationInput.addEventListener('mousedown', this._onRotationMouseDown);
+    }
+
+    onRotationMouseDown(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      this._rotating = true;
+      document.addEventListener('mousemove', this._onRotationMouseMove);
+      document.addEventListener('mouseup', this._onRotationMouseUp);
+    }
+
+    onRotationMouseMove(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      const rotationInput = document.getElementById('PanelUI-zen-gradient-generator-rotation-dot');
+      const containerRect = rotationInput.parentElement.getBoundingClientRect();
+      // We calculate the angle based on the mouse position and the center of the container
+      const rotation = Math.atan2(
+        event.clientY - containerRect.top - containerRect.height / 2,
+        event.clientX - containerRect.left - containerRect.width / 2
+      );
+      const endRotation = (rotation * 180) / Math.PI;
+      // Between 150 and 50, we don't update the rotation
+      if (!(endRotation < 45 || endRotation > 130)) {
+        return;
+      }
+      this.currentRotation = endRotation;
+      this.updateCurrentWorkspace();
+    }
+
+    onRotationMouseUp(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      document.removeEventListener('mousemove', this._onRotationMouseMove);
+      document.removeEventListener('mouseup', this._onRotationMouseUp);
+      setTimeout(() => {
+        this._rotating = false;
+      }, 100);
     }
 
     initTextureInput() {
@@ -564,6 +610,9 @@
     }
 
     onThemePickerClick(event) {
+      if (this._rotating) {
+        return;
+      }
       event.preventDefault();
       const target = event.target;
       if (target.id === 'PanelUI-zen-gradient-generator-color-add') {
@@ -709,6 +758,9 @@
     }
 
     onDotMouseUp(event) {
+      if (this._rotating) {
+        return;
+      }
       if (event.button === 2) {
         if (!event.target.classList.contains('zen-theme-picker-dot')) {
           return;
@@ -834,7 +886,7 @@
       return `linear-gradient(${this.currentRotation}deg, ${themedColors.map((color) => this.getSingleRGBColor(color, forToolbar)).join(', ')})`;
     }
 
-    static getTheme(colors = [], opacity = 0.5, rotation = 45, texture = 0) {
+    static getTheme(colors = [], opacity = 0.5, rotation = -45, texture = 0) {
       return {
         type: 'gradient',
         gradientColors: colors ? colors.filter((color) => color) : [], // remove undefined
@@ -989,7 +1041,7 @@
         }
 
         browser.gZenThemePicker.currentOpacity = workspaceTheme.opacity ?? 0.5;
-        browser.gZenThemePicker.currentRotation = workspaceTheme.rotation ?? 45;
+        browser.gZenThemePicker.currentRotation = workspaceTheme.rotation ?? -45;
         browser.gZenThemePicker.currentTexture = workspaceTheme.texture ?? 0;
 
         for (const button of browser.document.querySelectorAll('#PanelUI-zen-gradient-generator-color-actions button')) {
@@ -1031,6 +1083,29 @@
             if (i === 16) {
               i = 0;
             }
+          }
+
+          const numberOfColors = workspaceTheme.gradientColors?.length;
+          const rotationDot = browser.document.getElementById('PanelUI-zen-gradient-generator-rotation-dot');
+          const rotationLine = browser.document.getElementById('PanelUI-zen-gradient-generator-rotation-line');
+          if (numberOfColors > 1) {
+            rotationDot.style.opacity = 1;
+            rotationLine.style.opacity = 1;
+            rotationDot.style.removeProperty('pointer-events');
+            const rotationPadding = 20;
+            const rotationParentWidth = rotationDot.parentElement.getBoundingClientRect().width;
+            const rotationDotPosition = this.currentRotation;
+            const rotationDotWidth = rotationDot.getBoundingClientRect().width;
+            const rotationDotX =
+              Math.cos((rotationDotPosition * Math.PI) / 180) * (rotationParentWidth / 2 - rotationDotWidth / 2);
+            const rotationDotY =
+              Math.sin((rotationDotPosition * Math.PI) / 180) * (rotationParentWidth / 2 - rotationDotWidth / 2);
+            rotationDot.style.left = `${rotationParentWidth / 2 + rotationDotX - rotationPadding + rotationDotWidth / 4}px`;
+            rotationDot.style.top = `${rotationParentWidth / 2 + rotationDotY - rotationPadding + rotationDotWidth / 4}px`;
+          } else {
+            rotationDot.style.opacity = 0;
+            rotationLine.style.opacity = 0;
+            rotationDot.style.pointerEvents = 'none';
           }
         }
 

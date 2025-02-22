@@ -355,3 +355,35 @@
     }
   }
 }
+
+#PanelUI-zen-gradient-generator-rotation-line {
+  border: 1px solid var(--zen-colors-border);
+  position: absolute;
+  --rotation-padding: 15px;
+  width: calc(100% - var(--rotation-padding) * 2);
+  border-bottom: 0;
+  border-left: 0;
+  height: calc(100% - var(--rotation-padding) * 2);
+  top: var(--rotation-padding);
+  left: var(--rotation-padding);
+  border-radius: 50%;
+  transform: rotate(-45deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+#PanelUI-zen-gradient-generator-rotation-dot {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--zen-colors-border);
+  background: var(--zen-colors-tertiary);
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform 0.1s;
+  &:hover {
+    transform: scale(1.1);
+  }
+}
