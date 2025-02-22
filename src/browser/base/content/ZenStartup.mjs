@@ -58,7 +58,7 @@
       if (Services.prefs.getBoolPref('zen.watermark.enabled', false)) {
         gZenUIManager.motion
           .animate(
-            '#browser > *, #urlbar',
+            '#browser > *, #urlbar, #tabbrowser-tabbox > *',
             {
               opacity: [0, 1],
             },
@@ -68,7 +68,7 @@
             }
           )
           .then(() => {
-            for (let elem of document.querySelectorAll('#browser > *, #urlbar')) {
+            for (let elem of document.querySelectorAll('#browser > *, #urlbar, #tabbrowser-tabbox > *')) {
               elem.style.removeProperty('opacity');
             }
           });

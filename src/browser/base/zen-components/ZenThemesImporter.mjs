@@ -313,5 +313,10 @@ gZenActorsManager.addJSWindowActor('ZenThemeMarketplace', {
       DOMContentLoaded: {},
     },
   },
-  matches: [...Services.prefs.getStringPref('zen.injections.match-urls').split(','), 'about:preferences'],
+  includeChrome: true,
+  matches: [
+    ...Services.prefs.getStringPref('zen.injections.match-urls').split(','),
+    'about:preferences',
+    'chrome://browser/content/browser.xhtml',
+  ],
 });
