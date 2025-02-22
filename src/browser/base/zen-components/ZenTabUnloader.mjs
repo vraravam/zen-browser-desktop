@@ -225,6 +225,10 @@
 
     unloadTab() {
       const tabs = TabContextMenu.contextTab.multiselected ? gBrowser.selectedTabs : [TabContextMenu.contextTab];
+      this.explicitUnloadTabs(tabs);
+    }
+
+    explicitUnloadTabs(tabs) {
       for (let i = 0; i < tabs.length; i++) {
         if (this.canUnloadTab(tabs[i], Date.now(), this.intervalUnloader.excludedUrls, true)) {
           this.unload(tabs[i]);
@@ -263,7 +267,7 @@
         (tab.pictureinpicture && !ignoreTimestamp) ||
         (tab.soundPlaying && !ignoreTimestamp) ||
         (tab.zenIgnoreUnload && !ignoreTimestamp) ||
-        excludedUrls.some((url) => url.test(tab.linkedBrowser.currentURI.spec))
+        excludedUrls.some((url) => url.test(tab.linkedBrowser?.currentURI.spec))
       ) {
         return false;
       }

@@ -38,7 +38,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   `;
 
   async waitForPromises() {
-    await Promise.all([this.promiseDBInitialized, this.promisePinnedInitialized]);
+    await Promise.all([this.promiseDBInitialized, this.promisePinnedInitialized, SessionStore.promiseAllWindowsRestored]);
   }
 
   async init() {
@@ -599,9 +599,16 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     let showed = false;
     if (currentTab.pinned) {
       this.selectEmptyTab();
+      gZenTabUnloader.explicitUnloadTabs([currentTab]);
       showed = true;
     } else {
-      if (currentTab.isEmpty) {
+      const currentTabURL = currentTab.linkedBrowser?.currentURI?.spec;
+      // Check for empty tab being restored
+      if (
+        (currentTab.isEmpty &&
+          (currentTab.getAttribute('image') === gPageIcons[currentTabURL] || !currentTab.hasAttribute('image'))) ||
+        currentTab.hasAttribute('zen-empty-tab')
+      ) {
         this.selectEmptyTab();
         gBrowser.removeTab(currentTab);
         showed = true;
