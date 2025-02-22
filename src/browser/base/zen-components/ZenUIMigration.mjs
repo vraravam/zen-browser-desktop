@@ -6,7 +6,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
 
 class ZenUIMigration {
   PREF_NAME = 'zen.migration.version';
-  MIGRATION_VERSION = 2;
+  MIGRATION_VERSION = 1;
 
   init(isNewProfile, win) {
     if (!isNewProfile) {
@@ -26,9 +26,6 @@ class ZenUIMigration {
   _migrate(win) {
     if (this._migrationVersion < 1) {
       this._migrateV1(win);
-    }
-    if (this._migrationVersion < 2) {
-      this._migrateV2(win);
     }
   }
 
@@ -59,11 +56,6 @@ class ZenUIMigration {
         },
       ]
     );
-  }
-
-  async _migrateV2(win) {
-    // Just check for mods updates until we get an actual implementation
-    document.dispatchEvent(new CustomEvent('ZenCheckForThemeUpdates'));
   }
 }
 
