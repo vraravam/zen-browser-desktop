@@ -716,12 +716,12 @@ var gZenVerticalTabsManager = {
       !gZenVerticalTabsManager._prefsSidebarExpanded
     )
       return;
-    document.documentElement.setAttribute('zen-renaming-tab', 'true');
     this._tabEdited = event.target.closest('.tabbrowser-tab');
     if (!this._tabEdited || !this._tabEdited.pinned || this._tabEdited.hasAttribute('zen-essential')) {
       this._tabEdited = null;
       return;
     }
+    document.documentElement.setAttribute('zen-renaming-tab', 'true');
     const label = this._tabEdited.querySelector('.tab-label-container');
     label.classList.add('tab-label-container-editing');
 
