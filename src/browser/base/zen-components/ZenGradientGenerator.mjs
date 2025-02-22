@@ -1095,7 +1095,7 @@
             const rotationPadding = 20;
             const rotationParentWidth = rotationDot.parentElement.getBoundingClientRect().width;
             const rotationDotPosition = this.currentRotation;
-            const rotationDotWidth = rotationDot.getBoundingClientRect().width;
+            const rotationDotWidth = 30;
             const rotationDotX =
               Math.cos((rotationDotPosition * Math.PI) / 180) * (rotationParentWidth / 2 - rotationDotWidth / 2);
             const rotationDotY =
