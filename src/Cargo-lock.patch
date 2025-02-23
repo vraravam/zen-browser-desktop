@@ -1,0 +1,13 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index 0609d96f01ded85dccf2c931d3c553be61432e6a..8ce4374dd31b4ce818c8bb548fbfb2669014b05b 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -3919,8 +3919,6 @@ dependencies = [
+ [[package]]
+ name = "mime_guess"
+ version = "2.0.4"
+-source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "4192263c238a5f0d0c6bfd21f336a313a4ce1c450542449ca191bb657b4642ef"
+ dependencies = [
+  "mime",
+  "unicase",
