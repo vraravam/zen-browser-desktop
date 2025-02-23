@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabbrowser.js b/browser/components/tabbrowser/content/tabbrowser.js
-index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..f52457bfbce52b255a26eedd04f36e9bebc79c6c 100644
+index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..04056ab93316968babcf32921591731291f8e9db 100644
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -406,11 +406,52 @@
@@ -347,11 +347,19 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..f52457bfbce52b255a26eedd04f36e9b
              ? closeWindowWithLastTab
              : !window.toolbar.visible ||
 -              Services.prefs.getBoolPref("browser.tabs.closeWindowWithLastTab");
-+              Services.prefs.getBoolPref("browser.tabs.closeWindowWithLastTab") && !ZenWorkspaces._isClosingWindow;
++              Services.prefs.getBoolPref("browser.tabs.closeWindowWithLastTab") && !ZenWorkspaces._isClosingWindow && !ZenWorkspaces._removedByStartupPage;
  
          if (closeWindow) {
            // We've already called beforeunload on all the relevant tabs if we get here,
-@@ -4681,9 +4794,7 @@
+@@ -4641,6 +4754,7 @@
+ 
+         newTab = true;
+       }
++      ZenWorkspaces._removedByStartupPage = false;
+       aTab._endRemoveArgs = [closeWindow, newTab];
+ 
+       // swapBrowsersAndCloseOther will take care of closing the window without animation.
+@@ -4681,9 +4795,7 @@
        aTab._mouseleave();
  
        if (newTab) {
@@ -362,7 +370,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..f52457bfbce52b255a26eedd04f36e9b
        } else {
          TabBarVisibility.update();
        }
-@@ -4812,6 +4923,8 @@
+@@ -4812,6 +4924,8 @@
          this.tabs[i]._tPos = i;
        }
  
@@ -371,7 +379,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..f52457bfbce52b255a26eedd04f36e9b
        if (!this._windowIsClosing) {
          if (wasPinned) {
            this.tabContainer._positionPinnedTabs();
-@@ -5025,7 +5138,7 @@
+@@ -5025,7 +5139,7 @@
          !excludeTabs.has(aTab.owner) &&
          Services.prefs.getBoolPref("browser.tabs.selectOwnerOnClose")
        ) {
@@ -380,7 +388,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..f52457bfbce52b255a26eedd04f36e9b
        }
  
        // Try to find a remaining tab that comes after the given tab
-@@ -5047,7 +5160,7 @@
+@@ -5047,7 +5161,7 @@
        }
  
        if (tab) {
@@ -389,7 +397,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..f52457bfbce52b255a26eedd04f36e9b
        }
  
        // If no qualifying visible tab was found, see if there is a tab in
-@@ -5465,10 +5578,10 @@
+@@ -5465,10 +5579,10 @@
        SessionStore.deleteCustomTabValue(aTab, "hiddenBy");
      }
  
@@ -402,7 +410,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..f52457bfbce52b255a26eedd04f36e9b
          aTab.selected ||
          aTab.closing ||
          // Tabs that are sharing the screen, microphone or camera cannot be hidden.
-@@ -5706,9 +5819,9 @@
+@@ -5706,9 +5820,9 @@
  
        // Don't allow mixing pinned and unpinned tabs.
        if (aTab.pinned) {
@@ -414,7 +422,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..f52457bfbce52b255a26eedd04f36e9b
        }
        if (aTab._tPos == aIndex) {
          return;
-@@ -5717,7 +5830,7 @@
+@@ -5717,7 +5831,7 @@
        this._lastRelatedTabMap = new WeakMap();
  
        this._handleTabMove(aTab, () => {
@@ -423,7 +431,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..f52457bfbce52b255a26eedd04f36e9b
          if (forceStandaloneTab && neighbor.group) {
            neighbor = neighbor.group;
          }
-@@ -5802,7 +5915,7 @@
+@@ -5802,7 +5916,7 @@
          createLazyBrowser,
        };
  
@@ -432,7 +440,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..f52457bfbce52b255a26eedd04f36e9b
        if (aIndex < numPinned || (aTab.pinned && aIndex == numPinned)) {
          params.pinned = true;
        }
-@@ -7443,6 +7556,7 @@
+@@ -7443,6 +7557,7 @@
              aWebProgress.isTopLevel
            ) {
              this.mTab.setAttribute("busy", "true");
@@ -440,7 +448,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..f52457bfbce52b255a26eedd04f36e9b
              gBrowser._tabAttrModified(this.mTab, ["busy"]);
              this.mTab._notselectedsinceload = !this.mTab.selected;
              gBrowser.syncThrobberAnimations(this.mTab);
-@@ -8411,7 +8525,7 @@ var TabContextMenu = {
+@@ -8411,7 +8526,7 @@ var TabContextMenu = {
      );
      contextUnpinSelectedTabs.hidden =
        !this.contextTab.pinned || !multiselectionContext;
@@ -449,7 +457,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..f52457bfbce52b255a26eedd04f36e9b
      // Move Tab items
      let contextMoveTabOptions = document.getElementById(
        "context_moveTabOptions"
-@@ -8444,7 +8558,7 @@ var TabContextMenu = {
+@@ -8444,7 +8559,7 @@ var TabContextMenu = {
      let contextMoveTabToStart = document.getElementById("context_moveToStart");
      let isFirstTab =
        tabsToMove[0] == visibleTabs[0] ||
@@ -458,7 +466,7 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..f52457bfbce52b255a26eedd04f36e9b
      contextMoveTabToStart.disabled = isFirstTab && allSelectedTabsAdjacent;
  
      document.getElementById("context_openTabInWindow").disabled =
-@@ -8677,6 +8791,7 @@ var TabContextMenu = {
+@@ -8677,6 +8792,7 @@ var TabContextMenu = {
      if (this.contextTab.multiselected) {
        gBrowser.removeMultiSelectedTabs();
      } else {

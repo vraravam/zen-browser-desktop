@@ -614,6 +614,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
         currentTab.hasAttribute('zen-empty-tab')
       ) {
         this.selectEmptyTab();
+        this._removedByStartupPage = true;
         gBrowser.removeTab(currentTab);
         showed = true;
       }
@@ -638,7 +639,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   handleTabBeforeClose(tab) {
-    if (!this.workspaceEnabled || this.__contextIsDelete) {
+    if (!this.workspaceEnabled || this.__contextIsDelete || this._removedByStartupPage) {
       return null;
     }
 
