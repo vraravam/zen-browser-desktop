@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabbrowser.js b/browser/components/tabbrowser/content/tabbrowser.js
-index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..3523627188284f0af992d29bb0863f8ae20d5094 100644
+index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..f52457bfbce52b255a26eedd04f36e9bebc79c6c 100644
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -406,11 +406,52 @@
@@ -121,6 +121,15 @@ index ff90a70bdad6c94ec4b90027ff102972d0eb28e5..3523627188284f0af992d29bb0863f8a
          return false;
        }
  
+@@ -1888,7 +1938,7 @@
+         newIndex = this.selectedTab._tPos + 1;
+       }
+ 
+-      if (replace) {
++      if (replace && !(!targetTab && this.selectedTab?.hasAttribute('zen-empty-tab'))) {
+         let browser;
+         if (targetTab) {
+           browser = this.getBrowserForTab(targetTab);
 @@ -2222,7 +2272,8 @@
          b.setAttribute("name", name);
        }
