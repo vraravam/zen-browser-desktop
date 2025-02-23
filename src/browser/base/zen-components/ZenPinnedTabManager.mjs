@@ -180,7 +180,6 @@
         return;
       }
 
-      const activeTab = gBrowser.selectedTab;
       const pinnedTabsByUUID = new Map();
       const pinsToCreate = new Set(pins.map((p) => p.uuid));
 
@@ -293,11 +292,6 @@
         gBrowser.tabContainer._invalidateCachedTabs();
 
         newTab.initialize();
-      }
-
-      // Restore active tab
-      if (!activeTab.closing) {
-        gBrowser.selectedTab = activeTab;
       }
 
       gBrowser._updateTabBarForPinnedTabs();
