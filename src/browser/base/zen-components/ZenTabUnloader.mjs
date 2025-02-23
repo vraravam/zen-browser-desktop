@@ -128,13 +128,20 @@
   class ZenTabUnloader extends ZenDOMOperatedFeature {
     static ACTIVITY_MODIFIERS = ['muted', 'soundplaying', 'label', 'attention'];
 
+    constructor() {
+      super();
+      if (!lazy.zenTabUnloaderEnabled) {
+        return;
+      }
+      this.intervalUnloader = new ZenTabsIntervalUnloader(this);
+    }
+
     init() {
       if (!lazy.zenTabUnloaderEnabled) {
         return;
       }
       this.insertIntoContextMenu();
       this.observer = new ZenTabsObserver();
-      this.intervalUnloader = new ZenTabsIntervalUnloader(this);
       this.observer.addTabsListener(this.onTabEvent.bind(this));
     }
 

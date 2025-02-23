@@ -599,7 +599,11 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     let showed = false;
     if (currentTab.pinned) {
       this.selectEmptyTab();
-      gZenTabUnloader.explicitUnloadTabs([currentTab]);
+      try {
+        gZenTabUnloader.explicitUnloadTabs([currentTab]);
+      } catch (e) {
+        console.error('ZenWorkspaces: Error unloading tab', e);
+      }
       showed = true;
     } else {
       const currentTabURL = currentTab.linkedBrowser?.currentURI?.spec;
@@ -1515,7 +1519,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     }
 
     // First pass: Handle tab visibility and workspace ID assignment
-    const prevTabUsed = this._processTabVisibility(window.uuid, containerId, workspaces);
+    const prevTabUsed = this._processTabVisibility(window.uuid, containerId, workspaces, onInit);
 
     // Second pass: Handle tab selection
     this.tabContainer._invalidateCachedTabs();
@@ -1631,7 +1635,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     this._animatingChange = false;
   }
 
-  _processTabVisibility(workspaceUuid, containerId, workspaces) {
+  _processTabVisibility(workspaceUuid, containerId, workspaces, onInit) {
     const hiddenTabs = [];
     const visibleTabs = gBrowser.tabContainer.visibleTabs;
     for (const tab of gBrowser.tabs) {
@@ -1649,7 +1653,8 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       (hiddenTabs.length === visibleTabs.length ||
         visibleTabs.every((tab) => tab.getAttribute('zen-essential') === 'true') ||
         hiddenTabs.includes(gBrowser.selectedTab)) &&
-      gZenVerticalTabsManager._canReplaceNewTab
+      gZenVerticalTabsManager._canReplaceNewTab &&
+      !onInit
     ) {
       prevTabUsed = gBrowser.selectedTab;
       this.selectEmptyTab();
