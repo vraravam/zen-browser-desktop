@@ -1666,6 +1666,21 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     return prevTabUsed;
   }
 
+  // Only use it in gZenPinnedTabsManager, when initializing essential tabs
+  essentialShouldShowTab(tab) {
+    if (tab.getAttribute('zen-essential') !== 'true') {
+      return true;
+    }
+    const workspaces = this._workspaceCache;
+    if (!workspaces) {
+      return true;
+    }
+    const containerId = (
+      workspaces.workspaces.find((workspace) => workspace.uuid === this.activeWorkspace) || {}
+    )?.containerTabId?.toString();
+    return this._shouldShowTab(tab, this.activeWorkspace, containerId, workspaces);
+  }
+
   _shouldShowTab(tab, workspaceUuid, containerId, workspaces) {
     const isEssential = tab.getAttribute('zen-essential') === 'true';
     const tabWorkspaceId = tab.getAttribute('zen-workspace-id');

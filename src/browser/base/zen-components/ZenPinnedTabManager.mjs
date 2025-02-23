@@ -290,8 +290,10 @@
           }
         }
         gBrowser.tabContainer._invalidateCachedTabs();
-
         newTab.initialize();
+        if (!ZenWorkspaces.essentialShouldShowTab(newTab)) {
+          gBrowser.hideTab(newTab, undefined, true);
+        }
       }
 
       gBrowser._updateTabBarForPinnedTabs();
