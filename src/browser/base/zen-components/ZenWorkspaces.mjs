@@ -599,7 +599,11 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     let showed = false;
     if (currentTab.pinned) {
       this.selectEmptyTab();
-      gZenTabUnloader.explicitUnloadTabs([currentTab]);
+      try {
+        gZenTabUnloader.explicitUnloadTabs([currentTab]);
+      } catch (e) {
+        console.error('ZenWorkspaces: Error unloading tab', e);
+      }
       showed = true;
     } else {
       const currentTabURL = currentTab.linkedBrowser?.currentURI?.spec;
