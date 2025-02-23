@@ -437,7 +437,6 @@
     async _removePinnedAttributes(tab, isClosing = false) {
       tab.removeAttribute('zen-has-static-label');
       if (!tab.getAttribute('zen-pin-id') || this._temporarilyUnpiningEssential) {
-        this._temporarilyUnpiningEssential = false;
         return;
       }
 
@@ -587,23 +586,31 @@
       const tabs = tab ? [tab] : TabContextMenu.contextTab.multiselected ? gBrowser.selectedTabs : [TabContextMenu.contextTab];
       for (let i = 0; i < tabs.length; i++) {
         const tab = tabs[i];
+        if (tab.hasAttribute('zen-essential')) {
+          continue;
+        }
         tab.setAttribute('zen-essential', 'true');
         if (tab.hasAttribute('zen-workspace-id')) {
           tab.removeAttribute('zen-workspace-id');
         }
-        if (tab.pinned) {
-          this._temporarilyUnpiningEssential = true;
-          gBrowser.unpinTab(tab);
+        if (tab.pinned && tab.hasAttribute('zen-pin-id')) {
+          const pin = this._pinsCache.find((pin) => pin.uuid === tab.getAttribute('zen-pin-id'));
+          if (pin) {
+            pin.isEssential = true;
+            ZenPinnedTabsStorage.savePin(pin);
+          }
+          document.getElementById('zen-essentials-container').appendChild(tab);
+          gBrowser.tabContainer._invalidateCachedTabs();
+        } else {
+          gBrowser.pinTab(tab);
         }
-        gBrowser.pinTab(tab);
-        this.resetPinChangedUrl(tab);
         this.onTabIconChanged(tab);
         this._onTabMove(tab);
       }
       gZenUIManager.updateTabsToolbar();
     }
 
-    removeEssentials(tab) {
+    removeEssentials(tab, unpin = true) {
       const tabs = tab ? [tab] : TabContextMenu.contextTab.multiselected ? gBrowser.selectedTabs : [TabContextMenu.contextTab];
       for (let i = 0; i < tabs.length; i++) {
         const tab = tabs[i];
@@ -611,7 +618,14 @@
         if (ZenWorkspaces.workspaceEnabled && ZenWorkspaces.getActiveWorkspaceFromCache.uuid) {
           tab.setAttribute('zen-workspace-id', ZenWorkspaces.getActiveWorkspaceFromCache.uuid);
         }
-        gBrowser.unpinTab(tab);
+        if (unpin) {
+          gBrowser.unpinTab(tab);
+        } else {
+          const pinContainer = ZenWorkspaces.pinnedTabsContainer;
+          pinContainer.prepend(tab);
+          gBrowser.tabContainer._invalidateCachedTabs();
+          this._onTabMove(tab);
+        }
       }
       gZenUIManager.updateTabsToolbar();
     }
@@ -685,8 +699,7 @@
             gBrowser.pinTab(draggedTab);
             moved = true;
           } else if (draggedTab.hasAttribute('zen-essential')) {
-            this.removeEssentials(draggedTab);
-            gBrowser.pinTab(draggedTab);
+            this.removeEssentials(draggedTab, false);
             moved = true;
           }
         }

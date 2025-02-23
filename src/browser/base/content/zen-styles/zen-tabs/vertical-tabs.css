@@ -558,7 +558,7 @@
         width: -moz-available;
       }
 
-      &[zen-pinned-changed='true'] > .tab-stack > .tab-content > .tab-icon-stack {
+      &[zen-pinned-changed='true']:not([zen-essential]) > .tab-stack > .tab-content > .tab-icon-stack {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
@@ -572,11 +572,11 @@
         }
       }
 
-      &[zen-pinned-changed='true'] .tab-reset-pin-button image {
+      &[zen-pinned-changed='true']:not([zen-essential]) .tab-reset-pin-button image {
         opacity: 0;
       }
 
-      &[zen-pinned-changed='true'] .tab-reset-pin-button:hover {
+      &[zen-pinned-changed='true']:not([zen-essential]) .tab-reset-pin-button:hover {
         & ~ .tab-label-container .tab-reset-pin-label {
           max-height: 10px;
           opacity: 0.6;

@@ -547,10 +547,10 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
 
       - name: Release
-        uses: marvinpinto/action-automatic-releases@master
+        uses: softprops/action-gh-release@v2
         if: ${{ inputs.update_branch == 'release' }}
         with:
-          token: '${{ secrets.DEPLOY_KEY }}'
+          token: ${{ secrets.DEPLOY_KEY }}
           tag_name: ${{ needs.build-data.outputs.version }}
           prerelease: false
           fail_on_unmatched_files: false
