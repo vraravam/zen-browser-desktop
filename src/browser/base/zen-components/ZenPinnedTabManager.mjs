@@ -220,79 +220,83 @@
 
       // Third pass: create new tabs for pins that don't have tabs
       for (let pin of pins) {
-        if (!pinsToCreate.has(pin.uuid)) {
-          continue; // Skip pins that already have tabs
-        }
+        try {
+          if (!pinsToCreate.has(pin.uuid)) {
+            continue; // Skip pins that already have tabs
+          }
 
-        let params = {
-          skipAnimation: true,
-          allowInheritPrincipal: false,
-          skipBackgroundNotify: true,
-          userContextId: pin.containerTabId || 0,
-          createLazyBrowser: true,
-          skipLoad: true,
-          noInitialLabel: false,
-        };
-
-        // Create and initialize the tab
-        let newTab = gBrowser.addTrustedTab(pin.url, params);
-        newTab.setAttribute('zenDefaultUserContextId', true);
-
-        // Set initial label/title
-        if (pin.title) {
-          gBrowser.setInitialTabTitle(newTab, pin.title);
-        }
-
-        // Set the icon if we have it cached
-        if (pin.iconUrl) {
-          gBrowser.setIcon(newTab, pin.iconUrl);
-        }
-
-        newTab.setAttribute('zen-pin-id', pin.uuid);
-
-        if (pin.workspaceUuid) {
-          newTab.setAttribute('zen-workspace-id', pin.workspaceUuid);
-        }
-
-        if (pin.isEssential) {
-          newTab.setAttribute('zen-essential', 'true');
-        }
-
-        if (pin.editedTitle) {
-          newTab.setAttribute('zen-has-static-label', 'true');
-        }
-
-        // Initialize browser state if needed
-        if (!newTab.linkedBrowser._remoteAutoRemoved) {
-          let state = {
-            entries: [
-              {
-                url: pin.url,
-                title: pin.title,
-                triggeringPrincipal_base64: E10SUtils.SERIALIZED_SYSTEMPRINCIPAL,
-              },
-            ],
+          let params = {
+            skipAnimation: true,
+            allowInheritPrincipal: false,
+            skipBackgroundNotify: true,
             userContextId: pin.containerTabId || 0,
-            image: pin.iconUrl,
+            createLazyBrowser: true,
+            skipLoad: true,
+            noInitialLabel: false,
           };
 
-          SessionStore.setTabState(newTab, state);
-        }
+          // Create and initialize the tab
+          let newTab = gBrowser.addTrustedTab(pin.url, params);
+          newTab.setAttribute('zenDefaultUserContextId', true);
 
-        this.log(`Created new pinned tab for pin ${pin.uuid} (isEssential: ${pin.isEssential})`);
-        gBrowser.pinTab(newTab);
-        if (!pin.isEssential) {
-          const container = document.querySelector(
-            `#vertical-pinned-tabs-container .zen-workspace-tabs-section[zen-workspace-id="${pin.workspaceUuid}"]`
-          );
-          if (container) {
-            container.insertBefore(newTab, container.lastChild);
+          // Set initial label/title
+          if (pin.title) {
+            gBrowser.setInitialTabTitle(newTab, pin.title);
           }
-        }
-        gBrowser.tabContainer._invalidateCachedTabs();
-        newTab.initialize();
-        if (!ZenWorkspaces.essentialShouldShowTab(newTab)) {
-          gBrowser.hideTab(newTab, undefined, true);
+
+          // Set the icon if we have it cached
+          if (pin.iconUrl) {
+            gBrowser.setIcon(newTab, pin.iconUrl);
+          }
+
+          newTab.setAttribute('zen-pin-id', pin.uuid);
+
+          if (pin.workspaceUuid) {
+            newTab.setAttribute('zen-workspace-id', pin.workspaceUuid);
+          }
+
+          if (pin.isEssential) {
+            newTab.setAttribute('zen-essential', 'true');
+          }
+
+          if (pin.editedTitle) {
+            newTab.setAttribute('zen-has-static-label', 'true');
+          }
+
+          // Initialize browser state if needed
+          if (!newTab.linkedBrowser._remoteAutoRemoved) {
+            let state = {
+              entries: [
+                {
+                  url: pin.url,
+                  title: pin.title,
+                  triggeringPrincipal_base64: E10SUtils.SERIALIZED_SYSTEMPRINCIPAL,
+                },
+              ],
+              userContextId: pin.containerTabId || 0,
+              image: pin.iconUrl,
+            };
+
+            SessionStore.setTabState(newTab, state);
+          }
+
+          this.log(`Created new pinned tab for pin ${pin.uuid} (isEssential: ${pin.isEssential})`);
+          gBrowser.pinTab(newTab);
+          if (!pin.isEssential) {
+            const container = document.querySelector(
+              `#vertical-pinned-tabs-container .zen-workspace-tabs-section[zen-workspace-id="${pin.workspaceUuid}"]`
+            );
+            if (container) {
+              container.insertBefore(newTab, container.lastChild);
+            }
+          }
+          gBrowser.tabContainer._invalidateCachedTabs();
+          newTab.initialize();
+          if (!ZenWorkspaces.essentialShouldShowTab(newTab)) {
+            gBrowser.hideTab(newTab, undefined, true);
+          }
+        } catch (ex) {
+          console.error('Failed to initialize pinned tabs:', ex);
         }
       }
 

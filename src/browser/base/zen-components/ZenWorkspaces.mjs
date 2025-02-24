@@ -267,9 +267,9 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       // remove tab from list
       tabs.splice(tabs.indexOf(tab), 1);
       if (tab.pinned) {
-        pinnedSection.appendChild(tab);
+        pinnedSection.insertBefore(tab, pinnedSection.lastChild);
       } else {
-        section.appendChild(tab);
+        section.insertBefore(tab, section.lastChild);
       }
     }
   }
