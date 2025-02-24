@@ -1,5 +1,5 @@
 diff --git a/browser/components/sessionstore/SessionStore.sys.mjs b/browser/components/sessionstore/SessionStore.sys.mjs
-index 334c041c1748564094c6a177bb24f146791d96d8..e301cc1df604e4a23fcf260d5952736f5b791803 100644
+index 908743177d9f95e2e6549c689e7a493ca8668701..4b05b981d1e6ed370aa94536348ad7673a6c09fa 100644
 --- a/browser/components/sessionstore/SessionStore.sys.mjs
 +++ b/browser/components/sessionstore/SessionStore.sys.mjs
 @@ -3848,6 +3848,7 @@ var SessionStoreInternal = {
@@ -27,3 +27,16 @@ index 334c041c1748564094c6a177bb24f146791d96d8..e301cc1df604e4a23fcf260d5952736f
          continue;
        }
        let tabData = lazy.TabState.collect(tab, TAB_CUSTOM_VALUES.get(tab));
+@@ -6042,6 +6043,12 @@ var SessionStoreInternal = {
+ 
+     // Most of tabData has been restored, now continue with restoring
+     // attributes that may trigger external events.
++    if (tabData.zenEssential) {
++      tab.setAttribute("zen-essential", "true");
++    }
++    if (tabData.zenIsEmpty) {
++      tab.setAttribute("zen-empty-tab", "true"); 
++    }
+ 
+     if (tabData.pinned) {
+       tabbrowser.pinTab(tab);
