@@ -1809,9 +1809,10 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     // Bug: When updating from previous versions, we used to hide the tabs not used in the new workspace
     //  we now need to show them again
     if (onInit) {
-      console.log(this.allStoredTabs);
       for (const tab of this.allStoredTabs) {
-        gBrowser.showTab(tab);
+        if (!tab.hasAttribute('zen-essential')) {
+          gBrowser.showTab(tab);
+        }
       }
     }
   }
