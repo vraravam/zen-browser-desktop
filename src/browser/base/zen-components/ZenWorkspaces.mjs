@@ -1805,6 +1805,15 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
     // Fix ctrl+tab behavior. Note, we dont call it with "await" because we dont want to wait for it
     this._fixCtrlTabBehavior();
+
+    // Bug: When updating from previous versions, we used to hide the tabs not used in the new workspace
+    //  we now need to show them again
+    if (onInit) {
+      console.log(this.allStoredTabs);
+      for (const tab of this.allStoredTabs) {
+        gBrowser.showTab(tab);
+      }
+    }
   }
 
   async _fixCtrlTabBehavior() {
