@@ -38,6 +38,9 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.7
+
       - name: Setup Python
         uses: actions/setup-python@v5
         # note: This will use the version defined in '.python-version' by default
@@ -50,7 +53,7 @@ jobs:
       - name: Install system dependencies
         run: |
           brew update
-          brew install cairo sccache gnu-tar mercurial
+          brew install cairo gnu-tar mercurial
           sudo pip install setuptools
 
           brew uninstall --ignore-dependencies python3.12 -f

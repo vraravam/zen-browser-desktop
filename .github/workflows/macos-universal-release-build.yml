@@ -44,7 +44,7 @@ jobs:
       - name: Install system dependencies
         run: |
           brew update
-          brew install cairo sccache gnu-tar mercurial
+          brew install cairo gnu-tar mercurial
           sudo pip install setuptools
 
           brew uninstall --ignore-dependencies python3.12 -f
