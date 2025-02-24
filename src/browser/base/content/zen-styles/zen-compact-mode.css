@@ -331,10 +331,6 @@
         overflow: initial;
         max-height: unset;
 
-        & #urlbar {
-          transform: translateY(0);
-        }
-
         &::before {
           content: '';
           position: absolute;
