@@ -131,7 +131,6 @@
 
     async _refreshPinnedTabs({ init = false } = {}) {
       await ZenWorkspaces.promiseSectionsInitialized;
-      console.log('Refreshing pinned tabs');
       await this._initializePinsCache();
       await this._initializePinnedTabs(init);
     }
