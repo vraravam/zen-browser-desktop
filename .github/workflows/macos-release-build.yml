@@ -25,7 +25,10 @@ jobs:
       fail-fast: false
       matrix:
         arch: [x86_64, aarch64]
-
+    env:
+      SCCACHE_GHA_ENABLED: 'true'
+      CARGO_TERM_COLOR: always
+      RUSTC_WRAPPER: 'sccache'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -160,3 +163,7 @@ jobs:
           retention-days: 1
           name: platform.ini
           path: ./platform.ini
+
+      - name: Run sccache stat for check
+        shell: bash
+        run: ${SCCACHE_PATH} --show-stats

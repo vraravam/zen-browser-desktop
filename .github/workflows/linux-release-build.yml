@@ -26,6 +26,10 @@ jobs:
       fail-fast: false
       matrix:
         arch: [x86_64, aarch64]
+    env:
+      SCCACHE_GHA_ENABLED: 'true'
+      CARGO_TERM_COLOR: always
+      RUSTC_WRAPPER: 'sccache'
     name: Build Linux - ${{ matrix.arch }}
 
     steps:
@@ -143,3 +147,7 @@ jobs:
           retention-days: 5
           name: linux_update_manifest_${{ matrix.arch }}
           path: ./dist/update
+
+      - name: Run sccache stat for check
+        shell: bash
+        run: ${SCCACHE_PATH} --show-stats
