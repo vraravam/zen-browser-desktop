@@ -140,7 +140,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
   _initializeEmptyTab() {
     gBrowser._forZenEmptyTab = true;
-    this._emptyTab = gBrowser.addTrustedTab('about:blank', { inBackground: true });
+    this._emptyTab = gBrowser.addTrustedTab('about:blank', { inBackground: true, userContextId: 0 });
     this._emptyTab.setAttribute('zen-empty-tab', 'true');
   }
 
