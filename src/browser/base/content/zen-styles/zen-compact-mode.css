@@ -311,11 +311,6 @@
           position: relative !important;
         }
 
-        & #urlbar {
-          transform: translateY(-50%);
-          transition: transform 0.1s ease-in-out;
-        }
-
         @media (-moz-bool-pref: 'zen.view.compact.color-toolbar') {
           background-attachment: fixed;
           background: var(--zen-main-browser-background-toolbar);
