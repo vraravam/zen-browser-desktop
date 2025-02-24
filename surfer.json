@@ -39,7 +39,7 @@
       "brandShortName": "Twilight",
       "brandFullName": "Zen Twilight",
       "release": {
-        "displayVersion": "1.8t",
+        "displayVersion": "1.8.1t",
         "github": {
           "repo": "zen-browser/desktop"
         }
