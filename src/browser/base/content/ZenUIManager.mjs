@@ -220,6 +220,10 @@ var gZenUIManager = {
   urlbarTrim(aURL) {
     if (gZenVerticalTabsManager._hasSetSingleToolbar) {
       let url = BrowserUIUtils.removeSingleTrailingSlashFromURL(aURL);
+      // ignore localstore
+      if (url.startsWith('http://localhost') || url.startsWith('https://localhost')) {
+        return url;
+      }
       return url.startsWith('http://') || url.startsWith('https://') ? url.split('/')[2] : url;
     }
     return BrowserUIUtils.trimURL(aURL);
