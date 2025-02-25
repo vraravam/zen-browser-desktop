@@ -95,6 +95,7 @@
       position: relative;
       background: var(--zen-dialog-background);
       border: 1px solid var(--zen-colors-border-contrast);
+      width: calc(100% - var(--zen-toolbox-padding));
 
       :root[zen-single-toolbar='true'] {
         padding-top: 0 !important;
