@@ -2311,4 +2311,17 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     }
     gBrowser.selectedTab = tab;
   }
+
+  getDefaultContainer() {
+    if (!this.workspaceEnabled) {
+      return 0;
+    }
+    const workspaces = this._workspaceCache;
+    if (!workspaces) {
+      return 0;
+    }
+    const activeWorkspace = this.activeWorkspace;
+    const workspace = workspaces.workspaces.find((workspace) => workspace.uuid === activeWorkspace);
+    return workspace.containerTabId;
+  }
 })();
