@@ -25,10 +25,6 @@ jobs:
       fail-fast: false
       matrix:
         arch: [x86_64, aarch64]
-    env:
-      SCCACHE_GHA_ENABLED: 'true'
-      CARGO_TERM_COLOR: always
-      RUSTC_WRAPPER: 'sccache'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -40,9 +36,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-
-      - name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@main
 
       - name: Setup Python
         uses: actions/setup-python@v5
