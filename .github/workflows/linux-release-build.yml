@@ -54,7 +54,7 @@ jobs:
         uses: mozilla-actions/sccache-action@main
         with:
           disable_annotations: true
-          
+
       - name: Setup Git
         run: |
           git config --global user.email "mauro-balades@users.noreply.github.com"
