@@ -267,7 +267,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       // remove tab from list
       tabs.splice(tabs.indexOf(tab), 1);
       if (tab.pinned) {
-        pinnedSection.insertBefore(tab, pinnedSection.lastChild);
+        pinnedSection.insertBefore(tab, pinnedSection.nextSibling);
       } else {
         section.insertBefore(tab, section.lastChild);
       }
@@ -1999,7 +1999,6 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       const contaienr = document.querySelector(
         `#vertical-pinned-tabs-container .zen-workspace-tabs-section[zen-workspace-id="${workspaceId}"]`
       );
-      console.log(tab);
       contaienr.insertBefore(tab, contaienr.lastChild);
       changed = true;
     }
