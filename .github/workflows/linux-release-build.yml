@@ -26,6 +26,11 @@ jobs:
       fail-fast: false
       matrix:
         arch: [x86_64, aarch64]
+    env:
+      SCCACHE_GHA_ENABLED: 'true'
+      CARGO_TERM_COLOR: always
+      RUSTC_WRAPPER: 'sccache'
+      CARGO_INCREMENTAL: 0
     name: Build Linux - ${{ matrix.arch }}
 
     steps:
@@ -45,6 +50,11 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@main
+        with:
+          disable_annotations: true
+          
       - name: Setup Git
         run: |
           git config --global user.email "mauro-balades@users.noreply.github.com"
