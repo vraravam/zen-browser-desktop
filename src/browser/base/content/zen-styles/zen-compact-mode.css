@@ -312,6 +312,10 @@
           position: relative !important;
         }
 
+        & #urlbar {
+          opacity: 0;
+        }
+
         @media (-moz-bool-pref: 'zen.view.compact.color-toolbar') {
           background-attachment: fixed;
           background: var(--zen-main-browser-background-toolbar);
@@ -346,8 +350,13 @@
           mix-blend-mode: overlay;
         }
 
-        & #urlbar:not([zen-floating-urlbar='true']) {
+        & #urlbar {
+          opacity: 1;
+        }
+
+        & #urlbar[breakout-extend='true']:not([zen-floating-urlbar='true']) {
           top: 2px !important;
+          opacity: 1;
         }
       }
     }
