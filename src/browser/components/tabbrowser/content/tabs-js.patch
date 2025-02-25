@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabs.js b/browser/components/tabbrowser/content/tabs.js
-index 8aeb244ffca9f48661805f5b7d860b5896055562..2b988219f279f7b6e1178518e436a7f2b437ce20 100644
+index 8aeb244ffca9f48661805f5b7d860b5896055562..8300aa0533cb0037be26766acf1d82af295c7369 100644
 --- a/browser/components/tabbrowser/content/tabs.js
 +++ b/browser/components/tabbrowser/content/tabs.js
 @@ -94,7 +94,7 @@
@@ -33,7 +33,7 @@ index 8aeb244ffca9f48661805f5b7d860b5896055562..2b988219f279f7b6e1178518e436a7f2
          // In expanded vertical mode, the max number of pinned tabs per row is dynamic
          // Set this before adjusting dragged tab's position
 -        let pinnedTabs = this.visibleTabs.slice(0, gBrowser.pinnedTabCount);
-+        let pinnedTabs = this.visibleTabs.slice(0, gBrowser._numVisiblePinTabs);
++        let pinnedTabs = this.visibleTabs.filter(tab => !tab.hasAttribute("zen-glance-tab")).slice(0, gBrowser._numZenVisibleEssentials);
          let tabsPerRow = 0;
          let position = 0;
          for (let pinnedTab of pinnedTabs) {
@@ -325,7 +325,7 @@ index 8aeb244ffca9f48661805f5b7d860b5896055562..2b988219f279f7b6e1178518e436a7f2
        }
  
 -      let tabs = this.visibleTabs.slice(0, gBrowser.pinnedTabCount);
-+      let tabs = this.visibleTabs.filter(tab => !tab.hasAttribute("zen-glance-tab")).slice(0, gBrowser._numVisiblePinTabs);
++      let tabs = this.visibleTabs.filter(tab => !tab.hasAttribute("zen-glance-tab")).slice(0, gBrowser._numZenVisibleEssentials);
  
        let directionX = screenX > dragData.animLastScreenX;
        let directionY = screenY > dragData.animLastScreenY;
