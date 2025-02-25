@@ -50,7 +50,7 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@v0.0.7
+        uses: mozilla-actions/sccache-action@main
 
       - name: Setup Git
         run: |
@@ -147,7 +147,3 @@ jobs:
           retention-days: 5
           name: linux_update_manifest_${{ matrix.arch }}
           path: ./dist/update
-
-      - name: Run sccache stat for check
-        shell: bash
-        run: ${SCCACHE_PATH} --show-stats

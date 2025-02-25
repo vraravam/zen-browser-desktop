@@ -56,7 +56,7 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@v0.0.7
+        uses: mozilla-actions/sccache-action@main
 
       - name: Setup Git
         run: |
@@ -313,6 +313,3 @@ jobs:
           name: windows_update_manifest_${{ matrix.arch == 'aarch64' && 'arm64' || matrix.arch }}
           path: ./dist/update
 
-      - name: Run sccache stat for check
-        shell: bash
-        run: ${SCCACHE_PATH} --show-stats

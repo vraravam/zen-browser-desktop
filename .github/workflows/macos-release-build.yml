@@ -42,7 +42,7 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@v0.0.7
+        uses: mozilla-actions/sccache-action@main
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -163,7 +163,3 @@ jobs:
           retention-days: 1
           name: platform.ini
           path: ./platform.ini
-
-      - name: Run sccache stat for check
-        shell: bash
-        run: ${SCCACHE_PATH} --show-stats
