@@ -1999,7 +1999,8 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       const contaienr = document.querySelector(
         `#vertical-pinned-tabs-container .zen-workspace-tabs-section[zen-workspace-id="${workspaceId}"]`
       );
-      contaienr.insertBefore(tab, contaienr.firstChild);
+      console.log(tab);
+      contaienr.insertBefore(tab, contaienr.lastChild);
       changed = true;
     }
     if (changed) {

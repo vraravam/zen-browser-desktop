@@ -312,4 +312,3 @@ jobs:
           retention-days: 5
           name: windows_update_manifest_${{ matrix.arch == 'aarch64' && 'arm64' || matrix.arch }}
           path: ./dist/update
-

@@ -153,7 +153,8 @@ var gZenCompactModeManager = {
   animateCompactMode() {
     this._animating = true;
     const isCompactMode = this.preference;
-    const canHideSidebar = Services.prefs.getBoolPref('zen.view.compact.hide-tabbar');
+    const canHideSidebar =
+      Services.prefs.getBoolPref('zen.view.compact.hide-tabbar') || gZenVerticalTabsManager._hasSetSingleToolbar;
     const canAnimate =
       lazyCompactMode.COMPACT_MODE_CAN_ANIMATE_SIDEBAR &&
       !this.sidebar.hasAttribute('zen-user-show') &&
