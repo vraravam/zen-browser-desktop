@@ -1359,8 +1359,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
    * @returns {TabGroup} The tab group for split view tabs
    */
   _getSplitViewGroup(tabs) {
-    // if any of tabs is pinned, return null
-    if (tabs.some((tab) => tab.pinned)) {
+    if (tabs.some((tab) => tab.hasAttribute('zen-essential'))) {
       return null;
     }
 
