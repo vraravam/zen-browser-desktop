@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tab.js b/browser/components/tabbrowser/content/tab.js
-index d41c486c02a6f09dcff5741a59ad8b617294c481..8e902dcb3792c75238ac13a8bf9199b34451aa51 100644
+index 777eabb7524f2b021a03b3f54d69faee49b7381d..192d2fa058f7d9f043532c0ae6e4c08129d16b8e 100644
 --- a/browser/components/tabbrowser/content/tab.js
 +++ b/browser/components/tabbrowser/content/tab.js
 @@ -16,6 +16,7 @@
@@ -10,9 +10,9 @@ index d41c486c02a6f09dcff5741a59ad8b617294c481..8e902dcb3792c75238ac13a8bf9199b3
            <stack class="tab-icon-stack">
              <hbox class="tab-throbber"/>
              <hbox class="tab-icon-pending"/>
-@@ -35,8 +36,10 @@
+@@ -32,8 +33,10 @@
+             <hbox class="tab-secondary-label">
                <label class="tab-icon-sound-label tab-icon-sound-pip-label" data-l10n-id="browser-tab-audio-pip" role="presentation"/>
-               <label class="tab-icon-sound-label tab-icon-sound-tooltip-label" role="presentation"/>
              </hbox>
 +            <label class="tab-reset-pin-label" data-l10n-id="tab-reset-pin-label" role="presentation"/>
            </vbox>
@@ -48,16 +48,16 @@ index d41c486c02a6f09dcff5741a59ad8b617294c481..8e902dcb3792c75238ac13a8bf9199b3
      }
  
      get lastAccessed() {
-@@ -451,6 +454,8 @@
+@@ -438,6 +441,8 @@
          this.style.MozUserFocus = "ignore";
        } else if (
          event.target.classList.contains("tab-close-button") ||
 +        event.target.classList.contains("tab-reset-button") ||
 +        event.target.classList.contains("tab-reset-pin-button") ||
-         event.target.classList.contains("tab-icon-overlay")
+         event.target.classList.contains("tab-icon-overlay") ||
+         event.target.classList.contains("tab-audio-button")
        ) {
-         eventMaySelectTab = false;
-@@ -544,6 +549,7 @@
+@@ -536,6 +541,7 @@
          if (this.multiselected) {
            gBrowser.removeMultiSelectedTabs();
          } else {
@@ -65,7 +65,7 @@ index d41c486c02a6f09dcff5741a59ad8b617294c481..8e902dcb3792c75238ac13a8bf9199b3
            gBrowser.removeTab(this, {
              animate: true,
              triggeringEvent: event,
-@@ -553,6 +559,14 @@
+@@ -545,6 +551,14 @@
          // (see tabbrowser-tabs 'click' handler).
          gBrowser.tabContainer._blockDblClick = true;
        }
@@ -80,7 +80,7 @@ index d41c486c02a6f09dcff5741a59ad8b617294c481..8e902dcb3792c75238ac13a8bf9199b3
      }
  
      on_dblclick(event) {
-@@ -576,6 +590,8 @@
+@@ -568,6 +582,8 @@
            animate: true,
            triggeringEvent: event,
          });
