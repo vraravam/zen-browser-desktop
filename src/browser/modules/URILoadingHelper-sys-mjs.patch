@@ -1,0 +1,13 @@
+diff --git a/browser/modules/URILoadingHelper.sys.mjs b/browser/modules/URILoadingHelper.sys.mjs
+index 313e895980c502d79f64f5a6ab838f6a96c83835..8a1a853567aeae2c368005d3757815799457212a 100644
+--- a/browser/modules/URILoadingHelper.sys.mjs
++++ b/browser/modules/URILoadingHelper.sys.mjs
+@@ -512,7 +512,7 @@ export const URILoadingHelper = {
+       // page. If a load request bounces off for the currently selected tab,
+       // we'll open a new tab instead.
+       let tab = w.gBrowser.getTabForBrowser(targetBrowser);
+-      if (tab == w.FirefoxViewHandler.tab) {
++      if (tab == w.FirefoxViewHandler.tab || tab.hasAttribute("zen-empty-tab")) {
+         where = "tab";
+         targetBrowser = null;
+       } else if (
