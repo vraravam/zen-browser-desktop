@@ -1138,3 +1138,8 @@ menupopup > menuitem:is([type='checkbox']) .menu-iconic-left {
     padding-inline-start: 6px;
   }
 }
+
+#toolbar-context-toggle-vertical-tabs,
+#toolbar-context-customize-sidebar {
+  display: none;
+}

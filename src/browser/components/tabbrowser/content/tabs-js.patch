@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabs.js b/browser/components/tabbrowser/content/tabs.js
-index fa96568d366fd3608f9bd583fa793150bd815c8b..1eb9e56d0e3bda0d7fa7fe856521ec261ba3a893 100644
+index fa96568d366fd3608f9bd583fa793150bd815c8b..f92f3fba8deaebdc494a443de522e990d029cd67 100644
 --- a/browser/components/tabbrowser/content/tabs.js
 +++ b/browser/components/tabbrowser/content/tabs.js
 @@ -94,7 +94,7 @@
@@ -82,6 +82,15 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..1eb9e56d0e3bda0d7fa7fe856521ec26
                  if (dropIndex !== false) {
                    gBrowser.moveTabTo(tab, dropIndex);
                    if (!directionForward) {
+@@ -1122,7 +1134,7 @@
+                   }
+                 }
+               };
+-              if (gReduceMotion) {
++              if (true || gReduceMotion) {
+                 postTransitionCleanup();
+               } else {
+                 let onTransitionEnd = transitionendEvent => {
 @@ -1285,7 +1297,8 @@
        if (
          dt.mozUserCancelled ||
@@ -331,8 +340,8 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..1eb9e56d0e3bda0d7fa7fe856521ec26
 +      let numPinned = gBrowser._numVisiblePinTabs;
 +      let essential = draggedTab.hasAttribute("zen-essential");
 +      let tabs = this.visibleTabs.filter(tab => !tab.hasAttribute("zen-glance-tab")).slice(
-+        pinned ? (essential ? 0 : gBrowser._numZenEssentials) : numPinned,
-+        pinned ? (essential ? gBrowser._numZenEssentials : (numPinned-gBrowser._numZenEssentials)) : undefined
++        pinned ? (essential ? 0 : gBrowser._numZenVisibleEssentials) : numPinned,
++        pinned ? (essential ? gBrowser._numZenVisibleEssentials : ((numPinned - gBrowser._numZenVisibleEssentials) + 1)) : undefined
        );
  
        if (this.#rtlMode) {
@@ -353,7 +362,7 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..1eb9e56d0e3bda0d7fa7fe856521ec26
            movingTab._moveTogetherSelectedTabsData.animate = false;
          };
 -        if (gReduceMotion) {
-+            if (gReduceMotion || true) {
++        if (true || gReduceMotion) {
            postTransitionCleanup();
          } else {
            let onTransitionEnd = transitionendEvent => {

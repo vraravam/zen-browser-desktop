@@ -775,6 +775,8 @@
   transition: opacity 0.2s ease-in-out;
   background: var(--zen-colors-border);
   appearance: none;
+  position: relative !important;
+  order: 0;
 }
 
 /* Mark: Move sidebar to the right */

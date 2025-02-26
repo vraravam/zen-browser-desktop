@@ -483,9 +483,11 @@ var gZenVerticalTabsManager = {
       if (isSidebarExpanded) {
         this.navigatorToolbox.setAttribute('zen-sidebar-expanded', 'true');
         document.documentElement.setAttribute('zen-sidebar-expanded', 'true');
+        gBrowser.tabContainer.setAttribute('expanded', 'true');
       } else {
         this.navigatorToolbox.removeAttribute('zen-sidebar-expanded');
         document.documentElement.removeAttribute('zen-sidebar-expanded');
+        gBrowser.tabContainer.removeAttribute('expanded');
       }
 
       const appContentNavbarContaienr = document.getElementById('zen-appcontent-navbar-container');
