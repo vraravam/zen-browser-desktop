@@ -265,7 +265,7 @@
     }
 
     &:active {
-      scale: 0.98;
+      scale: var(--zen-active-tab-scale);
     }
 
     max-width: unset;

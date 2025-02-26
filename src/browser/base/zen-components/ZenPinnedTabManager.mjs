@@ -840,7 +840,8 @@
       const pinnedTabsTarget = event.target.closest('#vertical-pinned-tabs-container');
       const essentialTabsTarget = event.target.closest('#zen-essentials-container');
       const tabsTarget = event.target.closest('#tabbrowser-arrowscrollbox');
-      const targetTab = event.target.closest('.tabbrowser-tab');
+      let targetTab = event.target.closest('.tabbrowser-tab');
+      targetTab = targetTab?.group || targetTab;
       if (event.target.closest('.zen-current-workspace-indicator')) {
         this.removeTabContainersDragoverClass();
         ZenWorkspaces.activeWorkspaceIndicator.setAttribute('open', true);

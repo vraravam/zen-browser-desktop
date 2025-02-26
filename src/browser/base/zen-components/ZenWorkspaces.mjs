@@ -2274,11 +2274,15 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     const containers = [essentialsContainer, ...pinnedContainers, ...normalContainers];
     for (const container of containers) {
       for (const tab of container.children) {
-        if (tab.tagName === 'tab' || tab.tagName == 'tab-group') {
+        if (tab.tagName === 'tab') {
           tabs.push(tab);
           const glance = tab.querySelector('.tabbrowser-tab[glance-id]');
           if (glance) {
             tabs.push(glance);
+          }
+        } else if (tab.tagName == 'tab-group') {
+          for (const groupTab of tab.tabs) {
+            tabs.push(groupTab);
           }
         }
       }

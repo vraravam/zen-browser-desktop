@@ -1,0 +1,108 @@
+tab-group[split-view-group] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--tab-pinned-min-width-expanded) + 20px), auto));
+  gap: 1px;
+  border-radius: var(--border-radius-medium);
+  padding: 0;
+  margin-inline: var(--tab-block-margin);
+  margin-block: var(--tab-block-margin);
+  min-height: var(--tab-min-height);
+  outline: var(--tab-outline);
+  outline-offset: var(--tab-outline-offset);
+  outline-color: var(--tab-selected-outline-color);
+  padding: 1px;
+  transition: scale 0.1s ease;
+
+  & > * {
+    --tab-min-height: 32px;
+    --tab-selected-bgcolor: var(--zen-toolbar-element-bg);
+    --tab-selected-shadow: none;
+    --border-radius-medium: calc(2px + var(--tab-border-radius));
+    --zen-active-tab-scale: 1;
+  }
+
+  &:has(tab[visuallyselected]) {
+    background-color: var(--tab-selected-bgcolor);
+    box-shadow: var(--tab-selected-shadow);
+  }
+
+  &:active {
+    scale: var(--zen-active-tab-scale);
+  }
+
+  &:hover {
+    background-color: var(--zen-toolbar-element-bg);
+  }
+
+  & .tab-close-button {
+    display: none !important;
+  }
+}
+
+tab-group[split-view-group] .tabbrowser-tab {
+  width: 100%;
+  max-width: unset;
+}
+
+tab-group[split-view-group] .tab-group-label-container {
+  display: none;
+  width: 100%;
+}
+
+tab-group[split-view-group] .tab-close-button {
+  display: block;
+  visibility: visible;
+}
+
+tab-group[split-view-group] .tab-group-line {
+  display: none;
+  background: transparent;
+}
+
+tab-group:not([split-view-group]) {
+  & .tab-group-label-container {
+    min-width: fit-content;
+    max-width: 100%;
+    height: fit-content !important;
+    display: flex;
+    justify-content: start;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  & .tab-group-label {
+    text-align: start;
+    flex-grow: 1 !important;
+    min-width: fit-content;
+    max-width: 100%;
+    font-size: 14px !important;
+    display: block !important;
+    padding-right: 8px;
+  }
+
+  & .tab-group-line {
+    display: none !important;
+  }
+
+  &[collapsed] .tabbrowser-tab {
+    display: none !important;
+  }
+
+  &:not([collapsed]) .tabbrowser-tab {
+    margin-left: 10px;
+  }
+
+  &:not([collapsed]) .tabbrowser-tab::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background-color: var(--tab-group-color);
+  }
+}
+
+.tab-group-line {
+  display: none !important;
+}
