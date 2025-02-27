@@ -1,5 +1,5 @@
 diff --git a/widget/cocoa/VibrancyManager.mm b/widget/cocoa/VibrancyManager.mm
-index 849b62c9976a7bc5fee35e074e54c8f556ed9c38..77708aec7c95bffa844596ba1adf1869c8583e73 100644
+index 849b62c9976a7bc5fee35e074e54c8f556ed9c38..e4678e8340f0c56f49d5b6eaaf3fe4419b695946 100644
 --- a/widget/cocoa/VibrancyManager.mm
 +++ b/widget/cocoa/VibrancyManager.mm
 @@ -13,6 +13,7 @@
@@ -15,7 +15,7 @@ index 849b62c9976a7bc5fee35e074e54c8f556ed9c38..77708aec7c95bffa844596ba1adf1869
        return NSVisualEffectMaterialSidebar;
      case VibrancyType::Titlebar:
 -      return NSVisualEffectMaterialTitlebar;
-+      switch (StaticPrefs::zen_widget_macos_window_material_AtStartup()) {
++      switch (StaticPrefs::zen_widget_macos_window_material()) {
 +        case 1:
 +          return NSVisualEffectMaterialHUDWindow;
 +        case 2:
