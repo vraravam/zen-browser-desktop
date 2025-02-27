@@ -512,9 +512,8 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     if (typeof this._workspaceEnabled === 'undefined') {
       this._workspaceEnabled =
         !Services.prefs.getBoolPref('zen.workspaces.disabled_for_testing', false) && this.shouldHaveWorkspaces;
-      return this._workspaceEnabled;
     }
-    return this._workspaceEnabled;
+    return this._workspaceEnabled && !window.closed;
   }
 
   getActiveWorkspaceFromCache() {
@@ -591,6 +590,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
         console.error('ZenWorkspaces: Error initializing theme picker', e);
       }
       this._selectStartPage();
+      this._fixTabPositions();
     }
   }
 
@@ -1538,10 +1538,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   _moveEmptyTabToWorkspace(workspaceUuid) {
-    const emptyTab = this._emptyTab;
-    if (emptyTab) {
-      this.moveTabToWorkspace(emptyTab, workspaceUuid);
-    }
+    this._makeSureEmptyTabIsLast();
   }
 
   _makeSureEmptyTabIsLast() {
@@ -1551,6 +1548,15 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       if (container) {
         container.insertBefore(emptyTab, container.lastChild);
       }
+    }
+    this._fixTabPositions();
+  }
+
+  _fixTabPositions() {
+    // Fix tabs _tPos values relative to the actual order
+    const tabs = gBrowser.tabs;
+    for (let i = 0; i < tabs.length; i++) {
+      tabs[i]._tPos = i;
     }
   }
 

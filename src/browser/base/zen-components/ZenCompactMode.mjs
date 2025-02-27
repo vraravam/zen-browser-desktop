@@ -190,14 +190,16 @@ var gZenCompactModeManager = {
             }
           )
           .then(() => {
-            this.sidebar.removeAttribute('animate');
-            this.sidebar.style.removeProperty('margin-right');
-            this.sidebar.style.removeProperty('margin-left');
-            this.sidebar.style.removeProperty('transform');
-            this.sidebar.style.transition = 'none';
-            setTimeout(() => {
-              this._animating = false;
-              this.sidebar.style.removeProperty('transition');
+            window.requestAnimationFrame(() => {
+              this.sidebar.removeAttribute('animate');
+              this.sidebar.style.removeProperty('margin-right');
+              this.sidebar.style.removeProperty('margin-left');
+              this.sidebar.style.removeProperty('transform');
+              this.sidebar.style.transition = 'none';
+              setTimeout(() => {
+                this._animating = false;
+                this.sidebar.style.removeProperty('transition');
+              });
             });
           });
       } else if (canHideSidebar && !isCompactMode) {

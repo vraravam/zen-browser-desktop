@@ -1,13 +1,37 @@
 diff --git a/widget/cocoa/VibrancyManager.mm b/widget/cocoa/VibrancyManager.mm
-index e8263ee480a0249cae760ee5b9037bb87acafecc..aefc887208659e46191eebfde1f9f74f1eac77a5 100644
+index 849b62c9976a7bc5fee35e074e54c8f556ed9c38..92ddc9022055f518cb371d64e8e644c4b3ada798 100644
 --- a/widget/cocoa/VibrancyManager.mm
 +++ b/widget/cocoa/VibrancyManager.mm
-@@ -39,7 +39,7 @@ static NSVisualEffectMaterial VisualEffectMaterialForVibrancyType(
+@@ -13,6 +13,7 @@
+ 
+ #include "nsChildView.h"
+ #include "mozilla/StaticPrefs_widget.h"
++#include "mozilla/StaticPrefs_zen.h"
+ 
+ using namespace mozilla;
+ 
+@@ -40,7 +41,23 @@ static NSVisualEffectMaterial VisualEffectMaterialForVibrancyType(
      case VibrancyType::Sidebar:
        return NSVisualEffectMaterialSidebar;
      case VibrancyType::Titlebar:
 -      return NSVisualEffectMaterialTitlebar;
-+      return NSVisualEffectMaterialUnderWindowBackground;
++      switch (StaticPrefs::zen_widget_macos_window_material_AtStartup()) {
++        case 1:
++          return NSVisualEffectMaterialHUDWindow;
++        case 2:
++          return NSVisualEffectMaterialFullScreenUI;
++        case 3:
++          return NSVisualEffectMaterialPopover;
++        case 4:
++          return NSVisualEffectMaterialMenu;
++        case 5:
++          return NSVisualEffectMaterialToolTip;
++        case 6:
++          return NSVisualEffectMaterialHeaderView;
++        case 7:
++        default:
++          return NSVisualEffectMaterialUnderWindowBackground;
++      }
    }
  }
  
