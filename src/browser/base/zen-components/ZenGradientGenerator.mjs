@@ -882,8 +882,14 @@
         return forToolbar ? 'var(--zen-themed-toolbar-bg)' : 'var(--zen-themed-toolbar-bg-transparent)';
       } else if (themedColors.length === 1) {
         return this.getSingleRGBColor(themedColors[0], forToolbar);
+      } else if (themedColors.length !== 3) {
+        return `linear-gradient(${this.currentRotation}deg, ${themedColors.map((color) => this.getSingleRGBColor(color, forToolbar)).join(', ')})`;
+      } else {
+        let color1 = this.getSingleRGBColor(themedColors[2], forToolbar);
+        let color2 = this.getSingleRGBColor(themedColors[0], forToolbar);
+        let color3 = this.getSingleRGBColor(themedColors[1], forToolbar);
+        return `linear-gradient(${this.currentRotation}deg, ${color1}, ${color2}, ${color3})`;
       }
-      return `linear-gradient(${this.currentRotation}deg, ${themedColors.map((color) => this.getSingleRGBColor(color, forToolbar)).join(', ')})`;
     }
 
     static getTheme(colors = [], opacity = 0.5, rotation = -45, texture = 0) {
