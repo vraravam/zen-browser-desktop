@@ -1,4 +1,3 @@
-
 {
   class ZenFolders {
     constructor() {
@@ -17,11 +16,9 @@
       group.pinned = tab.pinned;
     }
 
-    #onTabUngrouped(event) {
-    }
+    #onTabUngrouped(event) {}
 
-    #onTabGroupRemoved(event) {
-    }
+    #onTabGroupRemoved(event) {}
   }
 
   window.gZenFolders = new ZenFolders();
