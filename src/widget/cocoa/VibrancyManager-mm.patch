@@ -1,5 +1,5 @@
 diff --git a/widget/cocoa/VibrancyManager.mm b/widget/cocoa/VibrancyManager.mm
-index 849b62c9976a7bc5fee35e074e54c8f556ed9c38..e4678e8340f0c56f49d5b6eaaf3fe4419b695946 100644
+index 849b62c9976a7bc5fee35e074e54c8f556ed9c38..fcf097aff606f0172ca54fbe39e081fe1d43c587 100644
 --- a/widget/cocoa/VibrancyManager.mm
 +++ b/widget/cocoa/VibrancyManager.mm
 @@ -13,6 +13,7 @@
@@ -35,7 +35,15 @@ index 849b62c9976a7bc5fee35e074e54c8f556ed9c38..e4678e8340f0c56f49d5b6eaaf3fe441
    }
  }
  
-@@ -88,6 +105,7 @@ static void PrefChanged(const char* aPref, void* aClosure) {
+@@ -78,6 +95,7 @@ - (NSView*)hitTest:(NSPoint)aPoint {
+ 
+ - (void)prefChanged {
+   self.blendingMode = VisualEffectBlendingModeForVibrancyType(mType);
++  self.material = VisualEffectMaterialForVibrancyType(mType);
+ }
+ @end
+ 
+@@ -88,6 +106,7 @@ static void PrefChanged(const char* aPref, void* aClosure) {
  static constexpr nsLiteralCString kObservedPrefs[] = {
      "widget.macos.sidebar-blend-mode.behind-window"_ns,
      "widget.macos.titlebar-blend-mode.behind-window"_ns,
