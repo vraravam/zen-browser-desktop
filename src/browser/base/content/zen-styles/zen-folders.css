@@ -17,7 +17,7 @@ tab-group[split-view-group] {
     --tab-min-height: 32px;
     --tab-selected-bgcolor: var(--zen-toolbar-element-bg);
     --tab-selected-shadow: none;
-    --border-radius-medium: calc(2px + var(--tab-border-radius));
+    --border-radius-medium: var(--tab-border-radius);
     --zen-active-tab-scale: 1;
   }
 

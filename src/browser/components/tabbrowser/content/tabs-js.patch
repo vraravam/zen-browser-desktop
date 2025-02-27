@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabs.js b/browser/components/tabbrowser/content/tabs.js
-index fa96568d366fd3608f9bd583fa793150bd815c8b..0d4c63aa336172cbee0c4feb7eed42959e7331a1 100644
+index fa96568d366fd3608f9bd583fa793150bd815c8b..5e25d78b04675fbb736192fb0bbcbf6067cbc257 100644
 --- a/browser/components/tabbrowser/content/tabs.js
 +++ b/browser/components/tabbrowser/content/tabs.js
 @@ -94,7 +94,7 @@
@@ -361,7 +361,22 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..0d4c63aa336172cbee0c4feb7eed4295
        );
  
        if (this.#rtlMode) {
-@@ -2541,8 +2579,9 @@
+@@ -2347,8 +2385,12 @@
+         (lastMovingTabScreen + tabSize);
+       translate = Math.min(Math.max(translate, firstBound), lastBound);
+ 
+-      for (let tab of movingTabs) {
+-        tab.style.transform = `${translateAxis}(${translate}px)`;
++      if (draggedTab.group?.hasAttribute("split-view-group")) {
++        draggedTab.group.style.transform = `${translateAxis}(${translate}px)`;
++      } else {
++        for (let tab of movingTabs) {
++          tab.style.transform = `${translateAxis}(${translate}px)`;
++        }
+       }
+ 
+       dragData.translatePos = translate;
+@@ -2541,8 +2583,9 @@
        );
      }
  
@@ -373,7 +388,15 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..0d4c63aa336172cbee0c4feb7eed4295
          return;
        }
  
-@@ -2604,7 +2643,7 @@
+@@ -2553,6 +2596,7 @@
+         tab.style.transform = "";
+         if (tab.group) {
+           tab.group.style.removeProperty("--tabgroup-dragover-transform");
++          tab.group.style.transform = "";
+         }
+         tab.removeAttribute("dragover-createGroup");
+       }
+@@ -2604,7 +2648,7 @@
            movingTab._moveTogetherSelectedTabsData.newIndex = movingTabNewIndex;
            movingTab._moveTogetherSelectedTabsData.animate = false;
          };
@@ -382,7 +405,7 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..0d4c63aa336172cbee0c4feb7eed4295
            postTransitionCleanup();
          } else {
            let onTransitionEnd = transitionendEvent => {
-@@ -2707,9 +2746,9 @@
+@@ -2707,9 +2751,9 @@
        function newIndex(aTab, index) {
          // Don't allow mixing pinned and unpinned tabs.
          if (aTab.pinned) {
@@ -394,7 +417,7 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..0d4c63aa336172cbee0c4feb7eed4295
        }
      }
  
-@@ -2793,7 +2832,7 @@
+@@ -2793,7 +2837,7 @@
      }
  
      _notifyBackgroundTab(aTab) {
