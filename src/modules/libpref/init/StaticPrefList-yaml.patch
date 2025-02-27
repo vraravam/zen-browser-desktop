@@ -1,5 +1,5 @@
 diff --git a/modules/libpref/init/StaticPrefList.yaml b/modules/libpref/init/StaticPrefList.yaml
-index a9863858f9a28b2c633edd9689d4379203eef1e6..a0c121d934313f272ade1061146fbc4b96e2ddda 100644
+index a9863858f9a28b2c633edd9689d4379203eef1e6..7ac24baf70727a2a9be428c6f98763f312a0969b 100644
 --- a/modules/libpref/init/StaticPrefList.yaml
 +++ b/modules/libpref/init/StaticPrefList.yaml
 @@ -18305,7 +18305,7 @@
@@ -11,7 +11,7 @@ index a9863858f9a28b2c633edd9689d4379203eef1e6..a0c121d934313f272ade1061146fbc4b
    mirror: once
  #endif
  
-@@ -18418,6 +18418,25 @@
+@@ -18418,6 +18418,26 @@
    mirror: always
  #endif
  
@@ -24,8 +24,9 @@ index a9863858f9a28b2c633edd9689d4379203eef1e6..a0c121d934313f272ade1061146fbc4b
 +#ifdef XP_MACOSX
 +- name: zen.widget.macos.window-material
 +  type: uint32_t
-+  value: 0
-+  mirror: once
++  value: 1
++  mirror: always
++#endif
 +
 +#ifdef XP_WIN
 +- name: zen.widget.windows.acrylic
