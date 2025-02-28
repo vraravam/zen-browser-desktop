@@ -139,4 +139,4 @@ Thanks everyone for making Zen stand out among these giants!
 
 ## 📄 License
 
-Zen browser is under the [MPL LICENSE](./LICENSE). All the code is open-source and free to use! Attribution is appreciated but not required.
+Zen browser is under the [MPL 2.0 LICENSE](./LICENSE). All the code is open-source and free to use! Attribution is appreciated but not required.
