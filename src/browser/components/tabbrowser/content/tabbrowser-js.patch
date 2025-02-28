@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabbrowser.js b/browser/components/tabbrowser/content/tabbrowser.js
-index 628aa6596627c85efe361fc1ece8fd58f7ee653e..36ac8b0623059638ecb3fb1821b272964d0e4aea 100644
+index 628aa6596627c85efe361fc1ece8fd58f7ee653e..59c563683fc18972fffd51c41d1d1c159b62f28d 100644
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -412,11 +412,50 @@
@@ -283,7 +283,17 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..36ac8b0623059638ecb3fb1821b27296
          if (
            !bulkOrderedOpen &&
            ((openerTab &&
-@@ -3744,7 +3845,7 @@
+@@ -3736,18 +3837,18 @@
+ 
+       // Ensure index is within bounds.
+       if (tab.pinned) {
+-        index = Math.max(index, 0);
+-        index = Math.min(index, this.pinnedTabCount);
++        index = Math.max(index, tab.hasAttribute("zen-essential") ? 0 : this._numZenEssentials);
++        index = Math.min(index, tab.hasAttribute("zen-essential") ? this._numZenEssentials : this.pinnedTabCount);
+       } else {
+         index = Math.max(index, this.pinnedTabCount);
+         index = Math.min(index, this.tabs.length);
        }
  
        /** @type {MozTabbrowserTab|undefined} */
@@ -291,7 +301,11 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..36ac8b0623059638ecb3fb1821b27296
 +      let tabAfter = this.tabs.filter(tab => !tab.hasAttribute("zen-glance-tab")).at(index);
        this.tabContainer._invalidateCachedTabs();
  
-       if (tabGroup) {
+-      if (tabGroup) {
++      if (tabGroup && !tabGroup.hasAttribute("split-view-group")) {
+         if (tabAfter && tabAfter.group == tabGroup) {
+           // Place at the front of, or between tabs in, the same tab group
+           this.tabContainer.insertBefore(tab, tabAfter);
 @@ -4059,6 +4160,9 @@
          return;
        }

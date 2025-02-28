@@ -872,9 +872,6 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
   _createHeader(container) {
     const header = document.createElement('div');
     header.classList.add('zen-view-splitter-header');
-    const dragHandle = document.createElement('div');
-    dragHandle.classList.add('zen-view-splitter-drag-handle');
-    header.appendChild(dragHandle);
     const removeButton = document.createXULElement('toolbarbutton');
     removeButton.classList.add('zen-tab-unsplit-button');
     removeButton.addEventListener('click', () => {
