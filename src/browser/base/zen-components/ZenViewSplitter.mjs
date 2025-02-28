@@ -723,7 +723,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       } else {
         // Add any tabs that are not already in the group
         for (const tab of tabs) {
-          if (!group.tabs.includes(tab) && tab.pinned === group.pinned) { 
+          if (!group.tabs.includes(tab) && tab.pinned === group.pinned) {
             group.tabs.push(tab);
             this.addTabToSplit(tab, group.layoutTree);
           }
