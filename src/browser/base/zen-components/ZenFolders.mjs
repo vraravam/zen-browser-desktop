@@ -19,6 +19,12 @@
     #onTabUngrouped(event) {}
 
     #onTabGroupRemoved(event) {}
+
+    expandGroupTabs(group) {
+      for (const tab of group.tabs) {
+        gBrowser.ungroupTab(tab);
+      }
+    }
   }
 
   window.gZenFolders = new ZenFolders();

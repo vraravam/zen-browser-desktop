@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabs.js b/browser/components/tabbrowser/content/tabs.js
-index fa96568d366fd3608f9bd583fa793150bd815c8b..2ef63a6b462f28029f02decf14ad93de88446bab 100644
+index fa96568d366fd3608f9bd583fa793150bd815c8b..03a525205457f723e204614834e32e7a917f41f7 100644
 --- a/browser/components/tabbrowser/content/tabs.js
 +++ b/browser/components/tabbrowser/content/tabs.js
 @@ -94,7 +94,7 @@
@@ -328,15 +328,16 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..2ef63a6b462f28029f02decf14ad93de
        let absPositionHorizontalTabs =
          this.overflowing && tabs.length > numPinned && numPinned > 0;
  
-@@ -2042,6 +2078,7 @@
+@@ -2041,7 +2077,7 @@
+ 
        if (this.verticalMode) {
          this._updateVerticalPinnedTabs();
-       } else if (absPositionHorizontalTabs) {
-+        return;
+-      } else if (absPositionHorizontalTabs) {
++      } else if (absPositionHorizontalTabs && false) {
          let layoutData = this._pinnedTabsLayoutCache;
          let uiDensity = document.documentElement.getAttribute("uidensity");
          if (!layoutData || layoutData.uiDensity != uiDensity) {
-@@ -2113,7 +2150,7 @@
+@@ -2113,7 +2149,7 @@
          return;
        }
  
@@ -345,7 +346,7 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..2ef63a6b462f28029f02decf14ad93de
  
        let directionX = screenX > dragData.animLastScreenX;
        let directionY = screenY > dragData.animLastScreenY;
-@@ -2296,10 +2333,11 @@
+@@ -2296,10 +2332,11 @@
        }
  
        let pinned = draggedTab.pinned;
@@ -361,7 +362,7 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..2ef63a6b462f28029f02decf14ad93de
        );
  
        if (this.#rtlMode) {
-@@ -2347,8 +2385,12 @@
+@@ -2347,8 +2384,12 @@
          (lastMovingTabScreen + tabSize);
        translate = Math.min(Math.max(translate, firstBound), lastBound);
  
@@ -376,7 +377,25 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..2ef63a6b462f28029f02decf14ad93de
        }
  
        dragData.translatePos = translate;
-@@ -2541,8 +2583,9 @@
+@@ -2484,12 +2525,16 @@
+       // Shift background tabs to leave a gap where the dragged tab
+       // would currently be dropped.
+       for (let tab of tabs) {
+-        if (tab == draggedTab) {
++        if (tab == draggedTab || (tab.group?.hasAttribute("split-view-group") && tab.group == draggedTab.group)) {
+           continue;
+         }
+         let shift = getTabShift(tab, newIndex);
+         let transform = shift ? `${translateAxis}(${shift}px)` : "";
++        if (tab.group?.hasAttribute("split-view-group")) {
++          tab.group.style.transform = transform;
++        } else {
+         tab.style.transform = transform;
++        }
+         if (tab.group?.tabs[0] == tab) {
+           tab.group.style.setProperty(
+             "--tabgroup-dragover-transform",
+@@ -2541,8 +2586,9 @@
        );
      }
  
@@ -388,7 +407,7 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..2ef63a6b462f28029f02decf14ad93de
          return;
        }
  
-@@ -2553,6 +2596,7 @@
+@@ -2553,6 +2599,7 @@
          tab.style.transform = "";
          if (tab.group) {
            tab.group.style.removeProperty("--tabgroup-dragover-transform");
@@ -396,7 +415,7 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..2ef63a6b462f28029f02decf14ad93de
          }
          tab.removeAttribute("dragover-createGroup");
        }
-@@ -2604,7 +2648,7 @@
+@@ -2604,7 +2651,7 @@
            movingTab._moveTogetherSelectedTabsData.newIndex = movingTabNewIndex;
            movingTab._moveTogetherSelectedTabsData.animate = false;
          };
@@ -405,7 +424,7 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..2ef63a6b462f28029f02decf14ad93de
            postTransitionCleanup();
          } else {
            let onTransitionEnd = transitionendEvent => {
-@@ -2707,9 +2751,9 @@
+@@ -2707,9 +2754,9 @@
        function newIndex(aTab, index) {
          // Don't allow mixing pinned and unpinned tabs.
          if (aTab.pinned) {
@@ -417,7 +436,7 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..2ef63a6b462f28029f02decf14ad93de
        }
      }
  
-@@ -2793,7 +2837,7 @@
+@@ -2793,7 +2840,7 @@
      }
  
      _notifyBackgroundTab(aTab) {

@@ -37,6 +37,12 @@ tab-group[split-view-group] {
   & .tab-close-button {
     display: none !important;
   }
+
+  @media (prefers-reduced-motion: no-preference) {
+    #tabbrowser-tabs[movingtab] & {
+      transition: var(--tab-dragover-transition);
+    }
+  }
 }
 
 tab-group[split-view-group] .tabbrowser-tab {

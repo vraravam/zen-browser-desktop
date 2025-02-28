@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabbrowser.js b/browser/components/tabbrowser/content/tabbrowser.js
-index 628aa6596627c85efe361fc1ece8fd58f7ee653e..59c563683fc18972fffd51c41d1d1c159b62f28d 100644
+index 628aa6596627c85efe361fc1ece8fd58f7ee653e..a1500038ff8f129fc249a221c2b534c8b2edf053 100644
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -412,11 +412,50 @@
@@ -441,21 +441,28 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..59c563683fc18972fffd51c41d1d1c15
        } else {
          aIndex = Math.max(aIndex, this.pinnedTabCount);
        }
-@@ -5684,9 +5797,11 @@
+@@ -5684,11 +5797,17 @@
        }
  
        this._handleTabMove(aTab, () => {
 -        let neighbor = this.tabs[aIndex];
 -        if (forceStandaloneTab && neighbor.group) {
 +        let neighbor = this.tabs.filter(tab => !tab.hasAttribute("zen-glance-tab"))[aIndex];
-+        if (forceStandaloneTab && neighbor.group || (neighbor.group && neighbor.group.hasAttribute("split-view-group"))) {
++        const _tPos = aTab._tPos;
++        if ((forceStandaloneTab && neighbor.group) || neighbor.group?.hasAttribute("split-view-group")) {
            neighbor = neighbor.group;
 +        } else if (aTab.group && aTab.group.hasAttribute("split-view-group")) {
 +          aTab = aTab.group;
++        }
++        if (aTab.group?.hasAttribute("split-view-group") && neighbor == aTab.group) {
++          return;
          }
-         if (neighbor && aIndex >= aTab._tPos) {
+-        if (neighbor && aIndex >= aTab._tPos) {
++        if (neighbor && aIndex >= _tPos) {
            neighbor.after(aTab);
-@@ -5697,7 +5812,7 @@
+         } else {
+           this.tabContainer.insertBefore(aTab, neighbor);
+@@ -5697,7 +5816,7 @@
      }
  
      moveTabToGroup(aTab, aGroup) {
@@ -464,7 +471,7 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..59c563683fc18972fffd51c41d1d1c15
          return;
        }
        if (aTab.group && aTab.group.id === aGroup.id) {
-@@ -5721,6 +5836,8 @@
+@@ -5721,6 +5840,8 @@
  
        moveActionCallback();
  
@@ -473,7 +480,7 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..59c563683fc18972fffd51c41d1d1c15
        // Clear tabs cache after moving nodes because the order of tabs may have
        // changed.
        this.tabContainer._invalidateCachedTabs();
-@@ -5771,7 +5888,7 @@
+@@ -5771,7 +5892,7 @@
          createLazyBrowser,
        };
  
@@ -482,7 +489,7 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..59c563683fc18972fffd51c41d1d1c15
        if (aIndex < numPinned || (aTab.pinned && aIndex == numPinned)) {
          params.pinned = true;
        }
-@@ -7415,6 +7532,7 @@
+@@ -7415,6 +7536,7 @@
              aWebProgress.isTopLevel
            ) {
              this.mTab.setAttribute("busy", "true");
@@ -490,7 +497,7 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..59c563683fc18972fffd51c41d1d1c15
              gBrowser._tabAttrModified(this.mTab, ["busy"]);
              this.mTab._notselectedsinceload = !this.mTab.selected;
            }
-@@ -8381,7 +8499,7 @@ var TabContextMenu = {
+@@ -8381,7 +8503,7 @@ var TabContextMenu = {
      );
      contextUnpinSelectedTabs.hidden =
        !this.contextTab.pinned || !multiselectionContext;
@@ -499,7 +506,7 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..59c563683fc18972fffd51c41d1d1c15
      // Move Tab items
      let contextMoveTabOptions = document.getElementById(
        "context_moveTabOptions"
-@@ -8414,7 +8532,7 @@ var TabContextMenu = {
+@@ -8414,7 +8536,7 @@ var TabContextMenu = {
      let contextMoveTabToStart = document.getElementById("context_moveToStart");
      let isFirstTab =
        tabsToMove[0] == visibleTabs[0] ||
@@ -508,7 +515,7 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..59c563683fc18972fffd51c41d1d1c15
      contextMoveTabToStart.disabled = isFirstTab && allSelectedTabsAdjacent;
  
      document.getElementById("context_openTabInWindow").disabled =
-@@ -8647,6 +8765,7 @@ var TabContextMenu = {
+@@ -8647,6 +8769,7 @@ var TabContextMenu = {
      if (this.contextTab.multiselected) {
        gBrowser.removeMultiSelectedTabs();
      } else {
