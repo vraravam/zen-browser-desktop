@@ -288,6 +288,8 @@
             if (container) {
               container.insertBefore(newTab, container.lastChild);
             }
+          } else {
+            document.getElementById('zen-essentials-container').prepend(newTab);
           }
           gBrowser.tabContainer._invalidateCachedTabs();
           newTab.initialize();

@@ -41,7 +41,9 @@
       } catch (e) {
         console.error('ZenThemeModifier: Error initializing browser layout', e);
       }
-      this.closeWatermark();
+      ZenWorkspaces.promiseInitialized.then(() => {
+        this.closeWatermark();
+      });
     },
 
     openWatermark() {

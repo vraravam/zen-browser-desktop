@@ -32,6 +32,10 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     this._resolveSectionsInitialized = resolve;
   });
 
+  promiseInitialized = new Promise((resolve) => {
+    this._resolveInitialized = resolve;
+  });
+
   workspaceIndicatorXUL = `
     <hbox class="zen-current-workspace-indicator-icon"></hbox>
     <hbox class="zen-current-workspace-indicator-name"></hbox>
@@ -43,6 +47,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
   async init() {
     if (!this.shouldHaveWorkspaces) {
+      this._resolveInitialized();
       document.getElementById('zen-current-workspace-indicator-container').setAttribute('hidden', 'true');
       console.warn('ZenWorkspaces: !!! ZenWorkspaces is disabled in hidden windows !!!');
       return; // We are in a hidden window, don't initialize ZenWorkspaces
@@ -139,9 +144,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   _initializeEmptyTab() {
-    gBrowser._forZenEmptyTab = true;
-    this._emptyTab = gBrowser.addTrustedTab('about:blank', { inBackground: true, userContextId: 0 });
-    this._emptyTab.setAttribute('zen-empty-tab', 'true');
+    this._emptyTab = gBrowser.addTrustedTab('about:blank', { inBackground: true, userContextId: 0, _forZenEmptyTab: true });
   }
 
   registerPinnedResizeObserver() {
@@ -591,6 +594,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       }
       this._selectStartPage();
       this._fixTabPositions();
+      this._resolveInitialized();
     }
   }
 
