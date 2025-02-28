@@ -1,5 +1,5 @@
 diff --git a/browser/themes/shared/tabbrowser/tabs.css b/browser/themes/shared/tabbrowser/tabs.css
-index 01815c2114a627e5cac183c702bd82f1bd4f58f8..e8eaca11afe18555a8d6421e75b4da92d6ddf693 100644
+index 01815c2114a627e5cac183c702bd82f1bd4f58f8..3a453164ee8a555db2a0ba28288d69857a4933bc 100644
 --- a/browser/themes/shared/tabbrowser/tabs.css
 +++ b/browser/themes/shared/tabbrowser/tabs.css
 @@ -31,7 +31,7 @@
@@ -37,6 +37,15 @@ index 01815c2114a627e5cac183c702bd82f1bd4f58f8..e8eaca11afe18555a8d6421e75b4da92
  
      &::before {
        position: absolute;
+@@ -502,7 +501,7 @@
+   z-index: 1; /* Overlay tab title */
+ 
+   #tabbrowser-tabs[orient=vertical] & {
+-    top: 7px;
++    top: 0px;
+   }
+ 
+   &[crashed] {
 @@ -617,14 +616,14 @@
    }
  
