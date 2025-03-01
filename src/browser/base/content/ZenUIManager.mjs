@@ -9,6 +9,7 @@ var gZenUIManager = {
     XPCOMUtils.defineLazyPreferenceGetter(this, 'sidebarHeightThrottle', 'zen.view.sidebar-height-throttle', 500);
     XPCOMUtils.defineLazyPreferenceGetter(this, 'contentElementSeparation', 'zen.theme.content-element-separation', 0);
     XPCOMUtils.defineLazyPreferenceGetter(this, 'urlbarWaitToClear', 'zen.urlbar.wait-to-clear', 0);
+    XPCOMUtils.defineLazyPreferenceGetter(this, 'urlbarShowDomainOnly', 'zen.urlbar.show-domain-only-in-sidebar', true);
 
     gURLBar._zenTrimURL = this.urlbarTrim.bind(this);
 
@@ -218,7 +219,7 @@ var gZenUIManager = {
   },
 
   urlbarTrim(aURL) {
-    if (gZenVerticalTabsManager._hasSetSingleToolbar) {
+    if (gZenVerticalTabsManager._hasSetSingleToolbar && this.urlbarShowDomainOnly) {
       let url = BrowserUIUtils.removeSingleTrailingSlashFromURL(aURL);
       return url.startsWith('https://') ? url.split('/')[2] : url;
     }
