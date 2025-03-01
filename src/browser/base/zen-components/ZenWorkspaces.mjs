@@ -263,6 +263,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
   _organizeTabsToWorkspaceSections(workspace, section, pinnedSection, tabs) {
     const workspaceTabs = Array.from(tabs).filter((tab) => tab.getAttribute('zen-workspace-id') === workspace.uuid);
+    let firstNormalTab = null;
     for (const tab of workspaceTabs) {
       if (tab.hasAttribute('zen-essential')) {
         continue; // Ignore essentials as they need to be in their own section
@@ -272,8 +273,17 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       if (tab.pinned) {
         pinnedSection.insertBefore(tab, pinnedSection.nextSibling);
       } else {
+        if (!firstNormalTab) {
+          firstNormalTab = tab;
+        }
         section.insertBefore(tab, section.lastChild);
       }
+    }
+    // Kind of a hacky fix, but for some reason the first normal tab in the list
+    // created by session restore is added the the last position of the tab list
+    // let's just prepend it to the section
+    if (firstNormalTab) {
+      section.insertBefore(firstNormalTab, section.firstChild);
     }
   }
 
@@ -989,21 +999,15 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
           }.bind(browser.ZenWorkspaces)
         );
 
-        element.addEventListener(
-          'dragenter',
-          function (event) {
-            if (this.isReorderModeOn(browser) && this.draggedElement) {
-              element.classList.add('dragover');
-            }
-          }.bind(browser.ZenWorkspaces)
-        );
+        element.addEventListener('dragenter', function (event) {
+          if (this.isReorderModeOn(browser) && this.draggedElement) {
+            element.classList.add('dragover');
+          }
+        });
 
-        element.addEventListener(
-          'dragleave',
-          function (event) {
-            element.classList.remove('dragover');
-          }.bind(browser.ZenWorkspaces)
-        );
+        element.addEventListener('dragleave', function (event) {
+          element.classList.remove('dragover');
+        });
 
         element.addEventListener(
           'drop',

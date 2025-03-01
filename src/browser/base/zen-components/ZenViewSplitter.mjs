@@ -1383,9 +1383,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
         label: '',
         showCreateUI: false,
         insertBefore: tabs[0],
+        forSplitView: true,
       });
-
-      group.setAttribute('split-view-group', true);
     }
 
     return null;

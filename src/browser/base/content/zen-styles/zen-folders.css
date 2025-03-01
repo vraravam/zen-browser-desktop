@@ -13,13 +13,20 @@ tab-group[split-view-group] {
   align-items: center;
   --zen-split-view-active-tab-bg: color-mix(in srgb, var(--zen-toolbar-element-bg), transparent 40%);
 
+  :root:not([zen-sidebar-expanded='true']) & {
+    padding: 2px 0;
+  }
+
   & > .tabbrowser-tab {
-    --tab-min-height: 28px;
     --tab-selected-bgcolor: var(--zen-split-view-active-tab-bg);
     --tab-hover-background-color: transparent;
     --tab-selected-shadow: none;
     --border-radius-medium: var(--tab-border-radius);
     --zen-active-tab-scale: 1;
+
+    :root[zen-sidebar-expanded='true'] & {
+      --tab-min-height: 28px;
+    }
 
     flex: 1 !important;
 
@@ -33,6 +40,15 @@ tab-group[split-view-group] {
       top: 50%;
       transform: translateY(-50%);
     }
+
+    :root:not([zen-sidebar-expanded='true']) &:not(:last-child)::after {
+      width: 16px;
+      height: 1px;
+      top: auto;
+      bottom: 0;
+      right: 50%;
+      transform: translateX(50%);
+    }
   }
 
   &:has(> tab[visuallyselected]) {
@@ -42,7 +58,7 @@ tab-group[split-view-group] {
     & > .tabbrowser-tab {
       --tab-hover-background-color: var(--zen-split-view-active-tab-bg);
       & .tab-background {
-        background-color: var(--zen-split-view-active-tab-bg);
+        background-color: var(--zen-split-view-active-tab-bg) !important;
       }
 
       &::after {
@@ -67,6 +83,12 @@ tab-group[split-view-group] {
     #tabbrowser-tabs[movingtab] & {
       transition: var(--tab-dragover-transition);
     }
+  }
+}
+
+:root:not([zen-sidebar-expanded='true']) {
+  tab-group {
+    flex-direction: column;
   }
 }
 

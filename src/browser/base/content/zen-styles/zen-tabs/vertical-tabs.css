@@ -391,7 +391,7 @@
   max-height: unset !important;
 
   & .tabbrowser-tab:not(:hover) .tab-background:not([selected]):not([multiselected]) {
-    background: transparent !important;
+    background: transparent;
   }
 
   & .tabbrowser-tab .tab-content {
@@ -872,7 +872,7 @@
     display: block;
     width: 2.5px;
     height: 16px;
-    background: light-dark(rgba(88, 79, 79, 0.02), rgba(255, 255, 255, 0.3));
+    background: light-dark(rgba(66, 61, 61, 0.3), rgba(255, 255, 255, 0.3));
     position: absolute;
     right: 0;
     top: 50%;
