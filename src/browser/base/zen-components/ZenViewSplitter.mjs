@@ -706,6 +706,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
    * @param {string} gridType - The type of grid layout.
    */
   splitTabs(tabs, gridType) {
+    const firstisPinned = tabs[0].pinned;
+    tabs = tabs.filter((t) => t.pinned === firstisPinned);
     if (tabs.length < 2) {
       return;
     }
@@ -1377,6 +1379,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       const group = gBrowser.addTabGroup(tabs, {
         label: '',
         showCreateUI: false,
+        insertBefore: tabs[0],
       });
 
       group.setAttribute('split-view-group', true);
