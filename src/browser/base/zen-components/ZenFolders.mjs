@@ -31,11 +31,11 @@
       if (!group) {
         return false;
       }
-      if (group.hasAttribute("split-view-group")) {
+      if (group.hasAttribute('split-view-group')) {
         for (const tab of group.tabs) {
-          tab.setAttribute("pinned", "true");
+          tab.setAttribute('pinned', 'true');
         }
-        gBrowser.verticalPinnedTabsContainer.insertBefore(group, gBrowser.verticalPinnedTabsContainer.lastChild)
+        gBrowser.verticalPinnedTabsContainer.insertBefore(group, gBrowser.verticalPinnedTabsContainer.lastChild);
         gBrowser.tabContainer._invalidateCachedTabs();
         return true;
       }
@@ -47,9 +47,9 @@
       if (!group) {
         return false;
       }
-      if (group.hasAttribute("split-view-group")) {
+      if (group.hasAttribute('split-view-group')) {
         for (const tab of group.tabs) {
-          tab.removeAttribute("pinned");
+          tab.removeAttribute('pinned');
         }
         ZenWorkspaces.activeWorkspaceStrip.prepend(group);
         gBrowser.tabContainer._invalidateCachedTabs();
