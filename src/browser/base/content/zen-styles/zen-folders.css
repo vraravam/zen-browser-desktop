@@ -28,7 +28,12 @@ tab-group[split-view-group] {
       --tab-min-height: 28px;
     }
 
+    container-type: inline-size;
+    container-name: browser-tab;
+
     flex: 1 !important;
+    padding-inline: 2px !important;
+    overflow: clip;
 
     &:not(:last-child)::after {
       content: '';
@@ -75,8 +80,16 @@ tab-group[split-view-group] {
     background-color: var(--zen-toolbar-element-bg);
   }
 
-  & .tab-close-button {
+  & .tab-close-button,
+  & .tab-reset-button {
+    margin-inline-end: -3px !important;
     display: none !important;
+  }
+
+  @container browser-tab (min-width: 70px) {
+    :root[zen-sidebar-expanded='true'] &:hover > .tabbrowser-tab:not([pinned]) .tab-close-button {
+      display: block !important;
+    }
   }
 
   @media (prefers-reduced-motion: no-preference) {

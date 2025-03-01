@@ -1493,9 +1493,10 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     this._inChangingWorkspace = true;
     try {
       await this._performWorkspaceChange(window, ...args);
-    } finally {
-      this._inChangingWorkspace = false;
+    } catch (e) {
+      console.error('ZenWorkspaces: Error changing workspace', e);
     }
+    this._inChangingWorkspace = false;
   }
 
   _cancelSwipeAnimation() {
@@ -1630,7 +1631,6 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       const elementWorkspaceIndex = workspaces.workspaces.findIndex((w) => w.uuid === elementWorkspaceId);
       const offset = -(newWorkspaceIndex - elementWorkspaceIndex) * 100;
       const newTransform = `translateX(${offset}%)`;
-      const isCurrent = offset === 0;
       if (shouldAnimate) {
         element.removeAttribute('hidden');
         animations.push(

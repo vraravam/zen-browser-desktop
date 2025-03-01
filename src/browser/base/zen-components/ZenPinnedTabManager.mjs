@@ -781,6 +781,7 @@
         return;
       }
       tab.removeAttribute('zen-pinned-changed');
+      tab.removeAttribute('had-zen-pinned-changed');
       tab.style.removeProperty('--zen-original-tab-icon');
     }
 
@@ -788,7 +789,11 @@
       if (tab.hasAttribute('zen-pinned-changed')) {
         return;
       }
-      tab.setAttribute('zen-pinned-changed', 'true');
+      if (tab.group?.hasAttribute('split-view-group')) {
+        tab.setAttribute('had-zen-pinned-changed', 'true');
+      } else {
+        tab.setAttribute('zen-pinned-changed', 'true');
+      }
       tab.style.setProperty('--zen-original-tab-icon', `url(${pin.iconUrl})`);
     }
 

@@ -709,7 +709,9 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
    */
   splitTabs(tabs, gridType) {
     const firstisPinned = tabs[0].pinned;
-    tabs = tabs.filter((t) => t.pinned === firstisPinned && !t.hidden && !t.hasAttribute('zen-empty-tab'));
+    tabs = tabs.filter(
+      (t) => t.pinned === firstisPinned && !t.hidden && !t.hasAttribute('zen-empty-tab') && !t.hasAttribute('zen-essential')
+    );
     if (tabs.length < 2 || tabs.length > this.MAX_TABS) {
       return;
     }

@@ -600,7 +600,7 @@
       &:is(:hover, [visuallyselected]) .tab-close-button {
         display: block;
         --tab-inline-padding: 0; /* Avoid weird padding */
-        margin-inline-end: 0 !important;
+        margin-inline-end: 0;
       }
 
       .tab-throbber,
@@ -888,7 +888,6 @@
 .reset-icon,
 .tab-reset-pin-button {
   appearance: none;
-
 }
 
 @media not (forced-colors) {
