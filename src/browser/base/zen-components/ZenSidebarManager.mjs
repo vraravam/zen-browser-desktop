@@ -33,6 +33,7 @@ class ZenBrowserManagerSidebar extends ZenDOMOperatedFeature {
     this.listenForPrefChanges();
     this.insertIntoContextMenu();
     this.addPositioningListeners();
+    this.syncPinnedState();
   }
 
   onlySafeWidthAndHeight() {
@@ -96,6 +97,17 @@ class ZenBrowserManagerSidebar extends ZenDOMOperatedFeature {
       .forEach((s) => s.addEventListener('mousedown', this.handleSplitterMouseDown.bind(this)));
     this.sidebarHeader.addEventListener('mousedown', this.handleDragPanel.bind(this));
     window.addEventListener('resize', this.onWindowResize.bind(this));
+  }
+
+  syncPinnedState() {
+    const sidebar = document.getElementById('zen-sidebar-web-panel');
+    const pinButton = document.getElementById('zen-sidebar-web-panel-pinned');
+    
+    if (sidebar.hasAttribute('pinned')) {
+      pinButton.setAttribute('pinned', 'true');
+    } else {
+      pinButton.removeAttribute('pinned');
+    }
   }
 
   handleSplitterMouseDown(mouseDownEvent) {
