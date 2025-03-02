@@ -69,6 +69,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
   _edgeHoverSize;
   minResizeWidth;
 
+  _lastOpenedTab = null;
+
   MAX_TABS = 4;
 
   init() {
@@ -81,6 +83,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     ChromeUtils.defineLazyGetter(this, 'dropZone', () => document.getElementById('zen-splitview-dropzone'));
 
     window.addEventListener('TabClose', this.handleTabClose.bind(this));
+    window.addEventListener('TabSelect', this.onTabSelect.bind(this));
     this.initializeContextMenu();
     this.insertPageActionButton();
     this.insertIntoContextMenu();
@@ -107,11 +110,26 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
    */
   handleTabClose(event) {
     const tab = event.target;
+    if (tab === this._lastOpenedTab) {
+      this._lastOpenedTab = null;
+    }
     const groupIndex = this._data.findIndex((group) => group.tabs.includes(tab));
     if (groupIndex < 0) {
       return;
     }
     this.removeTabFromGroup(tab, groupIndex, event.forUnsplit);
+  }
+
+  /**
+   * @param {Event} event - The event that triggered the tab select.
+   * @description Handles the tab select event.
+   * @returns {void}
+   */
+  onTabSelect(event) {
+    const previousTab = event.detail.previousTab;
+    if (previousTab) {
+      this._lastOpenedTab = previousTab;
+    }
   }
 
   /**
@@ -160,7 +178,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       }
       draggedTab.container._finishMoveTogetherSelectedTabs(draggedTab);
     }
-    if (!draggedTab || this._canDrop || this._hasAnimated || this.fakeBrowser) {
+    if (!draggedTab || this._canDrop || this._hasAnimated || this.fakeBrowser || !this._lastOpenedTab) {
       return;
     }
     if (draggedTab.splitView) {
@@ -170,7 +188,11 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     if (currentView?.tabs.length >= this.MAX_TABS) {
       return;
     }
+    const oldTab = this._lastOpenedTab;
     this._canDrop = true;
+    this._draggingTab = draggedTab;
+    gBrowser.selectedTab = oldTab;
+    draggedTab._visuallySelected = true;
     // wait some time before showing the split view
     this._showSplitViewTimeout = setTimeout(() => {
       this._hasAnimated = true;
@@ -214,11 +236,12 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     }
     const panelsRect = gBrowser.tabbox.getBoundingClientRect();
     // this event is fired even though we are still in the "allowed" area
-    console.log(event.target);
     if (event.target !== gBrowser.tabbox && event.target !== this.fakeBrowser) {
       return;
     }
     this._canDrop = false;
+    gBrowser.selectedTab = this._draggingTab;
+    this._draggingTab = null;
     if (this._showSplitViewTimeout) {
       clearTimeout(this._showSplitViewTimeout);
     }
@@ -824,7 +847,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
    * @param {string} gridType - The type of grid layout.
    */
   splitTabs(tabs, gridType, initialIndex = 0) {
-    tabs = tabs.filter((t) => !t.hidden && !t.hasAttribute('zen-empty-tab'));
+    // TODO: Add support for splitting essential tabs
+    tabs = tabs.filter((t) => !t.hidden && !t.hasAttribute('zen-empty-tab') && !t.hasAttribute('zen-essential'));
     if (tabs.length < 2 || tabs.length > this.MAX_TABS) {
       return;
     }
@@ -1416,6 +1440,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       gBrowser.tabbox.removeAttribute('style');
       delete this._canDrop;
       delete this._hasAnimated;
+      gBrowser.selectedTab = this._draggingTab;
+      this._draggingTab = null;
     }
   }
 
@@ -1426,7 +1452,11 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
    * @returns {boolean} true if the tab was moved to the split view
    */
   moveTabToSplitView(event, draggedTab) {
+    const canDrop = this._canDrop;
     this._mayabeRemoveFakeBrowser();
+    if (!canDrop) {
+      return false;
+    }
 
     const dropTarget = document.elementFromPoint(event.clientX, event.clientY);
     const browser = dropTarget?.closest('browser');
@@ -1500,7 +1530,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
             },
             {
               type: 'spring',
-              bounce: 0.6,
+              bounce: 0.5,
               duration: 0.5,
               delay: 0.1,
             }
