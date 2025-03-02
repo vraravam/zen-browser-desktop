@@ -1,5 +1,5 @@
 diff --git a/image/decoders/nsJXLDecoder.cpp b/image/decoders/nsJXLDecoder.cpp
-index ffb7f3cd51e1d0e480bf8ac5e936a90c11f0c93d..946c0ff8c2b0ab295d500f131b65b07bbc7df032 100644
+index ffb7f3cd51e1d0e480bf8ac5e936a90c11f0c93d..378ae56d7fa99fbe8bdea2e689949994bbdf8034 100644
 --- a/image/decoders/nsJXLDecoder.cpp
 +++ b/image/decoders/nsJXLDecoder.cpp
 @@ -45,9 +45,20 @@ nsJXLDecoder::nsJXLDecoder(RasterImage* aImage)
@@ -309,7 +309,7 @@ index ffb7f3cd51e1d0e480bf8ac5e936a90c11f0c93d..946c0ff8c2b0ab295d500f131b65b07b
 +      case JXL_DEC_SUCCESS: {
 +        // Decoding is done. Report the full frame count.
 +        if (WantsFrameCount()) {
-+          PostFrameCount(mNumFrames);
++          PostFrameCount(mInfo.have_animation ? mNumFrames + 1 : 1);
 +        }
 +        PostLoopCount(HasAnimation() ? (int32_t)mInfo.animation.num_loops - 1
 +                                      : 0);
