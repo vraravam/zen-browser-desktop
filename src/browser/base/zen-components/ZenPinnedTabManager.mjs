@@ -94,7 +94,7 @@
       //const pin = this._pinsCache.find((pin) => pin.uuid === tab.getAttribute('zen-pin-id'));
       //if (pin) {
       //  pin.iconUrl = iconUrl;
-      //  ZenPinnedTabsStorage.savePin(pin);
+      //  this.savePin(pin);
       //}
     }
 
@@ -174,12 +174,11 @@
     }
 
     async _initializePinnedTabs(init = false) {
-      let pins = this._pinsCache;
+      const pins = this._pinsCache;
       if (!pins?.length || !init) {
         return;
       }
 
-      pins = pins.sort((a, b) => a.position - b.position);
       const pinnedTabsByUUID = new Map();
       const pinsToCreate = new Set(pins.map((p) => p.uuid));
 
@@ -340,13 +339,13 @@
       tab.position = tab._tPos;
 
       for (let otherTab of gBrowser.tabs) {
-        if (otherTab.pinned && otherTab._tPos > tab.position) {
+        if (otherTab.pinned) {
           const actualPin = this._pinsCache.find((pin) => pin.uuid === otherTab.getAttribute('zen-pin-id'));
           if (!actualPin) {
             continue;
           }
           actualPin.position = otherTab._tPos;
-          await ZenPinnedTabsStorage.savePin(actualPin, false);
+          await this.savePin(actualPin, false);
         }
       }
 
@@ -357,7 +356,7 @@
       }
       actualPin.position = tab.position;
       actualPin.isEssential = tab.hasAttribute('zen-essential');
-      await ZenPinnedTabsStorage.savePin(actualPin);
+      await this.savePin(actualPin);
     }
 
     _onTabClick(e) {
@@ -400,7 +399,7 @@
       pin.workspaceUuid = tab.getAttribute('zen-workspace-id');
       pin.userContextId = userContextId ? parseInt(userContextId, 10) : 0;
 
-      await ZenPinnedTabsStorage.savePin(pin);
+      await this.savePin(pin);
       this.resetPinChangedUrl(tab);
       await this._refreshPinnedTabs();
       gZenUIManager.showToast('zen-pinned-tab-replaced');
@@ -423,7 +422,7 @@
         entry = JSON.parse(tab.getAttribute('zen-pinned-entry'));
       }
 
-      await ZenPinnedTabsStorage.savePin({
+      await this.savePin({
         uuid,
         title: entry?.title || tab.label || browser.contentTitle,
         url: entry?.url || browser.currentURI.spec,
@@ -473,6 +472,15 @@
 
       if (cmdClose) {
         cmdClose.addEventListener('command', this._onCloseTabShortcut.bind(this));
+      }
+    }
+
+    async savePin(pin, notifyObservers = true) {
+      await ZenPinnedTabsStorage.savePin(pin, notifyObservers);
+      // Update the cache
+      const existingPin = this._pinsCache.find((p) => p.uuid === pin.uuid);
+      if (existingPin) {
+        Object.assign(existingPin, pin);
       }
     }
 
@@ -606,7 +614,7 @@
           const pin = this._pinsCache.find((pin) => pin.uuid === tab.getAttribute('zen-pin-id'));
           if (pin) {
             pin.isEssential = true;
-            ZenPinnedTabsStorage.savePin(pin);
+            this.savePin(pin);
           }
           document.getElementById('zen-essentials-container').appendChild(tab);
           gBrowser.tabContainer._invalidateCachedTabs();
