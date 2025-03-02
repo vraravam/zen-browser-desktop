@@ -158,6 +158,7 @@ var gZenCompactModeManager = {
     const canAnimate =
       lazyCompactMode.COMPACT_MODE_CAN_ANIMATE_SIDEBAR &&
       !this.sidebar.hasAttribute('zen-user-show') &&
+      !this.sidebar.hasAttribute('zen-has-empty-tab') &&
       !this.sidebar.hasAttribute('zen-has-hover');
     // Do this so we can get the correct width ONCE compact mode styled have been applied
     if (canAnimate) {
@@ -191,15 +192,17 @@ var gZenCompactModeManager = {
           )
           .then(() => {
             window.requestAnimationFrame(() => {
+              this.sidebar.style.transition = 'none';
               this.sidebar.removeAttribute('animate');
+              this.sidebar.style.visibility = 'hidden';
               this.sidebar.style.removeProperty('margin-right');
               this.sidebar.style.removeProperty('margin-left');
               this.sidebar.style.removeProperty('transform');
-              this.sidebar.style.transition = 'none';
               setTimeout(() => {
                 this._animating = false;
+                this.sidebar.style.removeProperty('visibility');
                 this.sidebar.style.removeProperty('transition');
-              });
+              }, 300);
             });
           });
       } else if (canHideSidebar && !isCompactMode) {

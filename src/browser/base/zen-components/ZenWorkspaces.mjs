@@ -1967,6 +1967,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   async onLocationChange(browser) {
+    gZenCompactModeManager.sidebar.toggleAttribute('zen-has-empty-tab', gBrowser.selectedTab.hasAttribute('zen-empty-tab'));
     if (!this.workspaceEnabled || this._inChangingWorkspace || this._isClosingWindow) {
       return;
     }

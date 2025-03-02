@@ -113,6 +113,7 @@
 
       & #urlbar[open][zen-floating-urlbar='true'] {
         transition: left 0.05s ease;
+        visibility: visible;
 
         #navigator-toolbox:has(&) {
           opacity: 1;
@@ -134,17 +135,18 @@
       }
     }
 
-    #navigator-toolbox[zen-has-hover],
+    #navigator-toolbox[zen-has-hover]:not(:has(#urlbar[zen-floating-urlbar='true']:hover)),
     #navigator-toolbox[zen-user-show],
+    #navigator-toolbox[zen-has-empty-tab],
     #navigator-toolbox[flash-popup],
     #navigator-toolbox[has-popup-menu],
     #navigator-toolbox[movingtab],
     #navigator-toolbox:has(.tabbrowser-tab:active),
     &[zen-renaming-tab='true'] #navigator-toolbox,
     #navigator-toolbox:has(
-        *:is([panelopen='true'], [open='true'], #urlbar:not([zen-floating-urlbar='true']):focus-within):not(tab):not(.zen-compact-mode-ignore)
+        *:is([panelopen='true'], [open='true'], #urlbar:focus-within):not(#urlbar[zen-floating-urlbar='true']):not(tab):not(.zen-compact-mode-ignore)
       ) {
-      &:not([animate='true']):not(:has(#urlbar[zen-floating-urlbar='true']:hover)) {
+      &:not([animate='true']) {
         --zen-compact-mode-func: linear(
           0 0%,
           0.002748 1%,
