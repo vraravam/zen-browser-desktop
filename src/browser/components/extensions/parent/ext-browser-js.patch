@@ -1,0 +1,15 @@
+diff --git a/browser/components/extensions/parent/ext-browser.js b/browser/components/extensions/parent/ext-browser.js
+index 179816fa96ccf26604d52f71232296398dd9bdbd..c35814bae4eab774892af1f6df7465601d4f87ac 100644
+--- a/browser/components/extensions/parent/ext-browser.js
++++ b/browser/components/extensions/parent/ext-browser.js
+@@ -1218,6 +1218,10 @@ class TabManager extends TabManagerBase {
+   }
+ 
+   canAccessTab(nativeTab) {
++    if (nativeTab.hasAttribute("zen-empty-tab")) {
++      return false
++    }
++
+     // Check private browsing access at browser window level.
+     if (!this.extension.canAccessWindow(nativeTab.ownerGlobal)) {
+       return false;
