@@ -600,10 +600,14 @@
     }
 
     addToEssentials(tab) {
-      const tabs = tab ? (
-        // if it's already an array, dont make it [tab]
-        tab?.length ? tab :  [tab]
-      ) : TabContextMenu.contextTab.multiselected ? gBrowser.selectedTabs : [TabContextMenu.contextTab];
+      const tabs = tab
+        ? // if it's already an array, dont make it [tab]
+          tab?.length
+          ? tab
+          : [tab]
+        : TabContextMenu.contextTab.multiselected
+          ? gBrowser.selectedTabs
+          : [TabContextMenu.contextTab];
       for (let i = 0; i < tabs.length; i++) {
         const tab = tabs[i];
         if (tab.hasAttribute('zen-essential')) {

@@ -824,9 +824,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
    * @param {string} gridType - The type of grid layout.
    */
   splitTabs(tabs, gridType, initialIndex = 0) {
-    tabs = tabs.filter(
-      (t) => !t.hidden && !t.hasAttribute('zen-empty-tab')
-    );
+    tabs = tabs.filter((t) => !t.hidden && !t.hasAttribute('zen-empty-tab'));
     if (tabs.length < 2 || tabs.length > this.MAX_TABS) {
       return;
     }
@@ -1494,15 +1492,19 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
         // Put tabs always as if it was dropped from the left
         this.splitTabs([draggedTab, droppedOnTab], gridType, 1);
         if (draggedTab.linkedBrowser) {
-          gZenUIManager.motion.animate(draggedTab.linkedBrowser.closest('.browserSidebarContainer'), {
-            scale: [0.98, 1],
-            opacity: [0, 1],
-          }, {
-            type: 'spring',
-            bounce: 0.6,
-            duration: 0.5,
-            delay: 0.1,
-          });
+          gZenUIManager.motion.animate(
+            draggedTab.linkedBrowser.closest('.browserSidebarContainer'),
+            {
+              scale: [0.98, 1],
+              opacity: [0, 1],
+            },
+            {
+              type: 'spring',
+              bounce: 0.6,
+              duration: 0.5,
+              delay: 0.1,
+            }
+          );
         }
       }
     }
