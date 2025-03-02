@@ -1,5 +1,5 @@
 diff --git a/browser/components/places/PlacesUIUtils.sys.mjs b/browser/components/places/PlacesUIUtils.sys.mjs
-index fbdd6a34b12d4d957f7a2d9d95df0bfd65ba3f61..6021901b427d426078d9bf713d6995ad6332dbfa 100644
+index fbdd6a34b12d4d957f7a2d9d95df0bfd65ba3f61..baaf34536f557c69fce3cc43e6f12658514db39f 100644
 --- a/browser/components/places/PlacesUIUtils.sys.mjs
 +++ b/browser/components/places/PlacesUIUtils.sys.mjs
 @@ -58,6 +58,7 @@ class BookmarkState {
@@ -95,7 +95,7 @@ index fbdd6a34b12d4d957f7a2d9d95df0bfd65ba3f61..6021901b427d426078d9bf713d6995ad
 +          const placeholders = workspacesToRemove.map(() => '?').join(',');
 +          await db.execute(`
 +          DELETE FROM zen_bookmarks_workspaces
-+          WHERE bookmark_guid = :bookmark_guid 
++          WHERE bookmark_guid = :bookmark_guid
 +          AND workspace_uuid IN (${placeholders})
 +        `, [bookmarkGuid, ...workspacesToRemove]);
 +
@@ -162,9 +162,9 @@ index fbdd6a34b12d4d957f7a2d9d95df0bfd65ba3f61..6021901b427d426078d9bf713d6995ad
      aWhere,
      aWindow,
 -    { aPrivate = false, userContextId = 0 } = {}
-+    { aPrivate = false, userContextId } = {}
++    { aPrivate = false, userContextId = undefined } = {}
    ) {
-+    if (!userContextId) {
++    if (typeof userContextId == "undefined") {
 +      try {
 +        let browserWindow = getBrowserWindow(aWindow);
 +        userContextId = browserWindow.ZenWorkspaces.getDefaultContainer();
