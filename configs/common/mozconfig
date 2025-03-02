@@ -59,6 +59,7 @@ if test "$ZEN_RELEASE"; then
   ac_add_options --disable-rust-tests
 
   ac_add_options --disable-default-browser-agent
+  ac_add_options --enable-minify=js,properties
 
   if ! test "$ZEN_DISABLE_LTO"; then
     # only enable full LTO when ZEN_RELEASE_BRANCH is 'release'
