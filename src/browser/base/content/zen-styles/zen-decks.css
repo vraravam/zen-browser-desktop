@@ -255,7 +255,6 @@
   background: rgba(255, 255, 255, 0.1);
   border-radius: var(--zen-native-inner-radius);
   box-shadow: var(--zen-big-shadow);
-  pointer-events: none;
   overflow: hidden;
 
   &::after {

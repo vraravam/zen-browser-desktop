@@ -86,8 +86,9 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     this.insertIntoContextMenu();
 
     // Add drag over listener to the browser view
-    this.tabBrowserPanel.addEventListener('dragenter', this.onBrowserDragOverToSplit.bind(this));
-    this.tabBrowserPanel.addEventListener('dragleave', this.onBrowserDragEndToSplit.bind(this));
+    const tabBox = document.getElementById('tabbrowser-tabbox');
+    tabBox.addEventListener('dragenter', this.onBrowserDragOverToSplit.bind(this));
+    tabBox.addEventListener('dragleave', this.onBrowserDragEndToSplit.bind(this));
   }
 
   insertIntoContextMenu() {
@@ -148,6 +149,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
 
   onBrowserDragOverToSplit(event) {
     var dt = event.dataTransfer;
+    const dragEffect = dt.dropEffect;
     var draggedTab;
     if (dt.mozTypesAt(0)[0] == TAB_DROP_TYPE) {
       // tab copy or move
@@ -159,6 +161,9 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       draggedTab.container._finishMoveTogetherSelectedTabs(draggedTab);
     }
     if (!draggedTab || this._canDrop || this._hasAnimated || this.fakeBrowser) {
+      return;
+    }
+    if (draggedTab.splitView) {
       return;
     }
     const currentView = this._data[this.currentView];
@@ -184,7 +189,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
             paddingLeft: [0, `${halfWidth}px`],
           },
           {
-            duration: 0.1,
+            duration: 0.15,
             easing: 'ease-out',
           }
         ),
@@ -195,7 +200,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
             marginLeft: [0, `${-(halfWidth - padding)}px`],
           },
           {
-            duration: 0.1,
+            duration: 0.15,
             easing: 'ease-out',
           }
         ),
@@ -209,7 +214,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     }
     const panelsRect = gBrowser.tabbox.getBoundingClientRect();
     // this event is fired even though we are still in the "allowed" area
-    if (event.target !== this.tabBrowserPanel) {
+    console.log(event.target);
+    if (event.target !== gBrowser.tabbox && event.target !== this.fakeBrowser) {
       return;
     }
     this._canDrop = false;
@@ -230,7 +236,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
             paddingLeft: [`${halfWidth}px`, 0],
           },
           {
-            duration: 0.1,
+            duration: 0.15,
             easing: 'ease-out',
           }
         ),
@@ -241,7 +247,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
             marginLeft: [`${-(halfWidth - padding)}px`, 0],
           },
           {
-            duration: 0.1,
+            duration: 0.15,
             easing: 'ease-out',
           }
         ),
@@ -817,13 +823,26 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
    * @param {Tab[]} tabs - The tabs to split.
    * @param {string} gridType - The type of grid layout.
    */
-  splitTabs(tabs, gridType) {
-    const firstisPinned = tabs[0].pinned;
+  splitTabs(tabs, gridType, initialIndex = 0) {
     tabs = tabs.filter(
-      (t) => t.pinned === firstisPinned && !t.hidden && !t.hasAttribute('zen-empty-tab') && !t.hasAttribute('zen-essential')
+      (t) => !t.hidden && !t.hasAttribute('zen-empty-tab')
     );
     if (tabs.length < 2 || tabs.length > this.MAX_TABS) {
       return;
+    }
+    const firstIsPinned = tabs[initialIndex].pinned;
+    const firstIsEssential = tabs[initialIndex].hasAttribute('zen-essential');
+    const oddOnes = tabs.filter((t) => t.pinned !== firstIsPinned || t.hasAttribute('zen-essential') != firstIsEssential);
+    if (firstIsEssential) {
+      gZenPinnedTabManager.addToEssentials(oddOnes);
+    } else {
+      for (const tab of oddOnes) {
+        if (firstIsPinned) {
+          gBrowser.pinTab(tab);
+        } else {
+          gBrowser.unpinTab(tab);
+        }
+      }
     }
 
     const existingSplitTab = tabs.find((tab) => tab.splitView);
@@ -1473,7 +1492,18 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
         //}
 
         // Put tabs always as if it was dropped from the left
-        this.splitTabs([draggedTab, droppedOnTab], gridType);
+        this.splitTabs([draggedTab, droppedOnTab], gridType, 1);
+        if (draggedTab.linkedBrowser) {
+          gZenUIManager.motion.animate(draggedTab.linkedBrowser.closest('.browserSidebarContainer'), {
+            scale: [0.98, 1],
+            opacity: [0, 1],
+          }, {
+            type: 'spring',
+            bounce: 0.6,
+            duration: 0.5,
+            delay: 0.1,
+          });
+        }
       }
     }
     return true;
