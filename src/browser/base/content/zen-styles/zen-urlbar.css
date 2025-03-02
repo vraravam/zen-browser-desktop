@@ -435,9 +435,8 @@ button.popup-notification-dropmarker {
     font-size: 1.5em !important;
     width: min(90%, 60rem) !important;
   }
-  top: 50vh !important;
+  top: 25vh !important;
   transform: translateX(-50%);
-  margin-top: -20%;
   left: 50% !important;
 
   #urlbar-container:has(&) {

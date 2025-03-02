@@ -121,6 +121,7 @@ pref('zen.urlbar.replace-newtab', true);
 pref('zen.urlbar.behavior', 'floating-on-type'); // default, floating-on-type, float
 pref('zen.urlbar.wait-to-clear', 45000); // in ms (default 45s)
 pref('zen.urlbar.show-domain-only-in-sidebar', true);
+pref('zen.urlbar.hide-one-offs', true);
 
 #ifdef XP_MACOSX
 // Disable for macos in the meantime until @HarryHeres finds a solution for hight DPI screens
