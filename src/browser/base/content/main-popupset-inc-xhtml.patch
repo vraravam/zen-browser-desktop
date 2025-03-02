@@ -1,8 +1,8 @@
 diff --git a/browser/base/content/main-popupset.inc.xhtml b/browser/base/content/main-popupset.inc.xhtml
-index e5f3424eaeeec0ba552537f167dd99e912216d94..4bdfcdb23fe9c44ad3d4de273c64f4cc31cb4034 100644
+index 959c523b21c642f29353b9de37b3ce6b5505b01b..0d151ad345dde47467432196ed76f4320b4b92cc 100644
 --- a/browser/base/content/main-popupset.inc.xhtml
 +++ b/browser/base/content/main-popupset.inc.xhtml
-@@ -181,6 +181,10 @@
+@@ -206,6 +206,10 @@
             hidden="true"
             tabspecific="true"
             aria-labelledby="editBookmarkPanelTitle">
@@ -13,7 +13,7 @@ index e5f3424eaeeec0ba552537f167dd99e912216d94..4bdfcdb23fe9c44ad3d4de273c64f4cc
        <box class="panel-header">
          <html:h1>
            <html:span id="editBookmarkPanelTitle"/>
-@@ -206,6 +210,7 @@
+@@ -231,6 +235,7 @@
                    class="footer-button"/>
          </html:moz-button-group>
        </vbox>
@@ -21,7 +21,7 @@ index e5f3424eaeeec0ba552537f167dd99e912216d94..4bdfcdb23fe9c44ad3d4de273c64f4cc
      </panel>
    </html:template>
  
-@@ -535,6 +540,8 @@
+@@ -565,6 +570,8 @@
  
  #include popup-notifications.inc.xhtml
  

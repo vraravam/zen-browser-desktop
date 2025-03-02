@@ -102,7 +102,7 @@ class ZenBrowserManagerSidebar extends ZenDOMOperatedFeature {
   syncPinnedState() {
     const sidebar = document.getElementById('zen-sidebar-web-panel');
     const pinButton = document.getElementById('zen-sidebar-web-panel-pinned');
-    
+
     if (sidebar.hasAttribute('pinned')) {
       pinButton.setAttribute('pinned', 'true');
     } else {
