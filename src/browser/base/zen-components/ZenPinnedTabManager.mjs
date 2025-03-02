@@ -174,11 +174,12 @@
     }
 
     async _initializePinnedTabs(init = false) {
-      const pins = this._pinsCache;
+      let pins = this._pinsCache;
       if (!pins?.length || !init) {
         return;
       }
 
+      pins = pins.sort((a, b) => a.position - b.position);
       const pinnedTabsByUUID = new Map();
       const pinsToCreate = new Set(pins.map((p) => p.uuid));
 
@@ -289,7 +290,7 @@
               container.insertBefore(newTab, container.lastChild);
             }
           } else {
-            document.getElementById('zen-essentials-container').prepend(newTab);
+            document.getElementById('zen-essentials-container').appendChild(newTab);
           }
           gBrowser.tabContainer._invalidateCachedTabs();
           newTab.initialize();
@@ -355,6 +356,7 @@
         return;
       }
       actualPin.position = tab.position;
+      actualPin.isEssential = tab.hasAttribute('zen-essential');
       await ZenPinnedTabsStorage.savePin(actualPin);
     }
 
@@ -622,8 +624,8 @@
       for (let i = 0; i < tabs.length; i++) {
         const tab = tabs[i];
         tab.removeAttribute('zen-essential');
-        if (ZenWorkspaces.workspaceEnabled && ZenWorkspaces.getActiveWorkspaceFromCache.uuid) {
-          tab.setAttribute('zen-workspace-id', ZenWorkspaces.getActiveWorkspaceFromCache.uuid);
+        if (ZenWorkspaces.workspaceEnabled && ZenWorkspaces.getActiveWorkspaceFromCache().uuid) {
+          tab.setAttribute('zen-workspace-id', ZenWorkspaces.getActiveWorkspaceFromCache().uuid);
         }
         if (unpin) {
           gBrowser.unpinTab(tab);
