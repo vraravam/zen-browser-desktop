@@ -267,14 +267,15 @@
         .then(() => {
           this.#currentParentTab.linkedBrowser.closest('.browserSidebarContainer').removeAttribute('style');
         });
+      this.browserWrapper.style.opacity = 1;
       gZenUIManager.motion
         .animate(
           this.browserWrapper,
           {
             ...originalPosition,
-            opacity: 0.3,
+            opacity: 0,
           },
-          { type: 'spring', bounce: 0, duration: 0.4, easing: 'ease' }
+          { type: 'spring', bounce: 0, duration: 0.6, easing: 'ease-in' }
         )
         .then(() => {
           this.browserWrapper.removeAttribute('animate');

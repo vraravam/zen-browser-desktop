@@ -1140,6 +1140,7 @@ menupopup > menuitem:is([type='checkbox']) .menu-iconic-left {
 }
 
 #toolbar-context-toggle-vertical-tabs,
-#toolbar-context-customize-sidebar {
-  display: none;
+#toolbar-context-customize-sidebar,
+#sidebarRevampSeparator {
+  display: none !important;
 }

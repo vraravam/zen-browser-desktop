@@ -248,3 +248,34 @@
     outline-color: var(--toolbarbutton-active-outline-color);
   }
 }
+
+#zen-split-view-fake-browser {
+  position: absolute;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--zen-native-inner-radius);
+  box-shadow: var(--zen-big-shadow);
+  pointer-events: none;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 3.5rem;
+    height: 3.5rem;
+    background: var(--zen-split-view-fake-icon);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    transition-delay: 0.1s;
+
+    @starting-style {
+      opacity: 0;
+    }
+  }
+}
