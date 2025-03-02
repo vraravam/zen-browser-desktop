@@ -1,0 +1,12 @@
+diff --git a/browser/components/BrowserContentHandler.sys.mjs b/browser/components/BrowserContentHandler.sys.mjs
+index 7aef091c0be1cb0ea0be52268949db17032f96d9..5e9105fa671d1b1979f204fc8d3be22771998ad7 100644
+--- a/browser/components/BrowserContentHandler.sys.mjs
++++ b/browser/components/BrowserContentHandler.sys.mjs
+@@ -1278,6 +1278,7 @@ function maybeRecordToHandleTelemetry(uri, isLaunch) {
+       ".avif",
+       ".htm",
+       ".html",
++      ".jxl",
+       ".pdf",
+       ".shtml",
+       ".xht",
