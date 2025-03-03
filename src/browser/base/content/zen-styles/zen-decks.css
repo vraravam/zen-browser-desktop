@@ -277,4 +277,9 @@
       opacity: 0;
     }
   }
+
+  &.fade-out::after {
+    opacity: 0;
+    transition-delay: 0s;
+  }
 }

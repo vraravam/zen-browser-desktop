@@ -187,13 +187,18 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     if (currentView?.tabs.length >= this.MAX_TABS) {
       return;
     }
+    // only show if we are  1/4 of the way to the edge
+    const panelsRect = gBrowser.tabbox.getBoundingClientRect();
+    const panelsWidth = panelsRect.width;
+    if (event.clientX > (panelsWidth / 4) * 3) {
+      return;
+    }
     const oldTab = this._lastOpenedTab;
     this._canDrop = true;
     // wait some time before showing the split view
     this._showSplitViewTimeout = setTimeout(() => {
       this._draggingTab = draggedTab;
       gBrowser.selectedTab = oldTab;
-      draggedTab._visuallySelected = true;
       this._hasAnimated = true;
       const panelsWidth = gBrowser.tabbox.getBoundingClientRect().width;
       const halfWidth = panelsWidth / 2;
@@ -203,6 +208,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       this.fakeBrowser.id = 'zen-split-view-fake-browser';
       gBrowser.tabbox.appendChild(this.fakeBrowser);
       this.fakeBrowser.style.setProperty('--zen-split-view-fake-icon', `url(${draggedTab.getAttribute('image')})`);
+      draggedTab._visuallySelected = true;
       Promise.all([
         gZenUIManager.motion.animate(
           gBrowser.tabbox,
@@ -234,7 +240,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       return;
     }
     const panelsRect = gBrowser.tabbox.getBoundingClientRect();
-    if (event.target !== gBrowser.tabbox && event.target !== this.fakeBrowser) {
+    if (event.target.closest('#tabbrowser-tabbox') && event.target != this.fakeBrowser) {
       return;
     }
     if (this._showSplitViewTimeout) {
@@ -250,34 +256,40 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       if (!this.fakeBrowser) {
         return;
       }
-      Promise.all([
-        gZenUIManager.motion.animate(
-          gBrowser.tabbox,
-          {
-            paddingLeft: [`${halfWidth}px`, 0],
-          },
-          {
-            duration: 0.15,
-            easing: 'ease-out',
-          }
-        ),
-        gZenUIManager.motion.animate(
-          this.fakeBrowser,
-          {
-            width: [`${halfWidth - padding * 2}px`, 0],
-            marginLeft: [`${-(halfWidth - padding)}px`, 0],
-          },
-          {
-            duration: 0.15,
-            easing: 'ease-out',
-          }
-        ),
-      ]).then(() => {
+      this.fakeBrowser.classList.add('fade-out');
+      gBrowser.selectedTab = this._draggingTab;
+      this._draggingTab = null;
+      try {
+        Promise.all([
+          gZenUIManager.motion.animate(
+            gBrowser.tabbox,
+            {
+              paddingLeft: [`${halfWidth}px`, 0],
+            },
+            {
+              duration: 0.15,
+              easing: 'ease-out',
+            }
+          ),
+          gZenUIManager.motion.animate(
+            this.fakeBrowser,
+            {
+              width: [`${halfWidth - padding * 2}px`, 0],
+              marginLeft: [`${-(halfWidth - padding)}px`, 0],
+            },
+            {
+              duration: 0.15,
+              easing: 'ease-out',
+            }
+          ),
+        ]).then(() => {
+          this._canDrop = false;
+          this._maybeRemoveFakeBrowser();
+        });
+      } catch (e) {
         this._canDrop = false;
-        gBrowser.selectedTab = this._draggingTab;
-        this._draggingTab = null;
         this._maybeRemoveFakeBrowser();
-      });
+      }
     }, 100);
   }
 
