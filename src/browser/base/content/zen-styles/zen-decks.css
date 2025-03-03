@@ -17,7 +17,7 @@
   margin: 0;
 }
 #zen-splitview-dropzone {
-  border-radius: var(--zen-webview-border-radius, var(--zen-border-radius));
+  border-radius: var(--zen-native-inner-radius);
   transition: inset ease-out 0.08s;
   display: none;
   background-color: color-mix(in srgb, var(--zen-colors-secondary) 30%, transparent 70%);
