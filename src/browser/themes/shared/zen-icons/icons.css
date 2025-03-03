@@ -23,6 +23,10 @@
   list-style-image: url('move-tab.svg') !important;
 }
 
+.zen-tab-unsplit-button {
+  list-style-image: url('unpin.svg') !important;
+}
+
 #forward-button,
 #zen-sidebar-web-panel-forward {
   list-style-image: url('forward.svg') !important;
@@ -381,7 +385,8 @@
   list-style-image: url('arrow-down.svg') !important;
 }
 
-.zen-workspace-actions-reorder-icon {
+.zen-workspace-actions-reorder-icon,
+.zen-tab-rearrange-button {
   list-style-image: url('drag-indicator.svg') !important;
 }
 

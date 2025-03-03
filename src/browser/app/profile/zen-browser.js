@@ -379,7 +379,7 @@ pref('widget.macos.titlebar-blend-mode.behind-window', true);
 // 5. toolTip
 // 6. headerView
 // 7. underlay
-pref('zen.widget.macos.window-material', 7);
+pref('zen.widget.macos.window-material', 1);
 #endif
 
 // Urlbar and autocomplete

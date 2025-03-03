@@ -164,7 +164,7 @@
     background: transparent;
     --zen-themed-toolbar-bg-transparent: transparent;
     @media (-moz-bool-pref: 'zen.widget.windows.acrylic') {
-      --zen-themed-toolbar-bg-transparent: color-mix(in srgb, var(--zen-themed-toolbar-bg) 80%, transparent 20%);
+      --zen-themed-toolbar-bg-transparent: color-mix(in srgb, var(--zen-themed-toolbar-bg) 75%, transparent 25%);
     }
   }
 

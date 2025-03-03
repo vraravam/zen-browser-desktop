@@ -177,13 +177,21 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       }
       draggedTab.container._finishMoveTogetherSelectedTabs(draggedTab);
     }
-    if (!draggedTab || this._canDrop || this._hasAnimated || this.fakeBrowser || !this._lastOpenedTab) {
+    if (
+      !draggedTab ||
+      this._canDrop ||
+      this._hasAnimated ||
+      this.fakeBrowser ||
+      !this._lastOpenedTab ||
+      (this._lastOpenedTab &&
+        this._lastOpenedTab.getAttribute('zen-workspace-id') !== draggedTab.getAttribute('zen-workspace-id'))
+    ) {
       return;
     }
     if (draggedTab.splitView) {
       return;
     }
-    const currentView = this._data[this.currentView];
+    const currentView = this._data[this._lastOpenedTab.splitViewValue];
     if (currentView?.tabs.length >= this.MAX_TABS) {
       return;
     }
@@ -249,48 +257,46 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     if (!this._hasAnimated || !this.fakeBrowser) {
       return;
     }
-    setTimeout(() => {
-      const panelsWidth = panelsRect.width;
-      const halfWidth = panelsWidth / 2;
-      const padding = Services.prefs.getIntPref('zen.theme.content-element-separation', 0);
-      if (!this.fakeBrowser) {
-        return;
-      }
-      this.fakeBrowser.classList.add('fade-out');
-      gBrowser.selectedTab = this._draggingTab;
-      this._draggingTab = null;
-      try {
-        Promise.all([
-          gZenUIManager.motion.animate(
-            gBrowser.tabbox,
-            {
-              paddingLeft: [`${halfWidth}px`, 0],
-            },
-            {
-              duration: 0.15,
-              easing: 'ease-out',
-            }
-          ),
-          gZenUIManager.motion.animate(
-            this.fakeBrowser,
-            {
-              width: [`${halfWidth - padding * 2}px`, 0],
-              marginLeft: [`${-(halfWidth - padding)}px`, 0],
-            },
-            {
-              duration: 0.15,
-              easing: 'ease-out',
-            }
-          ),
-        ]).then(() => {
-          this._canDrop = false;
-          this._maybeRemoveFakeBrowser();
-        });
-      } catch (e) {
+    const panelsWidth = panelsRect.width;
+    const halfWidth = panelsWidth / 2;
+    const padding = Services.prefs.getIntPref('zen.theme.content-element-separation', 0);
+    if (!this.fakeBrowser) {
+      return;
+    }
+    this.fakeBrowser.classList.add('fade-out');
+    gBrowser.selectedTab = this._draggingTab;
+    this._draggingTab = null;
+    try {
+      Promise.all([
+        gZenUIManager.motion.animate(
+          gBrowser.tabbox,
+          {
+            paddingLeft: [`${halfWidth}px`, 0],
+          },
+          {
+            duration: 0.15,
+            easing: 'ease-out',
+          }
+        ),
+        gZenUIManager.motion.animate(
+          this.fakeBrowser,
+          {
+            width: [`${halfWidth - padding * 2}px`, 0],
+            marginLeft: [`${-(halfWidth - padding)}px`, 0],
+          },
+          {
+            duration: 0.15,
+            easing: 'ease-out',
+          }
+        ),
+      ]).then(() => {
         this._canDrop = false;
         this._maybeRemoveFakeBrowser();
-      }
-    }, 100);
+      });
+    } catch (e) {
+      this._canDrop = false;
+      this._maybeRemoveFakeBrowser();
+    }
   }
 
   /**
@@ -440,7 +446,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     let isSplitHeaderDrag = false;
 
     const container = event.target.closest('.browserSidebarContainer[zen-split]');
-    if (container && event.offsetY < 20) {
+    if (container && event.target.closest('.zen-tab-rearrange-button')) {
       // Split tab header drag case
       const containerRect = container.getBoundingClientRect();
       const clickX = event.clientX - containerRect.left;
@@ -700,6 +706,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
    */
   resetTabState(tab, forUnsplit) {
     tab.splitView = false;
+    delete tab.splitViewValue;
     tab.removeAttribute('split-view');
     tab.linkedBrowser.zenModeActive = false;
     const container = tab.linkedBrowser.closest('.browserSidebarContainer');
@@ -854,6 +861,26 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
   }
 
   /**
+   * @param {Tab} tab
+   */
+  _moveTabsToContainer(tabs, relativeTab) {
+    const relativeTabIsPinned = relativeTab.pinned;
+    const relativeTabIsEssential = relativeTab.hasAttribute('zen-essential');
+
+    if (relativeTabIsEssential) {
+      gZenPinnedTabManager.addToEssentials(tabs);
+    } else {
+      for (const tab of tabs) {
+        if (relativeTabIsPinned) {
+          gBrowser.pinTab(tab);
+        } else {
+          gBrowser.unpinTab(tab);
+        }
+      }
+    }
+  }
+
+  /**
    * Splits the given tabs.
    *
    * @param {Tab[]} tabs - The tabs to split.
@@ -865,20 +892,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     if (tabs.length < 2 || tabs.length > this.MAX_TABS) {
       return;
     }
-    const firstIsPinned = tabs[initialIndex].pinned;
-    const firstIsEssential = tabs[initialIndex].hasAttribute('zen-essential');
-    const oddOnes = tabs.filter((t) => t.pinned !== firstIsPinned || t.hasAttribute('zen-essential') != firstIsEssential);
-    if (firstIsEssential) {
-      gZenPinnedTabManager.addToEssentials(oddOnes);
-    } else {
-      for (const tab of oddOnes) {
-        if (firstIsPinned) {
-          gBrowser.pinTab(tab);
-        } else {
-          gBrowser.unpinTab(tab);
-        }
-      }
-    }
+    this._moveTabsToContainer(tabs, tabs[initialIndex]);
 
     const existingSplitTab = tabs.find((tab) => tab.splitView);
     if (existingSplitTab) {
@@ -1025,9 +1039,10 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
   applyGridToTabs(tabs) {
     tabs.forEach((tab, index) => {
       tab.splitView = true;
+      tab.splitViewValue = this.currentView;
       tab.setAttribute('split-view', 'true');
-      const container = tab.linkedBrowser.closest('.browserContainer');
-      if (!container.querySelector('.zen-view-splitter-header')) {
+      const container = tab.linkedBrowser?.closest('.browserSidebarContainer');
+      if (!container?.querySelector('.zen-tab-rearrange-button')) {
         // insert a header into the container
         const header = this._createHeader(container);
         container.insertBefore(header, container.firstChild);
@@ -1043,6 +1058,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
    * @private
    */
   _createHeader(container) {
+    const headerContainer = document.createElement('div');
+    headerContainer.classList.add('zen-view-splitter-header-container');
     const header = document.createElement('div');
     header.classList.add('zen-view-splitter-header');
     const removeButton = document.createXULElement('toolbarbutton');
@@ -1050,12 +1067,16 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     removeButton.addEventListener('click', () => {
       this.removeTabFromSplit(container);
     });
+    const rearrangeButton = document.createXULElement('toolbarbutton');
+    rearrangeButton.classList.add('zen-tab-rearrange-button');
+    header.appendChild(rearrangeButton);
     header.appendChild(removeButton);
-    return header;
+    headerContainer.appendChild(header);
+    return headerContainer;
   }
 
   _removeHeader(container) {
-    const header = container.querySelector('.zen-view-splitter-header');
+    const header = container.querySelector('.zen-view-splitter-header-container');
     if (header) {
       header.remove();
     }
@@ -1446,14 +1467,16 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     }
   };
 
-  _maybeRemoveFakeBrowser() {
+  _maybeRemoveFakeBrowser(select = true) {
     gBrowser.tabbox.removeAttribute('style');
     if (this.fakeBrowser) {
       delete this._hasAnimated;
       this.fakeBrowser.remove();
       this.fakeBrowser = null;
-      gBrowser.selectedTab = this._draggingTab;
-      this._draggingTab = null;
+      if (select) {
+        gBrowser.selectedTab = this._draggingTab;
+        this._draggingTab = null;
+      }
     }
   }
 
@@ -1465,7 +1488,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
    */
   moveTabToSplitView(event, draggedTab) {
     const canDrop = this._canDrop;
-    this._maybeRemoveFakeBrowser();
+    this._maybeRemoveFakeBrowser(false);
     this._canDrop = false;
     if (!canDrop) {
       return false;
@@ -1473,6 +1496,9 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
 
     const dropTarget = document.elementFromPoint(event.clientX, event.clientY);
     const browser = dropTarget?.closest('browser');
+
+    gBrowser.selectedTab = this._draggingTab;
+    this._draggingTab = null;
 
     if (!browser) {
       return false;
@@ -1482,7 +1508,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     if (droppedOnTab && droppedOnTab !== draggedTab) {
       // Calculate which side of the target browser the drop occurred
       const browserRect = browser.getBoundingClientRect();
-      const hoverSide = this.calculateHoverSide(event.clientX, event.clientY, browserRect);
+      // const hoverSide = this.calculateHoverSide(event.clientX, event.clientY, browserRect);
+      const hoverSide = 'right';
 
       if (droppedOnTab.splitView) {
         // Add to existing split view
@@ -1493,6 +1520,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
           // First move the tab to the split view group
           let splitGroup = droppedOnTab.group;
           if (splitGroup && (!draggedTab.group || draggedTab.group !== splitGroup)) {
+            this._moveTabsToContainer([draggedTab], droppedOnTab);
             gBrowser.moveTabToGroup(draggedTab, splitGroup);
           }
 

@@ -122,7 +122,7 @@
   &::before {
     height: 50px;
     width: 4px;
-    background: var(--zen-colors-primary);
+    background: var(--button-primary-bgcolor);
     border-radius: 2px;
     content: '';
     position: absolute;
