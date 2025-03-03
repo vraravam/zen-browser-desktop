@@ -1,5 +1,5 @@
 diff --git a/image/decoders/nsJXLDecoder.cpp b/image/decoders/nsJXLDecoder.cpp
-index ffb7f3cd51e1d0e480bf8ac5e936a90c11f0c93d..282472afe4fbab7d41adaf15928fa93c99e74452 100644
+index ffb7f3cd51e1d0e480bf8ac5e936a90c11f0c93d..378ae56d7fa99fbe8bdea2e689949994bbdf8034 100644
 --- a/image/decoders/nsJXLDecoder.cpp
 +++ b/image/decoders/nsJXLDecoder.cpp
 @@ -45,9 +45,20 @@ nsJXLDecoder::nsJXLDecoder(RasterImage* aImage)
@@ -65,7 +65,7 @@ index ffb7f3cd51e1d0e480bf8ac5e936a90c11f0c93d..282472afe4fbab7d41adaf15928fa93c
  
    while (true) {
      JxlDecoderStatus status = JxlDecoderProcessInput(mDecoder.get());
-@@ -106,51 +127,229 @@ LexerTransition<nsJXLDecoder::State> nsJXLDecoder::ReadJXLData(
+@@ -106,51 +127,238 @@ LexerTransition<nsJXLDecoder::State> nsJXLDecoder::ReadJXLData(
          size_t remaining = JxlDecoderReleaseInput(mDecoder.get());
          mBuffer.clear();
          JXL_TRY_BOOL(mBuffer.append(aData + aLength - remaining, remaining));
@@ -105,7 +105,9 @@ index ffb7f3cd51e1d0e480bf8ac5e936a90c11f0c93d..282472afe4fbab7d41adaf15928fa93c
          PostSize(mInfo.xsize, mInfo.ysize);
 +
          if (WantsFrameCount()) {
-           PostFrameCount(/* aFrameCount */ 1);
+-          PostFrameCount(/* aFrameCount */ 1);
++          // We start at 1 as additional frames are added in
++          PostFrameCount(1);
          }
 +
          if (mInfo.alpha_bits > 0) {
@@ -293,6 +295,10 @@ index ffb7f3cd51e1d0e480bf8ac5e936a90c11f0c93d..282472afe4fbab7d41adaf15928fa93c
 +            !mFrameHeader.is_last) {
 +          mNumFrames++;
 +          mContinue = true;
++          if (WantsFrameCount()) {
++            // If we want frame count, report it now.
++            PostFrameCount(mNumFrames + 1);
++          }
 +          // Notify for a new frame but there may be data in the current buffer
 +          // that can immediately be processed.
 +          return Transition::ToAfterYield(State::JXL_DATA);
@@ -301,6 +307,10 @@ index ffb7f3cd51e1d0e480bf8ac5e936a90c11f0c93d..282472afe4fbab7d41adaf15928fa93c
 +      }
 +
 +      case JXL_DEC_SUCCESS: {
++        // Decoding is done. Report the full frame count.
++        if (WantsFrameCount()) {
++          PostFrameCount(mInfo.have_animation ? mNumFrames + 1 : 1);
++        }
 +        PostLoopCount(HasAnimation() ? (int32_t)mInfo.animation.num_loops - 1
 +                                      : 0);
          PostDecodeDone();
