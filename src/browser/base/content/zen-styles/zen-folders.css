@@ -14,7 +14,11 @@ tab-group[split-view-group] {
   --zen-split-view-active-tab-bg: color-mix(in srgb, var(--zen-toolbar-element-bg), transparent 40%);
 
   :root:not([zen-sidebar-expanded='true']) & {
-    padding: 2px 0;
+    padding: 0 2px;
+    --tab-min-height: 30px;
+    --tab-collapsed-width: 38px;
+    margin: 0 auto;
+    --tab-min-width: 34px;
   }
 
   & > .tabbrowser-tab {
