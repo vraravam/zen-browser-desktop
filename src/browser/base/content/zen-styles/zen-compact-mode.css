@@ -38,6 +38,9 @@
       --zen-toolbox-max-width: 64px !important;
       --zen-compact-float: var(--zen-element-separation);
 
+      /* Initial padding for when we are animating */
+      padding: 0 0 0 var(--zen-toolbox-padding) !important;
+
       &:not([animate='true']) {
         position: absolute;
         z-index: 10;
