@@ -127,7 +127,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
    */
   onTabSelect(event) {
     const previousTab = event.detail.previousTab;
-    if (previousTab) {
+    if (previousTab && !previousTab.hasAttribute('zen-empty-tab')) {
       this._lastOpenedTab = previousTab;
     }
   }
