@@ -263,6 +263,10 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     if (!this.fakeBrowser) {
       return;
     }
+    // if we are still in that 1/4 of the way to the edge then we should not hide the fake browser
+    if (event.clientX < (panelsWidth / 4) * 3 && event.clientX > panelsRect.left) {
+      return;
+    }
     this.fakeBrowser.classList.add('fade-out');
     gBrowser.selectedTab = this._draggingTab;
     this._draggingTab = null;
@@ -1507,7 +1511,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     const droppedOnTab = gBrowser.getTabForBrowser(browser);
     if (droppedOnTab && droppedOnTab !== draggedTab) {
       // Calculate which side of the target browser the drop occurred
-      const browserRect = browser.getBoundingClientRect();
+      // const browserRect = browser.getBoundingClientRect();
       // const hoverSide = this.calculateHoverSide(event.clientX, event.clientY, browserRect);
       const hoverSide = 'right';
 
@@ -1567,7 +1571,6 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
             draggedTab.linkedBrowser.closest('.browserSidebarContainer'),
             {
               scale: [0.98, 1],
-              opacity: [0, 1],
             },
             {
               type: 'spring',

@@ -54,7 +54,8 @@
         opacity: 0;
 
         :root[zen-single-toolbar='true'] & {
-          top: var(--zen-element-separation);
+          top: calc(var(--zen-element-separation) / 2);
+          height: calc(100% - var(--zen-element-separation));
         }
       }
 
@@ -254,14 +255,14 @@
           1.003423 100%
         );
         transition:
-          left 0.3s var(--zen-compact-mode-func),
-          right 0.3s var(--zen-compact-mode-func);
+          left 0.25s var(--zen-compact-mode-func),
+          right 0.25s var(--zen-compact-mode-func);
         opacity: 1;
 
         &:not([supress-primary-adjustment='true']) {
-          left: -1px;
+          left: calc(var(--zen-element-separation) / -2);
           :root[zen-right-side='true'] & {
-            right: -1px;
+            right: calc(var(--zen-element-separation) / -2);
             left: auto;
           }
         }

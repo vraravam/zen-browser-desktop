@@ -1,5 +1,5 @@
 diff --git a/browser/themes/shared/tabbrowser/tabs.css b/browser/themes/shared/tabbrowser/tabs.css
-index 01815c2114a627e5cac183c702bd82f1bd4f58f8..3a453164ee8a555db2a0ba28288d69857a4933bc 100644
+index 01815c2114a627e5cac183c702bd82f1bd4f58f8..ad3686a4bcac0331d86f5e95ecdb6f023b2641bf 100644
 --- a/browser/themes/shared/tabbrowser/tabs.css
 +++ b/browser/themes/shared/tabbrowser/tabs.css
 @@ -31,7 +31,7 @@
@@ -42,10 +42,37 @@ index 01815c2114a627e5cac183c702bd82f1bd4f58f8..3a453164ee8a555db2a0ba28288d6985
  
    #tabbrowser-tabs[orient=vertical] & {
 -    top: 7px;
-+    top: 0px;
++    top: -7px;
    }
  
    &[crashed] {
+@@ -510,7 +509,7 @@
+   }
+ 
+   #tabbrowser-tabs[orient="vertical"]:not([expanded]) &:not([crashed]),
+-  &[pinned]:not([crashed]) {
++  &:not([crashed]) {
+     &[soundplaying] {
+       list-style-image: url("chrome://browser/skin/tabbrowser/tab-audio-playing-small.svg");
+     }
+@@ -572,7 +571,7 @@
+   }
+ 
+   #tabbrowser-tabs[orient="vertical"]:not([expanded]) &:is([soundplaying], [muted], [activemedia-blocked]),
+-  &[pinned]:is([soundplaying], [muted], [activemedia-blocked]),
++  &:is([soundplaying], [muted], [activemedia-blocked]),
+   &[crashed] {
+     display: revert;
+   }
+@@ -586,7 +585,7 @@
+   --button-min-height-small: 24px;
+   --button-border-radius: var(--border-radius-small);
+ 
+-  #tabbrowser-tabs:is([orient="vertical"][expanded], [orient="horizontal"]) &:not([pinned]):not([crashed]) {
++  #tabbrowser-tabs:is([orient="horizontal"]) &:not([pinned]):not([crashed]) {
+     &:is([soundplaying], [muted], [activemedia-blocked]) {
+       display: block;
+     }
 @@ -617,14 +616,14 @@
    }
  
