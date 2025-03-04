@@ -264,7 +264,7 @@
       display: none;
     }
 
-    &:active {
+    #tabbrowser-tabs:not([movingtab]) &:active {
       scale: var(--zen-active-tab-scale);
     }
 

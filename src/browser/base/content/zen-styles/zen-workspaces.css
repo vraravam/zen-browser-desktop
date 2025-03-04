@@ -499,6 +499,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     pointer-events: none;
+    font-size: small;
   }
 }
 

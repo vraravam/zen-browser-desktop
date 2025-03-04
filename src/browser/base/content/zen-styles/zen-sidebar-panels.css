@@ -121,7 +121,7 @@
 
   &::before {
     height: 50px;
-    width: 4px;
+    width: 2px;
     background: var(--button-primary-bgcolor);
     border-radius: 2px;
     content: '';

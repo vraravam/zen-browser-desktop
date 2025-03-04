@@ -34,7 +34,6 @@
   margin-left: 0 !important;
   position: absolute !important;
   overflow: hidden;
-  transition: inset 0.1s;
 }
 
 #tabbrowser-tabpanels[zen-split-view='true']:not([zen-split-resizing]) > [zen-split-anim='true'] {
