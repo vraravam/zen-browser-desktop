@@ -1,5 +1,5 @@
 diff --git a/browser/base/content/main-popupset.inc.xhtml b/browser/base/content/main-popupset.inc.xhtml
-index 959c523b21c642f29353b9de37b3ce6b5505b01b..0d151ad345dde47467432196ed76f4320b4b92cc 100644
+index 959c523b21c642f29353b9de37b3ce6b5505b01b..4cd26ea85ad4905bade71dcd470b8678079787bd 100644
 --- a/browser/base/content/main-popupset.inc.xhtml
 +++ b/browser/base/content/main-popupset.inc.xhtml
 @@ -206,6 +206,10 @@
@@ -21,7 +21,21 @@ index 959c523b21c642f29353b9de37b3ce6b5505b01b..0d151ad345dde47467432196ed76f432
      </panel>
    </html:template>
  
-@@ -565,6 +570,8 @@
+@@ -426,11 +431,13 @@
+               observes="cmd_CustomizeToolbars"
+               class="viewCustomizeToolbar"
+               data-lazy-l10n-id="toolbar-context-menu-view-customize-toolbar-2"/>
++#if 0
+     <menuseparator id="sidebarRevampSeparator"/>
+     <menuitem id="toolbar-context-toggle-vertical-tabs"
+               data-lazy-l10n-id="toolbar-context-turn-on-vertical-tabs"/>
+     <menuitem id="toolbar-context-customize-sidebar"
+               data-lazy-l10n-id="toolbar-context-customize-sidebar"/>
++#endif
+     <menuseparator contexttype="fullscreen"/>
+     <menuitem id="toolbar-context-full-screen-autohide"
+               class="fullscreen-context-autohide"
+@@ -565,6 +572,8 @@
  
  #include popup-notifications.inc.xhtml
  
