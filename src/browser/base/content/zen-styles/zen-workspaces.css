@@ -489,6 +489,7 @@
 
   & .zen-current-workspace-indicator-icon {
     font-size: 12px;
+    line-height: 1;
   }
 
   .zen-current-workspace-indicator-name {

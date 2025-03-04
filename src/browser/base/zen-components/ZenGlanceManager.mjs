@@ -468,7 +468,6 @@
         owner &&
         owner.pinned &&
         this._lazyPref.SHOULD_OPEN_EXTERNAL_TABS_IN_GLANCE &&
-        owner.linkedBrowser?.docShellIsActive &&
         owner.linkedBrowser?.browsingContext?.isAppTab &&
         this.tabDomainsDiffer(owner, uri) &&
         Services.prefs.getBoolPref('zen.glance.enabled', true)
@@ -483,7 +482,11 @@
       try {
         if (this.shouldOpenTabInGlance(tab, uri)) {
           const browserRect = gBrowser.tabbox.getBoundingClientRect();
-          this.openGlance({ url: undefined, x: browserRect.width / 2, y: browserRect.height / 2, width: 0, height: 0 });
+          this.openGlance(
+            { url: undefined, x: browserRect.width / 2, y: browserRect.height / 2, width: 0, height: 0 },
+            tab,
+            tab.owner
+          );
         }
       } catch (e) {
         console.error(e);

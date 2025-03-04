@@ -202,6 +202,7 @@ var gZenCompactModeManager = {
                 this._animating = false;
                 this.sidebar.style.removeProperty('visibility');
                 this.sidebar.style.removeProperty('transition');
+                thhis.sidebar.style.removeProperty('opacity');
               }, 300);
             });
           });

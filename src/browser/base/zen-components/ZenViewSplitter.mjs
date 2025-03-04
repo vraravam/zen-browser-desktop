@@ -1494,94 +1494,97 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     const canDrop = this._canDrop;
     this._maybeRemoveFakeBrowser(false);
     this._canDrop = false;
+
     if (!canDrop) {
       return false;
     }
 
-    const dropTarget = document.elementFromPoint(event.clientX, event.clientY);
-    const browser = dropTarget?.closest('browser');
+    window.requestAnimationFrame(() => {
+      const dropTarget = document.elementFromPoint(event.clientX, event.clientY);
+      const browser = dropTarget?.closest('browser');
 
-    gBrowser.selectedTab = this._draggingTab;
-    this._draggingTab = null;
+      if (!browser) {
+        return false;
+      }
 
-    if (!browser) {
-      return false;
-    }
+      gBrowser.selectedTab = this._draggingTab;
+      this._draggingTab = null;
 
-    const droppedOnTab = gBrowser.getTabForBrowser(browser);
-    if (droppedOnTab && droppedOnTab !== draggedTab) {
-      // Calculate which side of the target browser the drop occurred
-      // const browserRect = browser.getBoundingClientRect();
-      // const hoverSide = this.calculateHoverSide(event.clientX, event.clientY, browserRect);
-      const hoverSide = 'right';
+      const droppedOnTab = gBrowser.getTabForBrowser(browser);
+      if (droppedOnTab && droppedOnTab !== draggedTab) {
+        // Calculate which side of the target browser the drop occurred
+        // const browserRect = browser.getBoundingClientRect();
+        // const hoverSide = this.calculateHoverSide(event.clientX, event.clientY, browserRect);
+        const hoverSide = 'right';
 
-      if (droppedOnTab.splitView) {
-        // Add to existing split view
-        const groupIndex = this._data.findIndex((group) => group.tabs.includes(droppedOnTab));
-        const group = this._data[groupIndex];
+        if (droppedOnTab.splitView) {
+          // Add to existing split view
+          const groupIndex = this._data.findIndex((group) => group.tabs.includes(droppedOnTab));
+          const group = this._data[groupIndex];
 
-        if (!group.tabs.includes(draggedTab) && group.tabs.length < this.MAX_TABS) {
-          // First move the tab to the split view group
-          let splitGroup = droppedOnTab.group;
-          if (splitGroup && (!draggedTab.group || draggedTab.group !== splitGroup)) {
-            this._moveTabsToContainer([draggedTab], droppedOnTab);
-            gBrowser.moveTabToGroup(draggedTab, splitGroup);
-          }
+          if (!group.tabs.includes(draggedTab) && group.tabs.length < this.MAX_TABS) {
+            // First move the tab to the split view group
+            let splitGroup = droppedOnTab.group;
+            if (splitGroup && (!draggedTab.group || draggedTab.group !== splitGroup)) {
+              this._moveTabsToContainer([draggedTab], droppedOnTab);
+              gBrowser.moveTabToGroup(draggedTab, splitGroup);
+            }
 
-          const droppedOnSplitNode = this.getSplitNodeFromTab(droppedOnTab);
-          const parentNode = droppedOnSplitNode.parent;
+            const droppedOnSplitNode = this.getSplitNodeFromTab(droppedOnTab);
+            const parentNode = droppedOnSplitNode.parent;
 
-          // Then add the tab to the split view
-          group.tabs.push(draggedTab);
+            // Then add the tab to the split view
+            group.tabs.push(draggedTab);
 
-          // If dropping on a side, create a new split in that direction
-          if (hoverSide !== 'center') {
-            const splitDirection = hoverSide === 'left' || hoverSide === 'right' ? 'row' : 'column';
-            if (parentNode.direction !== splitDirection) {
-              this.splitIntoNode(droppedOnSplitNode, new SplitLeafNode(draggedTab, 50), hoverSide, 0.5);
+            // If dropping on a side, create a new split in that direction
+            if (hoverSide !== 'center') {
+              const splitDirection = hoverSide === 'left' || hoverSide === 'right' ? 'row' : 'column';
+              if (parentNode.direction !== splitDirection) {
+                this.splitIntoNode(droppedOnSplitNode, new SplitLeafNode(draggedTab, 50), hoverSide, 0.5);
+              } else {
+                this.addTabToSplit(draggedTab, parentNode);
+              }
             } else {
-              this.addTabToSplit(draggedTab, parentNode);
+              this.addTabToSplit(draggedTab, group.layoutTree);
             }
-          } else {
-            this.addTabToSplit(draggedTab, group.layoutTree);
+
+            this.activateSplitView(group, true);
           }
+        } else {
+          // Create new split view with layout based on drop position
+          let gridType = 'vsep';
+          //switch (hoverSide) {
+          //  case 'left':
+          //  case 'right':
+          //    gridType = 'vsep';
+          //    break;
+          //  case 'top':
+          //  case 'bottom':
+          //    gridType = 'hsep';
+          //    break;
+          //  default:
+          //    gridType = 'grid';
+          //}
 
-          this.activateSplitView(group, true);
-        }
-      } else {
-        // Create new split view with layout based on drop position
-        let gridType = 'vsep';
-        //switch (hoverSide) {
-        //  case 'left':
-        //  case 'right':
-        //    gridType = 'vsep';
-        //    break;
-        //  case 'top':
-        //  case 'bottom':
-        //    gridType = 'hsep';
-        //    break;
-        //  default:
-        //    gridType = 'grid';
-        //}
-
-        // Put tabs always as if it was dropped from the left
-        this.splitTabs([draggedTab, droppedOnTab], gridType, 1);
-        if (draggedTab.linkedBrowser) {
-          gZenUIManager.motion.animate(
-            draggedTab.linkedBrowser.closest('.browserSidebarContainer'),
-            {
-              scale: [0.98, 1],
-            },
-            {
-              type: 'spring',
-              bounce: 0.5,
-              duration: 0.5,
-              delay: 0.1,
-            }
-          );
+          // Put tabs always as if it was dropped from the left
+          this.splitTabs([draggedTab, droppedOnTab], gridType, 1);
+          if (draggedTab.linkedBrowser) {
+            gZenUIManager.motion.animate(
+              draggedTab.linkedBrowser.closest('.browserSidebarContainer'),
+              {
+                scale: [0.98, 1],
+              },
+              {
+                type: 'spring',
+                bounce: 0.5,
+                duration: 0.5,
+                delay: 0.1,
+              }
+            );
+          }
         }
       }
-    }
+    });
     return true;
   }
 
