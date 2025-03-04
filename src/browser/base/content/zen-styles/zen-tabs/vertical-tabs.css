@@ -1050,7 +1050,7 @@
   overflow: hidden;
   transition: max-height 0.3s ease-out;
   opacity: 1;
-  grid-template-columns: repeat(auto-fit, minmax(var(--tab-pinned-min-width-expanded), auto));
+  grid-template-columns: repeat(auto-fit, minmax(48px, auto));
   overflow: hidden;
   scrollbar-width: thin;
   display: grid;
