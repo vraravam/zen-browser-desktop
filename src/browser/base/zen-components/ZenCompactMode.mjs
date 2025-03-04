@@ -312,9 +312,6 @@ var gZenCompactModeManager = {
       {
         element: gZenVerticalTabsManager.actualWindowButtons,
       },
-      {
-        element: gZenVerticalTabsManager.actualWindowButtons,
-      },
     ];
   },
 

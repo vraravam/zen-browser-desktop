@@ -62,6 +62,7 @@ var gZenUIManager = {
     }
     tabs.style.removeProperty('flex');
     tabs.style.maxHeight = height + 'px';
+    gZenVerticalTabsManager.actualWindowButtons.removeAttribute('zen-has-hover');
   },
 
   get tabsWrapper() {
