@@ -258,7 +258,10 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     const fakeBrowserRect = this.fakeBrowser && this.fakeBrowser.getBoundingClientRect();
     if (
       (event.target.closest('#tabbrowser-tabbox') && event.target != this.fakeBrowser) ||
-      (fakeBrowserRect && event.clientX > fakeBrowserRect.left && event.clientX < fakeBrowserRect.left + fakeBrowserRect.width)
+      (fakeBrowserRect &&
+        event.clientX > fakeBrowserRect.left &&
+        event.clientX < fakeBrowserRect.left + fakeBrowserRect.width) ||
+      (event.clickX === 0 && event.clientY === 0) // It's equivalent to 0 if the event has been dropped
     ) {
       return;
     }

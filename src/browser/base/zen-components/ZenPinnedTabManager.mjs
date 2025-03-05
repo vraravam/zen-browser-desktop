@@ -83,7 +83,7 @@
 
     onTabIconChanged(tab, url = null) {
       const iconUrl = url ?? tab.iconImage.src;
-      if (tab.hasAttribute('zen-essential')) {
+      if (tab.hasAttribute('zen-essential') && this._pinsCache) {
         const pin = this._pinsCache.find((pin) => pin.uuid === tab.getAttribute('zen-pin-id'));
         if (pin) {
           tab.querySelector('.tab-background').style.setProperty('--zen-tab-icon', `url(${pin.iconUrl})`);
