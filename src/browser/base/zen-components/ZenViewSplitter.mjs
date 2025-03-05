@@ -261,7 +261,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       (fakeBrowserRect &&
         event.clientX > fakeBrowserRect.left &&
         event.clientX < fakeBrowserRect.left + fakeBrowserRect.width) ||
-      (event.clickX === 0 && event.clientY === 0) // It's equivalent to 0 if the event has been dropped
+      (event.screenX === 0 && event.screenY === 0) // It's equivalent to 0 if the event has been dropped
     ) {
       return;
     }
