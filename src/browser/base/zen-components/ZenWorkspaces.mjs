@@ -2232,7 +2232,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     const activeWorkspace = this.getActiveWorkspaceFromCache();
     const activeWorkspaceUserContextId = activeWorkspace?.containerTabId;
 
-    if (typeof userContextId !== 'undefined' && userContextId !== activeWorkspaceUserContextId) {
+    if (fromExternal !== true && typeof userContextId !== 'undefined' && userContextId !== activeWorkspaceUserContextId) {
       return [userContextId, false, undefined];
     }
     return [activeWorkspaceUserContextId, true, undefined];
