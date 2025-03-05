@@ -57,6 +57,10 @@
           top: calc(var(--zen-element-separation) / 2);
           height: calc(100% - var(--zen-element-separation));
         }
+
+        & #zen-sidebar-top-buttons {
+          margin: 0 0 calc(var(--zen-toolbox-padding) / 2) 0;
+        }
       }
 
       &:not([zen-right-side='true']) #nav-bar {

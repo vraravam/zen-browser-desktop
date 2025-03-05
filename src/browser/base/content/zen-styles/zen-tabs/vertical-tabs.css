@@ -109,7 +109,7 @@
   }
 
   & #zen-sidebar-top-buttons {
-    margin: var(--zen-element-separation) 0 var(--zen-toolbox-padding) 0;
+    margin: var(--zen-element-separation) 0 calc(var(--zen-toolbox-padding) / 2) 0;
   }
 
   & #PanelUI-menu-button {
