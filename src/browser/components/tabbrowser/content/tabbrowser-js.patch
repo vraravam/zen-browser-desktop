@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabbrowser.js b/browser/components/tabbrowser/content/tabbrowser.js
-index 628aa6596627c85efe361fc1ece8fd58f7ee653e..a05cbeeb96d18519c2a090bdcd8df8f3e42d020f 100644
+index 628aa6596627c85efe361fc1ece8fd58f7ee653e..1cd7343818d25e40d4a441f70307f7ce7ff98054 100644
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -412,11 +412,50 @@
@@ -544,16 +544,17 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..a05cbeeb96d18519c2a090bdcd8df8f3
          return;
        }
        if (aTab.group && aTab.group.id === aGroup.id) {
-@@ -5721,6 +5856,8 @@
+@@ -5721,6 +5856,9 @@
  
        moveActionCallback();
  
 +      ZenWorkspaces._makeSureEmptyTabIsLast();
++      gZenViewSplitter._maybeRemoveFakeBrowser();
 +
        // Clear tabs cache after moving nodes because the order of tabs may have
        // changed.
        this.tabContainer._invalidateCachedTabs();
-@@ -5771,7 +5908,7 @@
+@@ -5771,7 +5909,7 @@
          createLazyBrowser,
        };
  
@@ -562,7 +563,7 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..a05cbeeb96d18519c2a090bdcd8df8f3
        if (aIndex < numPinned || (aTab.pinned && aIndex == numPinned)) {
          params.pinned = true;
        }
-@@ -7415,6 +7552,7 @@
+@@ -7415,6 +7553,7 @@
              aWebProgress.isTopLevel
            ) {
              this.mTab.setAttribute("busy", "true");
@@ -570,7 +571,7 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..a05cbeeb96d18519c2a090bdcd8df8f3
              gBrowser._tabAttrModified(this.mTab, ["busy"]);
              this.mTab._notselectedsinceload = !this.mTab.selected;
            }
-@@ -8381,7 +8519,7 @@ var TabContextMenu = {
+@@ -8381,7 +8520,7 @@ var TabContextMenu = {
      );
      contextUnpinSelectedTabs.hidden =
        !this.contextTab.pinned || !multiselectionContext;
@@ -579,7 +580,7 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..a05cbeeb96d18519c2a090bdcd8df8f3
      // Move Tab items
      let contextMoveTabOptions = document.getElementById(
        "context_moveTabOptions"
-@@ -8414,7 +8552,7 @@ var TabContextMenu = {
+@@ -8414,7 +8553,7 @@ var TabContextMenu = {
      let contextMoveTabToStart = document.getElementById("context_moveToStart");
      let isFirstTab =
        tabsToMove[0] == visibleTabs[0] ||
@@ -588,7 +589,7 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..a05cbeeb96d18519c2a090bdcd8df8f3
      contextMoveTabToStart.disabled = isFirstTab && allSelectedTabsAdjacent;
  
      document.getElementById("context_openTabInWindow").disabled =
-@@ -8647,6 +8785,7 @@ var TabContextMenu = {
+@@ -8647,6 +8786,7 @@ var TabContextMenu = {
      if (this.contextTab.multiselected) {
        gBrowser.removeMultiSelectedTabs();
      } else {
