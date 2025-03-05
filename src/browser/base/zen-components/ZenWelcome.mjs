@@ -226,6 +226,7 @@
       const sidebar = document.getElementById('zen-welcome-page-sidebar');
       sidebar.style.width = '100%';
       sidebar.appendChild(heart);
+      sidebar.setAttribute('animate-heart', 'true');
       await animate(
         '#zen-welcome-heart',
         { opacity: [0, 1, 1, 1, 0], scale: [0.5, 1, 1.2, 1, 1.2] },
@@ -349,12 +350,12 @@
                       <html:div class="tab-background"></html:div>
                     </stack>
                   </html:div>
-                  <html:div class="tabbrowser-tab" fadein="" data-url="https://slack.com/" style="--zen-tab-icon: url('https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png');">
+                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://slack.com/" style="--zen-tab-icon: url('https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png');">
                     <stack class="tab-stack">
                       <html:div class="tab-background"></html:div>
                     </stack>
                   </html:div>
-                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://google.com" style="--zen-tab-icon: url('https://www.google.com/s2/favicons?domain=google.com');">
+                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://github.com" style="--zen-tab-icon: url('https://github.githubassets.com/favicons/favicon-dark.png');">
                     <stack class="tab-stack">
                       <html:div class="tab-background"></html:div>
                     </stack>
@@ -364,7 +365,7 @@
                       <html:div class="tab-background"></html:div>
                     </stack>
                   </html:div>
-                  <html:div class="tabbrowser-tab" fadein="" data-url="https://notion.com" style="--zen-tab-icon: url('https://www.notion.so/front-static/favicon.ico');">
+                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://notion.com" style="--zen-tab-icon: url('https://www.notion.so/front-static/favicon.ico');">
                     <stack class="tab-stack">
                       <html:div class="tab-background"></html:div>
                     </stack>
