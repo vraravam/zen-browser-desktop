@@ -347,14 +347,13 @@ var gZenCompactModeManager = {
   addMouseActions() {
     for (let i = 0; i < this.hoverableElements.length; i++) {
       let target = this.hoverableElements[i].element;
-      target.addEventListener('mouseenter', (event) => {
-        if (!event.target.matches(':hover')) return;
+      const onEnter = (event) => {
+        if (event.type === 'mouseenter' && !event.target.matches(':hover')) return;
         this.clearFlashTimeout('has-hover' + target.id);
         window.requestAnimationFrame(() => target.setAttribute('zen-has-hover', 'true'));
-      });
+      };
 
-      target.addEventListener('mouseleave', (event) => {
-        // If on Mac, ignore mouseleave in the area of window buttons
+      const onLeave = (event) => {
         if (AppConstants.platform == 'macosx') {
           const buttonRect = gZenVerticalTabsManager.actualWindowButtons.getBoundingClientRect();
           const MAC_WINDOW_BUTTONS_X_BORDER = buttonRect.width + buttonRect.x;
@@ -379,7 +378,13 @@ var gZenCompactModeManager = {
         } else {
           this._removeHoverFrames[target.id] = window.requestAnimationFrame(() => target.removeAttribute('zen-has-hover'));
         }
-      });
+      };
+
+      target.addEventListener('mouseenter', onEnter);
+      target.addEventListener('dragover', onEnter);
+
+      target.addEventListener('mouseleave', onLeave);
+      target.addEventListener('dragleave', onLeave);
     }
 
     document.documentElement.addEventListener('mouseleave', (event) => {
