@@ -198,7 +198,12 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     // only show if we are  1/4 of the way to the edge
     const panelsRect = gBrowser.tabbox.getBoundingClientRect();
     const panelsWidth = panelsRect.width;
-    if (event.clientX > panelsWidth / 4 || event.clientX < panelsRect.left + 20) {
+    if (
+      event.clientX > panelsWidth / 2 ||
+      event.clientX < panelsRect.left + 10 ||
+      event.clientY < panelsRect.top + 10 ||
+      event.clientY > panelsRect.bottom - 10
+    ) {
       return;
     }
     const oldTab = this._lastOpenedTab;
@@ -231,8 +236,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
         gZenUIManager.motion.animate(
           this.fakeBrowser,
           {
-            width: [0, `${halfWidth - padding * 2}px`],
-            marginLeft: [0, `${-(halfWidth - padding)}px`],
+            width: [0, `${halfWidth - padding}px`],
+            marginLeft: [0, `${-halfWidth}px`],
           },
           {
             duration: 0.15,
@@ -250,7 +255,11 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       return;
     }
     const panelsRect = gBrowser.tabbox.getBoundingClientRect();
-    if (event.target.closest('#tabbrowser-tabbox') && event.target != this.fakeBrowser) {
+    const fakeBrowserRect = this.fakeBrowser && this.fakeBrowser.getBoundingClientRect();
+    if (
+      (event.target.closest('#tabbrowser-tabbox') && event.target != this.fakeBrowser) ||
+      (fakeBrowserRect && event.clientX > fakeBrowserRect.left && event.clientX < fakeBrowserRect.left + fakeBrowserRect.width)
+    ) {
       return;
     }
     if (this._showSplitViewTimeout) {
