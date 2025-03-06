@@ -1518,8 +1518,9 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     const workspaces = await this._workspaces();
 
     // Refresh tab cache
-    gBrowser.verticalPinnedTabsContainer = this.pinnedTabsContainer;
-    gBrowser.tabContainer.verticalPinnedTabsContainer = this.pinnedTabsContainer;
+    gBrowser.verticalPinnedTabsContainer = this.pinnedTabsContainer || gBrowser.verticalPinnedTabsContainer;
+    gBrowser.tabContainer.verticalPinnedTabsContainer =
+      this.pinnedTabsContainer || gBrowser.tabContainer.verticalPinnedTabsContainer;
     // Move empty tab to the new workspace
     this._moveEmptyTabToWorkspace(window.uuid);
 
