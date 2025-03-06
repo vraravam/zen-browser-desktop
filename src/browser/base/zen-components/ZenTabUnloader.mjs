@@ -264,7 +264,7 @@
         (tab.pinned && !ignoreTimestamp) ||
         tab.selected ||
         (tab.multiselected && !ignoreTimestamp) ||
-        tab.hasAttribute('busy') ||
+        (tab.hasAttribute('busy') && !ignoreTimestamp) ||
         tab.hasAttribute('pending') ||
         !tab.linkedPanel ||
         tab.splitView ||

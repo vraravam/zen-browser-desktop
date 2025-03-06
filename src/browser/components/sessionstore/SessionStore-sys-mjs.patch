@@ -1,8 +1,8 @@
 diff --git a/browser/components/sessionstore/SessionStore.sys.mjs b/browser/components/sessionstore/SessionStore.sys.mjs
-index 908743177d9f95e2e6549c689e7a493ca8668701..181c4819b052e444e56e75f1cb40b4bc299569fb 100644
+index f814772114948f87cbb3c3a7231c95ea1f68d776..296cce151690b31a6e136dd5046a2697fb46fe45 100644
 --- a/browser/components/sessionstore/SessionStore.sys.mjs
 +++ b/browser/components/sessionstore/SessionStore.sys.mjs
-@@ -3848,6 +3848,7 @@ var SessionStoreInternal = {
+@@ -3881,6 +3881,7 @@ var SessionStoreInternal = {
          aWindow.gBrowser.selectedTab = newTab;
        }
  
@@ -10,7 +10,7 @@ index 908743177d9f95e2e6549c689e7a493ca8668701..181c4819b052e444e56e75f1cb40b4bc
        // Restore the state into the new tab.
        this.restoreTab(newTab, tabState, {
          restoreImmediately: aRestoreImmediately,
-@@ -5315,14 +5316,14 @@ var SessionStoreInternal = {
+@@ -5355,14 +5356,14 @@ var SessionStoreInternal = {
      }
  
      let tabbrowser = aWindow.gBrowser;
@@ -27,7 +27,7 @@ index 908743177d9f95e2e6549c689e7a493ca8668701..181c4819b052e444e56e75f1cb40b4bc
          continue;
        }
        let tabData = lazy.TabState.collect(tab, TAB_CUSTOM_VALUES.get(tab));
-@@ -6042,6 +6043,15 @@ var SessionStoreInternal = {
+@@ -6086,6 +6087,18 @@ var SessionStoreInternal = {
  
      // Most of tabData has been restored, now continue with restoring
      // attributes that may trigger external events.
@@ -35,7 +35,10 @@ index 908743177d9f95e2e6549c689e7a493ca8668701..181c4819b052e444e56e75f1cb40b4bc
 +      tab.setAttribute("zen-essential", "true");
 +    }
 +    if (tabData.zenIsEmpty) {
-+      tab.setAttribute("zen-empty-tab", "true"); 
++      tab.setAttribute("zen-empty-tab", "true");
++    }
++    if (tabData.zenHasStaticLabel) {
++      tab.setAttribute("zen-has-static-label", "true");
 +    }
 +    if (tabData.zenPinnedId) {
 +      tab.setAttribute("zen-pin-id", tabData.zenPinnedId);

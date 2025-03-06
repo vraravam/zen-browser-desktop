@@ -213,8 +213,9 @@
           continue;
         }
 
-        if (pin.title && pin.editedTitle) {
-          gBrowser._setTabLabel(tab, pin.title);
+        if (pin.title && (pin.editedTitle || tab.hasAttribute('zen-has-static-label'))) {
+          tab.removeAttribute('zen-has-static-label'); // So we can set it again
+          gBrowser._setTabLabel(tab, pin.title, { beforeTabOpen: true });
           tab.setAttribute('zen-has-static-label', 'true');
         }
       }
@@ -341,7 +342,7 @@
       tab.position = tab._tPos;
 
       for (let otherTab of gBrowser.tabs) {
-        if (otherTab.pinned) {
+        if (otherTab.pinned && otherTab.getAttribute('zen-pin-id') !== tab.getAttribute('zen-pin-id')) {
           const actualPin = this._pinsCache.find((pin) => pin.uuid === otherTab.getAttribute('zen-pin-id'));
           if (!actualPin) {
             continue;
@@ -358,6 +359,13 @@
       }
       actualPin.position = tab.position;
       actualPin.isEssential = tab.hasAttribute('zen-essential');
+
+      // There was a bug where the title and hasStaticLabel attribute were not being set
+      // This is a workaround to fix that
+      if (tab.hasAttribute('zen-has-static-label')) {
+        actualPin.editedTitle = true;
+        actualPin.title = tab.label;
+      }
       await this.savePin(actualPin);
     }
 
@@ -846,6 +854,15 @@
       // update the label for the same pin across all windows
       for (const browser of browsers) {
         const tabs = browser.gBrowser.tabs;
+        // Fix pinned cache for the browser
+        const browserCache = browser.gZenPinnedTabManager?._pinsCache;
+        if (browserCache) {
+          const pin = browserCache.find((pin) => pin.uuid === uuid);
+          if (pin) {
+            pin.title = newTitle;
+            pin.editedTitle = isEdited;
+          }
+        }
         for (let i = 0; i < tabs.length; i++) {
           const tabToEdit = tabs[i];
           if (tabToEdit.getAttribute('zen-pin-id') === uuid && tabToEdit !== tab) {

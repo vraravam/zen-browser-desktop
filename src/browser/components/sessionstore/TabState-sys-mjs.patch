@@ -1,8 +1,8 @@
 diff --git a/browser/components/sessionstore/TabState.sys.mjs b/browser/components/sessionstore/TabState.sys.mjs
-index 8f7ed557e6aa61e7e16ed4a8d785ad5fe651b3d8..8b0781488e8f250666f1d542e3aa0cb34e018f24 100644
+index 8f7ed557e6aa61e7e16ed4a8d785ad5fe651b3d8..4c9f17408b912a2c51ebc1a670062203bf4994f3 100644
 --- a/browser/components/sessionstore/TabState.sys.mjs
 +++ b/browser/components/sessionstore/TabState.sys.mjs
-@@ -80,10 +80,18 @@ class _TabState {
+@@ -80,10 +80,19 @@ class _TabState {
        tabData.muteReason = tab.muteReason;
      }
  
@@ -18,6 +18,7 @@ index 8f7ed557e6aa61e7e16ed4a8d785ad5fe651b3d8..8b0781488e8f250666f1d542e3aa0cb3
 +    tabData.zenPinnedEntry = tab.getAttribute("zen-pinned-entry");
 +    tabData.zenPinnedIcon = tab.getAttribute("zen-pinned-icon");
 +    tabData.zenIsEmpty = tab.hasAttribute("zen-empty-tab");
++    tabData.zenHasStaticLabel = tab.hasAttribute("zen-has-static-label");
 +
      tabData.searchMode = tab.ownerGlobal.gURLBar.getSearchMode(browser, true);
  
