@@ -256,9 +256,12 @@
     height: 14px;
   }
 
-  &.zen-tab-rearrange-button image {
-    transform: rotate(90deg);
+  &.zen-tab-rearrange-button {
     cursor: move;
+
+    & image {
+      transform: rotate(90deg);
+    }
   }
 }
 
