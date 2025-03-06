@@ -82,7 +82,6 @@
     }
 
     onTabIconChanged(tab, url = null) {
-      const iconUrl = url ?? tab.iconImage.src;
       if (tab.hasAttribute('zen-essential') && this._pinsCache) {
         const pin = this._pinsCache.find((pin) => pin.uuid === tab.getAttribute('zen-pin-id'));
         if (pin) {
@@ -631,8 +630,8 @@
         } else {
           gBrowser.pinTab(tab);
         }
-        this.onTabIconChanged(tab);
         this._onTabMove(tab);
+        this.onTabIconChanged(tab);
       }
       gZenUIManager.updateTabsToolbar();
     }
