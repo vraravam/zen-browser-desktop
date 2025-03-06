@@ -274,7 +274,8 @@
         (tab.pictureinpicture && !ignoreTimestamp) ||
         (tab.soundPlaying && !ignoreTimestamp) ||
         (tab.zenIgnoreUnload && !ignoreTimestamp) ||
-        excludedUrls.some((url) => url.test(tab.linkedBrowser?.currentURI.spec))
+        (excludedUrls.some((url) => url.test(tab.linkedBrowser?.currentURI.spec))
+          && tab.linkedBrowser?.currentURI.spec !== 'about:blank')
       ) {
         return false;
       }

@@ -114,9 +114,10 @@
 
   &:is(.zen-split-view-splitter[orient='vertical']) {
     /* Bit of a hacky solution, but it works */
-    width: calc(var(--zen-element-separation) - 3px);
-    margin-left: calc(-1 * var(--zen-element-separation) / 2 - 2px);
+    width: var(--zen-split-row-gap);
+    margin-left: calc(var(--zen-element-separation) * -1 - 1px);
     height: unset;
+    cursor: ew-resize;
   }
 
   &::before {

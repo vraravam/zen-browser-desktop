@@ -79,7 +79,7 @@
   --focus-outline-color: var(--button-bgcolor) !important;
 
   --toolbarbutton-icon-fill-attention: var(--zen-primary-color) !important;
-  --toolbarbutton-icon-fill: light-dark(rgb(57, 57, 58), rgb(251, 251, 254)) !important;
+  --toolbarbutton-icon-fill: light-dark(rgba(57, 57, 58, .6), rgba(251, 251, 254, .6)) !important;
 
   --button-primary-bgcolor: var(--in-content-primary-button-background) !important;
   --button-primary-hover-bgcolor: var(--in-content-primary-button-background-hover) !important;
@@ -155,7 +155,7 @@
 
   --input-bgcolor: var(--zen-colors-tertiary) !important;
   --input-border-color: var(--zen-input-border-color) !important;
-  --zen-themed-toolbar-bg: light-dark(var(--zen-branding-bg), #161616);
+  --zen-themed-toolbar-bg: light-dark(rgb(240, 240, 244), #161616);
   --zen-themed-toolbar-bg-transparent: light-dark(var(--zen-branding-bg), #161616);
 
   --zen-workspace-indicator-height: 45px;

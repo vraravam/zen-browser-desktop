@@ -863,7 +863,7 @@
     getToolbarModifiedBase() {
       return this.isDarkMode
         ? 'color-mix(in srgb, var(--zen-themed-toolbar-bg) 80%, #fff 20%)'
-        : 'color-mix(in srgb, var(--zen-themed-toolbar-bg) 95%, #000 5%)';
+        : 'color-mix(in srgb, var(--zen-themed-toolbar-bg) 95%, #000 6%)';
     }
 
     getSingleRGBColor(color, forToolbar = false) {

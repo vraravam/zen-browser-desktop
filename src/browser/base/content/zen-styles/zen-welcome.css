@@ -24,10 +24,6 @@
     list-style-image: url(chrome://browser/skin/zen-icons/forward.svg);
     position: absolute;
     bottom: 10%;
-
-    .button-icon {
-      filter: invert(1);
-    }
   }
 
   #zen-welcome-title {
@@ -251,14 +247,10 @@
 
             &[visuallyselected] {
               transform: scale(1.04);
-
-              & .tab-background {
-                box-shadow: var(--zen-big-shadow);
-              }
             }
 
             & .tab-background::after {
-              filter: blur(30px) !important;
+              filter: blur(30px) brightness(1.2);
             }
           }
         }

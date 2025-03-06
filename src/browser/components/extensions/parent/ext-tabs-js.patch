@@ -1,0 +1,12 @@
+diff --git a/browser/components/extensions/parent/ext-tabs.js b/browser/components/extensions/parent/ext-tabs.js
+index b47f0510e32d788dfe7c3109474c4512c9900d4a..49697125a2998bbd50d87c54e2c5974baaf9a7e2 100644
+--- a/browser/components/extensions/parent/ext-tabs.js
++++ b/browser/components/extensions/parent/ext-tabs.js
+@@ -468,6 +468,7 @@ this.tabs = class extends ExtensionAPIPersistent {
+         }
+ 
+         let tab = tabManager.getWrapper(event.originalTarget);
++        if (!tab) return;
+ 
+         let changeInfo = {};
+         for (let prop of needed) {

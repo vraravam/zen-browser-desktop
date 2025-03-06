@@ -1101,7 +1101,7 @@
       &::after {
         content: "";
         inset: -50%;
-        filter: blur(15px);
+        filter: blur(15px) brightness(1.2);
         position: absolute;
         background-size: 100% 100%;
         background-clip: padding-box;

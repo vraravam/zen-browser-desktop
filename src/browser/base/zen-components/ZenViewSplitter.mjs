@@ -1227,7 +1227,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     this.tabBrowserPanel.setAttribute('zen-split-resizing', true);
     const isVertical = event.target.getAttribute('orient') === 'vertical';
     const dimension = isVertical ? 'width' : 'height';
-    const clientAxis = isVertical ? 'screenX' : 'screenY';
+    const clientAxis = isVertical ? 'clientX' : 'clientY';
 
     const gridIdx = parseInt(event.target.getAttribute('gridIdx'));
     const startPosition = event[clientAxis];
