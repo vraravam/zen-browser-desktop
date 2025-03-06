@@ -340,7 +340,7 @@
                       <html:div class="tab-background"></html:div>
                     </stack>
                   </html:div>
-                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://discord.com" style="--zen-tab-icon: url('http://www.google.com/s2/favicons?domain=discord.com');">
+                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://discord.com" style="--zen-tab-icon: url('https://www.google.com/s2/favicons?domain=discord.com');">
                     <stack class="tab-stack">
                       <html:div class="tab-background"></html:div>
                     </stack>
@@ -370,12 +370,12 @@
                       <html:div class="tab-background"></html:div>
                     </stack>
                   </html:div>
-                  <html:div class="tabbrowser-tab" fadein="" data-url="https://calendar.google.com" style="--zen-tab-icon: url('https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_6.ico');">
+                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://calendar.google.com" style="--zen-tab-icon: url('https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_6.ico');">
                     <stack class="tab-stack">
                       <html:div class="tab-background"></html:div>
                     </stack>
                   </html:div>
-                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://youtube.com" style="--zen-tab-icon: url('https://www.youtube.com/favicon.ico');">
+                  <html:div class="tabbrowser-tab" fadein="" data-url="https://youtube.com" style="--zen-tab-icon: url('https://www.youtube.com/favicon.ico');">
                     <stack class="tab-stack">
                       <html:div class="tab-background"></html:div>
                     </stack>

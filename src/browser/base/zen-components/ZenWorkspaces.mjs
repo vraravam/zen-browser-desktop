@@ -614,8 +614,6 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     if (currentTab.pinned) {
       this.selectEmptyTab();
       try {
-        console.log(currentTab)
-        console.log(currentTab.linkedBrowser?.currentURI.spec)
         gZenTabUnloader.explicitUnloadTabs([currentTab]);
       } catch (e) {
         console.error('ZenWorkspaces: Error unloading tab', e);

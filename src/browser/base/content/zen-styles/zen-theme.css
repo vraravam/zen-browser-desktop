@@ -79,7 +79,7 @@
   --focus-outline-color: var(--button-bgcolor) !important;
 
   --toolbarbutton-icon-fill-attention: var(--zen-primary-color) !important;
-  --toolbarbutton-icon-fill: light-dark(rgba(57, 57, 58, .6), rgba(251, 251, 254, .6)) !important;
+  --toolbarbutton-icon-fill: light-dark(rgba(57, 57, 58, 0.6), rgba(251, 251, 254, 0.6)) !important;
 
   --button-primary-bgcolor: var(--in-content-primary-button-background) !important;
   --button-primary-hover-bgcolor: var(--in-content-primary-button-background-hover) !important;
