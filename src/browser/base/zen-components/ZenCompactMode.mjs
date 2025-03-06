@@ -368,6 +368,12 @@ var gZenCompactModeManager = {
           }
         }
 
+        // When moving the cursor between the url bar and bookmarks, or in-between bookmarks in the bookmark bar, the
+        // mouseLeave event is triggered without a relatedTarget.
+        if (event.relatedTarget == null) {
+          return;
+        }
+
         // If it's a child element but not the target, ignore the event
         if (target.contains(event.explicitOriginalTarget) && event.explicitOriginalTarget !== target) {
           return;
