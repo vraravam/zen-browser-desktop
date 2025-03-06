@@ -13,7 +13,7 @@
     "export": "surfer export",
     "init": "npm run download && npm run bootstrap && npm run import",
     "download": "surfer download",
-    "bootstrap": "surfer bootstrap && surfer bootstrap",
+    "bootstrap": "surfer bootstrap",
     "package": "surfer package",
     "update-ff": "python3 scripts/update_ff.py",
     "update-ff:raw": "surfer update",

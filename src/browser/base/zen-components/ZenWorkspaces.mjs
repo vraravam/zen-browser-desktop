@@ -605,6 +605,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       this._selectStartPage();
       this._fixTabPositions();
       this._resolveInitialized();
+      this._clearAnyZombieTabs(); // Dont call with await
     }
   }
 
@@ -650,6 +651,26 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
   shouldCloseWindow() {
     return !window.toolbar.visible || Services.prefs.getBoolPref('browser.tabs.closeWindowWithLastTab');
+  }
+
+  async _clearAnyZombieTabs() {
+    const tabs = this.allStoredTabs;
+    const workspaces = await this._workspaces();
+    for (let tab of tabs) {
+      const workspaceID = tab.getAttribute('zen-workspace-id');
+      if (
+        workspaceID &&
+        !tab.hasAttribute('zen-essential') &&
+        !workspaces.workspaces.find((workspace) => workspace.uuid === workspaceID)
+      ) {
+        // Remove any tabs where their workspace doesn't exist anymore
+        gBrowser.removeTab(tab, {
+          animate: false,
+          skipSessionStore: true,
+          closeWindowWithLastTab: false,
+        });
+      }
+    }
   }
 
   handleTabBeforeClose(tab) {
@@ -1382,10 +1403,10 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   _deleteAllTabsInWorkspace(workspaceID) {
-    for (let tab of gBrowser.tabs) {
+    for (let tab of this.allStoredTabs) {
       if (tab.getAttribute('zen-workspace-id') === workspaceID) {
         gBrowser.removeTab(tab, {
-          animate: true,
+          animate: false,
           skipSessionStore: true,
           closeWindowWithLastTab: false,
         });
@@ -1508,12 +1529,12 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     const previousWorkspace = await this.getActiveWorkspace();
     alwaysChange = alwaysChange || onInit;
 
+    this.activeWorkspace = window.uuid;
     if (previousWorkspace && previousWorkspace.uuid === window.uuid && !alwaysChange) {
       this._cancelSwipeAnimation();
       return;
     }
 
-    this.activeWorkspace = window.uuid;
     const containerId = window.containerTabId?.toString();
     const workspaces = await this._workspaces();
 
@@ -1995,6 +2016,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
       // Switch workspace if needed
       if (workspaceID && workspaceID !== activeWorkspace.uuid && parent.ZenWorkspaces._hasInitializedTabsStrip) {
+        const workspaces = await parent.ZenWorkspaces._workspaces();
         await parent.ZenWorkspaces.changeWorkspace({ uuid: workspaceID });
       }
     }

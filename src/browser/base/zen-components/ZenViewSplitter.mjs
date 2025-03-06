@@ -51,7 +51,7 @@ class SplitNode extends SplitLeafNode {
 
   addChild(child) {
     child.parent = this;
-    this._children.push(child);
+    this._children.unshift(child);
   }
 }
 
@@ -1511,7 +1511,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     }
 
     const containerRect = this.fakeBrowser.getBoundingClientRect();
-    const dropTarget = document.elementFromPoint((containerRect.left + containerRect.width) * 1.5, event.clientY);
+    const padding = Services.prefs.getIntPref('zen.theme.content-element-separation', 0);
+    const dropTarget = document.elementFromPoint(containerRect.left + containerRect.width + padding + 5, event.clientY);
     const browser = dropTarget?.closest('browser');
 
     if (!browser) {
@@ -1531,7 +1532,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       // Calculate which side of the target browser the drop occurred
       // const browserRect = browser.getBoundingClientRect();
       // const hoverSide = this.calculateHoverSide(event.clientX, event.clientY, browserRect);
-      const hoverSide = 'right';
+      const hoverSide = 'left';
 
       if (droppedOnTab.splitView) {
         // Add to existing split view
