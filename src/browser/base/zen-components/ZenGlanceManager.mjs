@@ -79,7 +79,7 @@
         skipBackgroundNotify: true,
         insertTab: true,
         skipLoad: false,
-        index: this.getTabPosition(currentTab),
+        index: this.getTabPosition(currentTab) + 1,
       };
       currentTab._selected = true;
       const newUUID = gZenUIManager.generateUuidv4();
