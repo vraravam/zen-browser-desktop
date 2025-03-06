@@ -141,10 +141,17 @@ var gZenCompactModeManager = {
     this.animateCompactMode();
   },
 
-  getAndApplySidebarWidth() {
+  // NOTE: Dont actually use event, it's just so we make sure
+  // the caller is from the ResizeObserver
+  getAndApplySidebarWidth(event = undefined) {
     let sidebarWidth = this.sidebar.getBoundingClientRect().width;
     if (sidebarWidth > 1) {
       gZenUIManager.restoreScrollbarState();
+      // Second variable to get the genuine width of the sidebar
+      this.sidebar.style.setProperty('--actual-zen-sidebar-width', `${sidebarWidth}px`);
+      if (event && this.preference) {
+        return;
+      }
       this.sidebar.style.setProperty('--zen-sidebar-width', `${sidebarWidth}px`);
     }
     return sidebarWidth;
@@ -161,8 +168,12 @@ var gZenCompactModeManager = {
       !this.sidebar.hasAttribute('zen-has-empty-tab') &&
       !this.sidebar.hasAttribute('zen-has-hover');
     // Do this so we can get the correct width ONCE compact mode styled have been applied
+    const titlebar = this.sidebar.querySelector('#titlebar');
     if (canAnimate) {
       this.sidebar.setAttribute('animate', 'true');
+      titlebar.setAttribute('has-animated-padding', 'true');
+    } else {
+      titlebar.removeAttribute('has-animated-padding');
     }
     this.sidebar.style.removeProperty('margin-right');
     this.sidebar.style.removeProperty('margin-left');

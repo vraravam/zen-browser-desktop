@@ -69,7 +69,7 @@
     }
 
     &:not([zen-right-side='true']) #navigator-toolbox {
-      left: calc(-1 * var(--zen-sidebar-width) + 1px);
+      left: calc(-1 * var(--actual-zen-sidebar-width) + 1px);
     }
 
     /* When we have multiple toolbars and the top-toolbar is NOT being hidden,
@@ -86,7 +86,7 @@
         --zen-compact-float: calc(var(--zen-element-separation) + 1px);
 
         &:not([animate='true']) {
-          right: calc(-1 * var(--zen-sidebar-width) + 1px);
+          right: calc(-1 * var(--actual-zen-sidebar-width) + 1px);
         }
       }
 
@@ -105,7 +105,13 @@
       border: 1px solid var(--zen-colors-border-contrast);
       /* times 4 because we have the inner padding and the outter padding to consider */
       :root[zen-sidebar-expanded='true'] & {
-        width: calc(100% + var(--zen-toolbox-padding));
+        &[has-animated-padding='true'] {
+          width: calc(var(--zen-sidebar-width) + var(--zen-toolbox-padding));
+        }
+
+        &:not([has-animated-padding='true']) {
+          width: calc(var(--zen-sidebar-width) - var(--zen-toolbox-padding));
+        }
       }
 
       :root[zen-single-toolbar='true'] {
