@@ -247,10 +247,13 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
           }
         ),
       ]);
-      this._finishAllAnimatingPromise.then(() => {
-        this._canDrop = true;
-        draggedTab._visuallySelected = true;
-      });
+      if (this._finishAllAnimatingPromise) {
+        this._finishAllAnimatingPromise.then(() => {
+          this._canDrop = true;
+          draggedTab._visuallySelected = true;
+          this._finishAllAnimatingPromise = null;
+        });
+      }
     }, 100);
   }
 
