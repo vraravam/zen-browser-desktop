@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabs.js b/browser/components/tabbrowser/content/tabs.js
-index fa96568d366fd3608f9bd583fa793150bd815c8b..1e007c37cd204c63afad24c8b6d9201e6a02da2d 100644
+index fa96568d366fd3608f9bd583fa793150bd815c8b..a2a0ca3982634252abfdad20e768431a840ea19b 100644
 --- a/browser/components/tabbrowser/content/tabs.js
 +++ b/browser/components/tabbrowser/content/tabs.js
 @@ -94,7 +94,7 @@
@@ -97,6 +97,15 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..1e007c37cd204c63afad24c8b6d9201e
                  postTransitionCleanup();
                } else {
                  let onTransitionEnd = transitionendEvent => {
+@@ -1249,7 +1263,7 @@
+               return;
+             }
+           }
+-
++          if (gZenViewSplitter.handleTabDrop(event, urls, replace, inBackground)) return;
+           gBrowser.loadTabs(urls, {
+             inBackground,
+             replace,
 @@ -1279,13 +1293,23 @@
          return;
        }
@@ -385,16 +394,14 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..1e007c37cd204c63afad24c8b6d9201e
        );
  
        if (this.#rtlMode) {
-@@ -2347,8 +2383,12 @@
-         (lastMovingTabScreen + tabSize);
+@@ -2348,7 +2384,11 @@
        translate = Math.min(Math.max(translate, firstBound), lastBound);
  
--      for (let tab of movingTabs) {
+       for (let tab of movingTabs) {
 -        tab.style.transform = `${translateAxis}(${translate}px)`;
-+      if (draggedTab.group?.hasAttribute("split-view-group")) {
-+        draggedTab.group.style.transform = `${translateAxis}(${translate}px)`;
-+      } else {
-+        for (let tab of movingTabs) {
++        if (tab.group?.hasAttribute("split-view-group")) {
++          tab.group.style.transform = `${translateAxis}(${translate}px)`;
++        } else {
 +          tab.style.transform = `${translateAxis}(${translate}px)`;
 +        }
        }

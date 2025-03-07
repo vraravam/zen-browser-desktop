@@ -184,7 +184,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       this.fakeBrowser ||
       !this._lastOpenedTab ||
       (this._lastOpenedTab &&
-        this._lastOpenedTab.getAttribute('zen-workspace-id') !== draggedTab.getAttribute('zen-workspace-id'))
+        (this._lastOpenedTab.getAttribute('zen-workspace-id') !== draggedTab.getAttribute('zen-workspace-id') ||
+          this._lastOpenedTab.hasAttribute('zen-essential')))
     ) {
       return;
     }
@@ -222,7 +223,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       this.fakeBrowser.id = 'zen-split-view-fake-browser';
       gBrowser.tabbox.appendChild(this.fakeBrowser);
       this.fakeBrowser.style.setProperty('--zen-split-view-fake-icon', `url(${draggedTab.getAttribute('image')})`);
-      Promise.all([
+      draggedTab._visuallySelected = true;
+      this._finishAllAnimatingPromise = Promise.all([
         gZenUIManager.motion.animate(
           gBrowser.tabbox,
           {
@@ -244,7 +246,9 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
             easing: 'ease-out',
           }
         ),
-      ]).then(() => {
+      ]);
+      this._finishAllAnimatingPromise.then(() => {
+        this._canDrop = true;
         draggedTab._visuallySelected = true;
       });
     }, 100);
@@ -1587,24 +1591,57 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
         this.splitTabs([draggedTab, droppedOnTab], gridType, 1);
       }
     }
-    this._maybeRemoveFakeBrowser(false);
+    this._finishAllAnimatingPromise.then(() => {
+      this._maybeRemoveFakeBrowser(false);
+    });
 
     if (browserContainer) {
-      gZenUIManager.motion.animate(
-        browserContainer,
-        {
-          scale: [0.97, 1],
-          opacity: [0, 1],
-        },
-        {
-          type: 'spring',
-          bounce: 0.4,
-          duration: 0.2,
-          delay: 0.1,
-        }
-      );
+      gZenUIManager.motion
+        .animate(
+          browserContainer,
+          {
+            scale: [0.97, 1],
+            opacity: [0, 1],
+          },
+          {
+            type: 'spring',
+            bounce: 0.4,
+            duration: 0.2,
+            delay: 0.1,
+          }
+        )
+        .then(() => {
+          this._maybeRemoveFakeBrowser(false);
+        });
     }
     return true;
+  }
+
+  handleTabDrop(event, urls, replace, inBackground) {
+    if (!inBackground || replace || urls.length !== 1) {
+      return false;
+    }
+    const url = urls[0];
+    if (!url.startsWith('panel-')) {
+      return false;
+    }
+    const browserContainer = document.getElementById(url);
+    const browser = browserContainer?.querySelector('browser');
+    if (!browser) {
+      return false;
+    }
+    const tab = gBrowser.getTabForBrowser(browser);
+    if (!tab) {
+      return false;
+    }
+    if (tab.splitView) {
+      // Unsplit the tab and exit from the drag view
+      this.dropZone?.removeAttribute('enabled');
+      this.disableTabRearrangeView(event);
+      this.removeTabFromSplit(browserContainer);
+      return true;
+    }
+    return false;
   }
 
   /**
