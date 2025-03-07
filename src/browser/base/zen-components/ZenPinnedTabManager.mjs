@@ -739,7 +739,7 @@
         }
         // Check for essentials container
         else if (essentialTabsTarget) {
-          if (!draggedTab.hasAttribute('zen-essential')) {
+          if (!draggedTab.hasAttribute('zen-essential') && !draggedTab?.group?.hasAttribute('split-view-group')) {
             this.addToEssentials(draggedTab);
             moved = true;
             isVertical = false;

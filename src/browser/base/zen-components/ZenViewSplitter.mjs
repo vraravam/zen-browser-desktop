@@ -184,7 +184,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       this.fakeBrowser ||
       !this._lastOpenedTab ||
       (this._lastOpenedTab &&
-        this._lastOpenedTab.getAttribute('zen-workspace-id') !== draggedTab.getAttribute('zen-workspace-id'))
+        (this._lastOpenedTab.getAttribute('zen-workspace-id') !== draggedTab.getAttribute('zen-workspace-id') ||
+          this._lastOpenedTab.hasAttribute('zen-essential')))
     ) {
       return;
     }
@@ -1590,19 +1591,23 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     this._maybeRemoveFakeBrowser(false);
 
     if (browserContainer) {
-      gZenUIManager.motion.animate(
-        browserContainer,
-        {
-          scale: [0.97, 1],
-          opacity: [0, 1],
-        },
-        {
-          type: 'spring',
-          bounce: 0.4,
-          duration: 0.2,
-          delay: 0.1,
-        }
-      );
+      gZenUIManager.motion
+        .animate(
+          browserContainer,
+          {
+            scale: [0.97, 1],
+            opacity: [0, 1],
+          },
+          {
+            type: 'spring',
+            bounce: 0.4,
+            duration: 0.2,
+            delay: 0.1,
+          }
+        )
+        .then(() => {
+          gBrowser.tabbox.removeAttribute('style');
+        });
     }
     return true;
   }

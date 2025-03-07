@@ -182,8 +182,8 @@ class ZenBrowserManagerSidebar extends ZenDOMOperatedFeature {
     const leftMouseOffset = startLeft - mouseDownEvent.screenX;
     const moveListener = (mouseMoveEvent) => {
       window.requestAnimationFrame(() => {
-        let top = mouseMoveEvent.screenY + topMouseOffset;
-        let left = mouseMoveEvent.screenX + leftMouseOffset;
+        let top = mouseMoveEvent.clientY + topMouseOffset;
+        let left = mouseMoveEvent.clientX + leftMouseOffset;
 
         const wrapperBounds = this.sidebarWrapper.getBoundingClientRect();
         top = Math.max(0, Math.min(top, wrapperBounds.height - sideBarHeight));
