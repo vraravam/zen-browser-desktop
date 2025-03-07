@@ -1,7 +1,16 @@
 diff --git a/browser/components/sessionstore/SessionStore.sys.mjs b/browser/components/sessionstore/SessionStore.sys.mjs
-index f814772114948f87cbb3c3a7231c95ea1f68d776..296cce151690b31a6e136dd5046a2697fb46fe45 100644
+index f814772114948f87cbb3c3a7231c95ea1f68d776..f7d1f1f05f33b42be6856fad52ee323751af56ee 100644
 --- a/browser/components/sessionstore/SessionStore.sys.mjs
 +++ b/browser/components/sessionstore/SessionStore.sys.mjs
+@@ -3171,7 +3171,7 @@ var SessionStoreInternal = {
+     if (!isPrivateWindow && tabState.isPrivate) {
+       return;
+     }
+-    if (aTab == aWindow.FirefoxViewHandler.tab) {
++    if (aTab == aWindow.FirefoxViewHandler.tab || aTab.hasAttribute("zen-empty-tab")) {
+       return;
+     }
+ 
 @@ -3881,6 +3881,7 @@ var SessionStoreInternal = {
          aWindow.gBrowser.selectedTab = newTab;
        }
@@ -27,6 +36,15 @@ index f814772114948f87cbb3c3a7231c95ea1f68d776..296cce151690b31a6e136dd5046a2697
          continue;
        }
        let tabData = lazy.TabState.collect(tab, TAB_CUSTOM_VALUES.get(tab));
+@@ -5381,7 +5382,7 @@ var SessionStoreInternal = {
+     // We don't store the Firefox View tab in Session Store, so if it was the last selected "tab" when
+     // a window is closed, point to the first item in the tab strip instead (it will never be the Firefox View tab,
+     // since it's only inserted into the tab strip after it's selected).
+-    if (aWindow.FirefoxViewHandler.tab?.selected) {
++    if (aWindow.FirefoxViewHandler.tab?.selected || tabbrowser.selectedTab.hasAttribute("zen-empty-tab")) {
+       selectedIndex = 1;
+       winData.title = tabbrowser.tabs[0].label;
+     }
 @@ -6086,6 +6087,18 @@ var SessionStoreInternal = {
  
      // Most of tabData has been restored, now continue with restoring

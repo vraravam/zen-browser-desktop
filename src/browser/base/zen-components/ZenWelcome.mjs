@@ -454,9 +454,7 @@
         async fadeOut() {
           gZenThemePicker.panel.removeAttribute('noautohide');
           gZenThemePicker.panel.removeAttribute('consumeoutsideclicks');
-          if (AppConstants.platform != 'macosx') {
-            await animate(gZenThemePicker.panel, { opacity: [1, 0] });
-          }
+          await animate(gZenThemePicker.panel, { opacity: [1, 0] });
           gZenThemePicker.panel.hidePopup();
           gZenThemePicker.panel.removeAttribute('style');
         },

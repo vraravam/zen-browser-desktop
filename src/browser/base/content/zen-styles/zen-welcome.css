@@ -86,8 +86,9 @@
       width: 100%;
       height: 100%;
       opacity: 0;
-      color: var(--zen-primary-color);
-      fill: var(--zen-primary-color);
+      color: currentColor;
+      fill: currentColor;
+      -moz-context-properties: fill, fill-opacity;
       background-image: url(chrome://browser/skin/zen-icons/essential-add.svg);
       background-size: 15%;
       background-repeat: no-repeat;
