@@ -29,7 +29,9 @@
     width: 32px;
     height: 32px;
     background: light-dark(rgb(24, 24, 24), rgb(231, 231, 231));
-    transition: background 0.05s ease, scale 0.05s ease;
+    transition:
+      background 0.05s ease,
+      scale 0.05s ease;
     border-radius: 999px;
     appearance: none;
     box-shadow: 0 0 12px 1px rgba(0, 0, 0, 0.07);
