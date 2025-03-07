@@ -214,6 +214,9 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       this._draggingTab = draggedTab;
       gBrowser.selectedTab = oldTab;
       this._hasAnimated = true;
+      for (const tab of gBrowser.tabs) {
+        tab.style.removeProperty('transform');
+      }
       const panelsWidth = gBrowser.tabbox.getBoundingClientRect().width;
       const halfWidth = panelsWidth / 2;
       this.fakeBrowser = document.createXULElement('vbox');
@@ -251,7 +254,6 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
         this._finishAllAnimatingPromise.then(() => {
           this._canDrop = true;
           draggedTab._visuallySelected = true;
-          this._finishAllAnimatingPromise = null;
         });
       }
     }, 100);
@@ -267,7 +269,9 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       (event.target.closest('#tabbrowser-tabbox') && event.target != this.fakeBrowser) ||
       (fakeBrowserRect &&
         event.clientX > fakeBrowserRect.left &&
-        event.clientX < fakeBrowserRect.left + fakeBrowserRect.width) ||
+        event.clientX < fakeBrowserRect.left + fakeBrowserRect.width &&
+        event.clientY > fakeBrowserRect.top &&
+        event.clientY < fakeBrowserRect.top + fakeBrowserRect.height) ||
       (event.screenX === 0 && event.screenY === 0) // It's equivalent to 0 if the event has been dropped
     ) {
       return;
@@ -1594,9 +1598,11 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
         this.splitTabs([draggedTab, droppedOnTab], gridType, 1);
       }
     }
-    this._finishAllAnimatingPromise.then(() => {
-      this._maybeRemoveFakeBrowser(false);
-    });
+    if (this._finishAllAnimatingPromise) {
+      this._finishAllAnimatingPromise.then(() => {
+        this._maybeRemoveFakeBrowser(false);
+      });
+    }
 
     if (browserContainer) {
       gZenUIManager.motion
@@ -1615,6 +1621,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
         )
         .then(() => {
           this._maybeRemoveFakeBrowser(false);
+          this._finishAllAnimatingPromise = null;
         });
     }
     return true;

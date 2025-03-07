@@ -227,6 +227,9 @@
   box-shadow: 0 0 0 1px var(--button-primary-border-color);
   gap: 0.8rem;
   transform: translateX(-50%);
+  box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 :root:not([inDOMFullscreen='true']) .browserSidebarContainer:hover .zen-view-splitter-header-container,
