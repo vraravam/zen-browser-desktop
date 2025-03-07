@@ -223,7 +223,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       this.fakeBrowser.id = 'zen-split-view-fake-browser';
       gBrowser.tabbox.appendChild(this.fakeBrowser);
       this.fakeBrowser.style.setProperty('--zen-split-view-fake-icon', `url(${draggedTab.getAttribute('image')})`);
-      Promise.all([
+      draggedTab._visuallySelected = true;
+      this._finishAllAnimatingPromise = Promise.all([
         gZenUIManager.motion.animate(
           gBrowser.tabbox,
           {
@@ -245,7 +246,9 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
             easing: 'ease-out',
           }
         ),
-      ]).then(() => {
+      ]);
+      this._finishAllAnimatingPromise.then(() => {
+        this._canDrop = true;
         draggedTab._visuallySelected = true;
       });
     }, 100);
@@ -1588,7 +1591,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
         this.splitTabs([draggedTab, droppedOnTab], gridType, 1);
       }
     }
-    window.requestAnimationFrame(() => {
+    this._finishAllAnimatingPromise.then(() => {
       this._maybeRemoveFakeBrowser(false);
     });
 
