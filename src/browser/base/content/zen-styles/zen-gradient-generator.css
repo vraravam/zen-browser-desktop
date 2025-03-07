@@ -89,6 +89,7 @@
     border-radius: 50%;
     cursor: pointer;
     position: relative;
+    transition: transform 0.1s;
     &::after {
       content: '';
       position: absolute;
@@ -99,6 +100,23 @@
       outline: 2px solid var(--zen-toolbar-element-bg);
       border-radius: 50%;
       pointer-events: none;
+      transition: transform 0.1s;
+    }
+
+    &:hover {
+      transform: scale(1.05);
+
+      &::after {
+        transform: scale(1.05);
+      }
+    }
+
+    &:hover:active {
+      transform: scale(0.95);
+
+      &::after {
+        transform: scale(0.95);
+      }
     }
   }
 }
