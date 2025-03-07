@@ -1588,7 +1588,9 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
         this.splitTabs([draggedTab, droppedOnTab], gridType, 1);
       }
     }
-    this._maybeRemoveFakeBrowser(false);
+    window.requestAnimationFrame(() => {
+      this._maybeRemoveFakeBrowser(false);
+    });
 
     if (browserContainer) {
       gZenUIManager.motion
@@ -1606,10 +1608,37 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
           }
         )
         .then(() => {
-          gBrowser.tabbox.removeAttribute('style');
+          this._maybeRemoveFakeBrowser(false);
         });
     }
     return true;
+  }
+
+  handleTabDrop(event, urls, replace, inBackground) {
+    if (!inBackground || replace || urls.length !== 1) {
+      return false;
+    }
+    const url = urls[0];
+    if (!url.startsWith('panel-')) {
+      return false;
+    }
+    const browserContainer = document.getElementById(url);
+    const browser = browserContainer?.querySelector('browser');
+    if (!browser) {
+      return false;
+    }
+    const tab = gBrowser.getTabForBrowser(browser);
+    if (!tab) {
+      return false;
+    }
+    if (tab.splitView) {
+      // Unsplit the tab and exit from the drag view
+      this.dropZone?.removeAttribute('enabled');
+      this.disableTabRearrangeView(event);
+      this.removeTabFromSplit(browserContainer);
+      return true;
+    }
+    return false;
   }
 
   /**

@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabs.js b/browser/components/tabbrowser/content/tabs.js
-index fa96568d366fd3608f9bd583fa793150bd815c8b..9151fa411faa9689c7b079fafe0fab1234177f40 100644
+index fa96568d366fd3608f9bd583fa793150bd815c8b..a2a0ca3982634252abfdad20e768431a840ea19b 100644
 --- a/browser/components/tabbrowser/content/tabs.js
 +++ b/browser/components/tabbrowser/content/tabs.js
 @@ -94,7 +94,7 @@
@@ -97,6 +97,15 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..9151fa411faa9689c7b079fafe0fab12
                  postTransitionCleanup();
                } else {
                  let onTransitionEnd = transitionendEvent => {
+@@ -1249,7 +1263,7 @@
+               return;
+             }
+           }
+-
++          if (gZenViewSplitter.handleTabDrop(event, urls, replace, inBackground)) return;
+           gBrowser.loadTabs(urls, {
+             inBackground,
+             replace,
 @@ -1279,13 +1293,23 @@
          return;
        }
