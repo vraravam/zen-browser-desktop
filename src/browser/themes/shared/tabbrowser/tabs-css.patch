@@ -1,5 +1,5 @@
 diff --git a/browser/themes/shared/tabbrowser/tabs.css b/browser/themes/shared/tabbrowser/tabs.css
-index 01815c2114a627e5cac183c702bd82f1bd4f58f8..7b20eb17b53cfe13b8de968b1aa59c94b6468c0d 100644
+index 01815c2114a627e5cac183c702bd82f1bd4f58f8..f47bd9c8490cd8fc4bb686ad0012ce70ab4bac8f 100644
 --- a/browser/themes/shared/tabbrowser/tabs.css
 +++ b/browser/themes/shared/tabbrowser/tabs.css
 @@ -31,7 +31,7 @@
@@ -63,6 +63,15 @@ index 01815c2114a627e5cac183c702bd82f1bd4f58f8..7b20eb17b53cfe13b8de968b1aa59c94
      &[soundplaying] {
        list-style-image: url("chrome://browser/skin/tabbrowser/tab-audio-playing-small.svg");
      }
+@@ -540,7 +540,7 @@
+       background-image: linear-gradient(var(--audio-overlay-extra-background)),
+                         linear-gradient(var(--toolbox-bgcolor));
+       -moz-context-properties: fill;
+-      fill: var(--tab-selected-textcolor);
++      fill: var(--tab-selected-textcolor) !important;
+       color-scheme: var(--tab-selected-color-scheme);
+       border-radius: var(--border-radius-circle);
+ 
 @@ -572,7 +572,7 @@
    }
  
