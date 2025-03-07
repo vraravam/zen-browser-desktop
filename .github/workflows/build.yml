@@ -384,6 +384,8 @@ jobs:
       - name: Execute AppImage build
         run: |
           set -eux
+          export ARCH=${{ matrix.arch }}
+          UPINFO="gh-releases-zsync|$GITHUB_REPOSITORY_OWNER|desktop|latest|zen-$ARCH.AppImage.zsync"
           rm AppDir/.DirIcon || true
           cp configs/branding/${{ inputs.update_branch }}/logo128.png AppDir/usr/share/icons/hicolor/128x128/apps/zen.png
           cp configs/branding/${{ inputs.update_branch }}/logo128.png AppDir/zen.png && ln -s zen.png AppDir/.DirIcon
@@ -396,18 +398,23 @@ jobs:
           APPDIR=AppDir
           tar -xvf *.tar.* && rm -rf *.tar.*
           mv zen/* $APPDIR/
-          wget https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+          wget "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
+          wget "https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-squashfs-lite-$ARCH"
           chmod +x *.AppImage
+          chmod +x ./uruntime-appimage-squashfs-lite-"$ARCH"
           chmod +x ./AppDir/AppRun
+
+          # keep the uruntime mountpoint (massively speeds up launch time)
+          sed -i 's|URUNTIME_MOUNT=[0-9]|URUNTIME_MOUNT=0|' ./uruntime-appimage-squashfs-lite-"$ARCH"
+
           echo "AppDir: $APPDIR"
           ls -al
           find .
           ls -al "$APPDIR"
-          ARCH=${{ matrix.arch }} ./appimagetool-x86_64.AppImage --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 10 \
-          -u "gh-releases-zsync|$GITHUB_REPOSITORY_OWNER|desktop|latest|zen-${{ matrix.arch }}.AppImage.zsync" \
-          "$APPDIR" zen-${{ matrix.arch }}.AppImage
+          ./appimagetool-x86_64.AppImage -u "$UPINFO" "$APPDIR" zen-"$ARCH".AppImage --runtime-file ./uruntime-appimage-squashfs-lite-"$ARCH"
           mkdir dist
           mv zen*AppImage* dist/.
+          unset ARCH
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
