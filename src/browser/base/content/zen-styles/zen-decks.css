@@ -276,6 +276,10 @@
   box-shadow: var(--zen-big-shadow);
   overflow: hidden;
 
+  &[side='right'] {
+    right: 0;
+  }
+
   &::after {
     content: '';
     position: absolute;
