@@ -80,7 +80,7 @@
   position: relative;
 }
 
-#urlbar:not([breakout-extend='true']) #identity-box:is(:not(.chromeUI), [pageproxystate='invalid']) {
+#urlbar:not([breakout-extend='true']) #identity-box {
   margin-inline-end: 0 !important;
 }
 
@@ -127,11 +127,11 @@
   box-shadow: 0px 0px 90px -10px rgba(0, 0, 0, 0.6) !important;
   border: 1px solid hsla(0, 0%, 100%, 0.1) !important;
   backdrop-filter: none !important;
-  border-radius: 1rem !important;
+  border-radius: 0.8rem !important;
 }
 
 #urlbar-go-button {
-  margin: auto 0;
+  display: none;
 }
 
 :root[zen-single-toolbar='true'] {
@@ -142,11 +142,11 @@
     display: none;
   }
 
-  #identity-icon-box:not([open]) {
-    margin-inline-start: calc(-8px - 2 * var(--urlbar-icon-padding)) !important;
+  #identity-box:not([pageproxystate='invalid']) #identity-icon-box:not([open]) {
+    margin-inline-start: calc(-8px - 2 * var(--urlbar-icon-padding));
     transform: translateX(100%);
-    opacity: 0;
     transition: all 0.1s ease;
+    opacity: 0;
   }
 
   #identity-permission-box > *:not(#permissions-granted-icon) {
@@ -162,9 +162,9 @@
       #identity-permission-box
     ),
   #urlbar:hover #identity-icon-box {
-    opacity: 1;
+    opacity: 1 !important;
     margin-inline-start: 0 !important;
-    transform: none;
+    transform: none !important;
     display: flex;
     #urlbar:not(:hover) & {
       transition: 0;
@@ -176,7 +176,7 @@
   }
 
   #urlbar:not([open]) {
-    #identity-box {
+    #identity-box:not([pageproxystate='invalid']) {
       order: 9;
     }
   }

@@ -373,6 +373,8 @@
   overflow-y: auto;
   height: 100%;
   scrollbar-width: thin;
+  margin-left: calc(-1 * var(--zen-toolbox-padding));
+  width: calc(100% + var(--zen-toolbox-padding) * 2);
 }
 
 #zen-browser-tabs-container {
@@ -439,7 +441,7 @@
     padding-right: 0;
 
     :root[zen-single-toolbar='true'] & {
-      & #urlbar:not([breakout-extend='true']) .urlbar-input-container {
+      & #urlbar:not([breakout-extend='true']):not([pageproxystate='invalid']) .urlbar-input-container {
         padding-left: 8px;
         padding-right: 4px;
       }
@@ -1260,5 +1262,9 @@
 .zen-workspace-tabs-section {
   position: absolute;
   transform: translateX(-100%);
-  min-width: 100%;
+  min-width: calc(100% - var(--zen-toolbox-padding) * 2);
+
+  &:not(.zen-current-workspace-indicator) {
+    margin: 0 var(--zen-toolbox-padding);
+  }
 }

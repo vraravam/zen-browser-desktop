@@ -452,6 +452,7 @@
 
 /* Mark workspaces indicator */
 #zen-current-workspace-indicator-container {
+  position: relative;
   margin-bottom: var(--zen-workspace-indicator-height);
 }
 
@@ -465,6 +466,7 @@
   align-items: center;
   flex-direction: row !important;
   max-width: 100%;
+  width: 100%;
 
   &::before {
     border-radius: var(--border-radius-medium);
