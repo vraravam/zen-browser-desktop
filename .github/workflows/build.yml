@@ -471,10 +471,6 @@ jobs:
           submodules: recursive
           token: ${{ secrets.DEPLOY_KEY }}
 
-      - name: Git pull
-        run: |
-          git pull
-
       - name: Download artifact
         uses: actions/download-artifact@v4
 
