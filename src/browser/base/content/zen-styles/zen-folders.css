@@ -60,7 +60,7 @@ tab-group[split-view-group] {
     }
   }
 
-  &:has(> tab[visuallyselected]) {
+  &:has(> tab:is([visuallyselected], [multiselected])) {
     background-color: var(--tab-selected-bgcolor);
     box-shadow: var(--tab-selected-shadow);
 
