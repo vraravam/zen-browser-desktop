@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabbrowser.js b/browser/components/tabbrowser/content/tabbrowser.js
-index 628aa6596627c85efe361fc1ece8fd58f7ee653e..c62727bad57eda3b9d9a73c1df739a92f194f0c2 100644
+index 628aa6596627c85efe361fc1ece8fd58f7ee653e..6bd5149f4be6c18cbf733b5b9ee01534af61bef9 100644
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -412,11 +412,50 @@
@@ -476,7 +476,7 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..c62727bad57eda3b9d9a73c1df739a92
 -        this.addTrustedTab(BROWSER_NEW_TAB_URL, {
 -          skipAnimation: true,
 -        });
-+        ZenWorkspaces.selectEmptyTab();
++        ZenWorkspaces.selectEmptyTab(BROWSER_NEW_TAB_URL);
        } else {
          TabBarVisibility.update();
        }
