@@ -305,7 +305,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     }
     this.fakeBrowser.classList.add('fade-out');
     const side = this.fakeBrowser.getAttribute('side');
-    gBrowser.selectedTab = this._draggingTab;
+    if (this._draggingTab) this._draggingTab.setAttribute('zen-has-splitted', 'true');
+    this._lastOpenedTab = gBrowser.selectedTab;
     this._draggingTab = null;
     try {
       Promise.all([
@@ -1522,7 +1523,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       delete this._hasAnimated;
       this.fakeBrowser.remove();
       this.fakeBrowser = null;
-      this._draggingTab._visuallySelected = false;
+      if (this._draggingTab) this._draggingTab._visuallySelected = false;
       if (select) {
         gBrowser.selectedTab = this._draggingTab;
         this._draggingTab = null;
@@ -1548,7 +1549,10 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     const dropSide = this.fakeBrowser?.getAttribute('side');
     const containerRect = this.fakeBrowser.getBoundingClientRect();
     const padding = Services.prefs.getIntPref('zen.theme.content-element-separation', 0);
-    const dropTarget = document.elementFromPoint(containerRect.left + containerRect.width + padding + 5, event.clientY);
+    const dropTarget = document.elementFromPoint(
+      side == 'left' ? containerRect.left + containerRect.width + padding + 5 : containerRect.left - padding - 5,
+      event.clientY
+    );
     const browser = dropTarget?.closest('browser');
 
     if (!browser) {
