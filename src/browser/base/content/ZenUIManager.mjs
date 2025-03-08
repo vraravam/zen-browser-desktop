@@ -347,33 +347,37 @@ var gZenVerticalTabsManager = {
       return visibleTabs[visibleTabs.length - 1] === aTab;
     };
 
-    const tabSize = aTab.getBoundingClientRect().height;
-    const transform = `-${tabSize}px`;
-    gZenUIManager.motion
-      .animate(
-        aTab,
-        {
-          opacity: [0, 1],
-          transform: ['scale(0.95)', 'scale(1)'],
-          marginBottom: isLastTab() ? [] : [transform, '0px'],
-        },
-        {
-          duration: 0.2,
-          easing: 'ease-out',
-        }
-      )
-      .then(() => {
-        aTab.style.removeProperty('margin-bottom');
-        aTab.style.removeProperty('transform');
-        aTab.style.removeProperty('opacity');
-      });
-    gZenUIManager.motion
-      .animate(aTab.querySelector('.tab-content'), {
-        filter: ['blur(1px)', 'blur(0px)'],
-      })
-      .then(() => {
-        aTab.querySelector('.tab-stack').style.removeProperty('filter');
-      });
+    try {
+      const tabSize = aTab.getBoundingClientRect().height;
+      const transform = `-${tabSize}px`;
+      gZenUIManager.motion
+        .animate(
+          aTab,
+          {
+            opacity: [0, 1],
+            transform: ['scale(0.95)', 'scale(1)'],
+            marginBottom: isLastTab() ? [] : [transform, '0px'],
+          },
+          {
+            duration: 0.2,
+            easing: 'ease-out',
+          }
+        )
+        .then(() => {
+          aTab.style.removeProperty('margin-bottom');
+          aTab.style.removeProperty('transform');
+          aTab.style.removeProperty('opacity');
+        });
+      gZenUIManager.motion
+        .animate(aTab.querySelector('.tab-content'), {
+          filter: ['blur(1px)', 'blur(0px)'],
+        })
+        .then(() => {
+          aTab.querySelector('.tab-stack').style.removeProperty('filter');
+        });
+    } catch (e) {
+      console.error(e);
+    }
   },
 
   get actualWindowButtons() {

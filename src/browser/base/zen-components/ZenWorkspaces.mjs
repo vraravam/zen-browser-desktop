@@ -628,7 +628,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
         (currentTab.isEmpty &&
           (currentTab.getAttribute('image') === gPageIcons[currentTabURL] || !currentTab.hasAttribute('image'))) ||
         currentTab.hasAttribute('zen-empty-tab') ||
-        currentTab._possibleEmptyTab
+        (currentTab._possibleEmptyTab && currentTab.isEmpty)
       ) {
         this.selectEmptyTab();
         this._removedByStartupPage = true;
