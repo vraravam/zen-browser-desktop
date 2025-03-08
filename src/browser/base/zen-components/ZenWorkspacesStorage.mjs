@@ -7,6 +7,7 @@ var ZenWorkspacesStorage = {
       Weave: 'resource://services-sync/main.sys.mjs',
     });
 
+    if (!window.ZenWorkspaces) return;
     await this._ensureTable();
     await ZenWorkspaceBookmarksStorage.init();
   },
