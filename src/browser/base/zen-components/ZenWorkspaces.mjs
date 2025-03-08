@@ -111,12 +111,13 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     );
   }
 
-  selectEmptyTab() {
+  selectEmptyTab(newTabTarget = null) {
     if (this._emptyTab && gZenVerticalTabsManager._canReplaceNewTab) {
       gBrowser.selectedTab = this._emptyTab;
       return this._emptyTab;
     }
-    let tab = gZenUIManager.openAndChangeToTab(Services.prefs.getStringPref('browser.startup.homepage'));
+    const newTabUrl = newTabTarget || Services.prefs.getStringPref('browser.startup.homepage');
+    let tab = gZenUIManager.openAndChangeToTab(newTabUrl);
     if (window.uuid) {
       tab.setAttribute('zen-workspace-id', this.activeWorkspace);
     }
