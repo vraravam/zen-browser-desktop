@@ -620,9 +620,9 @@ var gZenVerticalTabsManager = {
       }
 
       gZenCompactModeManager.updateCompactModeContext(isSingleToolbar);
-      document.getElementById("urlbar").removeAttribute('--urlbar-height');
+      document.getElementById('urlbar').removeAttribute('--urlbar-height');
       if (!isSingleToolbar) {
-        document.getElementById("urlbar").style.setProperty('--urlbar-height', '32px');
+        document.getElementById('urlbar').style.setProperty('--urlbar-height', '32px');
       } else {
         gURLBar.updateLayoutBreakout();
       }
