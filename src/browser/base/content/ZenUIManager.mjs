@@ -620,6 +620,12 @@ var gZenVerticalTabsManager = {
       }
 
       gZenCompactModeManager.updateCompactModeContext(isSingleToolbar);
+      document.getElementById("urlbar").removeAttribute('--urlbar-height');
+      if (!isSingleToolbar) {
+        document.getElementById("urlbar").style.setProperty('--urlbar-height', '32px');
+      } else {
+        gURLBar.updateLayoutBreakout();
+      }
 
       // Always move the splitter next to the sidebar
       this.navigatorToolbox.after(document.getElementById('zen-sidebar-splitter'));
