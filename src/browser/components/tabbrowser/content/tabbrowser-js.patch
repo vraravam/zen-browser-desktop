@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabbrowser.js b/browser/components/tabbrowser/content/tabbrowser.js
-index 628aa6596627c85efe361fc1ece8fd58f7ee653e..10960c3fb00a00dcdcc2e2658ebff24f25d2514c 100644
+index 628aa6596627c85efe361fc1ece8fd58f7ee653e..c62727bad57eda3b9d9a73c1df739a92f194f0c2 100644
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -412,11 +412,50 @@
@@ -352,16 +352,16 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..10960c3fb00a00dcdcc2e2658ebff24f
              tab.toggleAttribute("pinned", true);
              this.tabContainer._invalidateCachedTabs();
              // Then ensure all the tab open/pinning information is sent.
-@@ -3503,6 +3625,9 @@
-         let leftoverTab = this.selectedTab;
+@@ -3504,6 +3626,9 @@
          this.selectedTab = tabToSelect;
          this.removeTab(leftoverTab);
-+      } 
-+      else {
-+        this.selectedTab._possibleEmptyTab = true;
        }
++      else {
++        this.selectedTab._possibleEmptyTab = true; // Not needed, but just in case.
++      }
  
        if (tabs.length > 1 || !tabs[0].selected) {
+         this._updateTabsAfterInsert();
 @@ -3693,7 +3818,7 @@
        // Ensure we have an index if one was not provided.
        if (typeof index != "number") {

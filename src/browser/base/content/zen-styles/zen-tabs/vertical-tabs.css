@@ -373,8 +373,12 @@
   overflow-y: auto;
   height: 100%;
   scrollbar-width: thin;
-  margin-left: calc(-1 * var(--zen-toolbox-padding));
-  width: calc(100% + var(--zen-toolbox-padding) * 2);
+
+  /* Only do this hack if we have workspaces enabled */
+  :root[zen-workspace-id] & {
+    margin-left: calc(-1 * var(--zen-toolbox-padding));
+    width: calc(100% + var(--zen-toolbox-padding) * 2);
+  }
 }
 
 #zen-browser-tabs-container {
