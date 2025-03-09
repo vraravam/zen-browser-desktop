@@ -210,10 +210,10 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     if (!(event.clientX < panelsRect.left + panelsWidth / 4 || event.clientX > panelsRect.left + (panelsWidth / 4) * 3)) {
       return;
     }
+    dt.mozCursor = 'default';
     const oldTab = this._lastOpenedTab;
     this._canDrop = true;
-    // wait some time before showing the split view
-    this._showSplitViewTimeout = setTimeout(() => {
+    {
       this._draggingTab = draggedTab;
       gBrowser.selectedTab = oldTab;
       this._hasAnimated = true;
@@ -225,6 +225,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       const side = event.clientX > halfWidth ? 'right' : 'left';
       this.fakeBrowser = document.createXULElement('vbox');
       this.fakeBrowser.addEventListener('dragleave', this.onBrowserDragEndToSplit);
+      window.addEventListener('dragend', this.onBrowserDragEndToSplit, { once: true });
       const padding = Services.prefs.getIntPref('zen.theme.content-element-separation', 0);
       this.fakeBrowser.setAttribute('flex', '1');
       this.fakeBrowser.id = 'zen-split-view-fake-browser';
@@ -271,7 +272,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
           draggedTab._visuallySelected = true;
         });
       }
-    }, 100);
+    }
   }
 
   onBrowserDragEndToSplit(event) {
@@ -290,9 +291,6 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       (event.screenX === 0 && event.screenY === 0) // It's equivalent to 0 if the event has been dropped
     ) {
       return;
-    }
-    if (this._showSplitViewTimeout) {
-      clearTimeout(this._showSplitViewTimeout);
     }
     if (!this._hasAnimated || !this.fakeBrowser) {
       return;
