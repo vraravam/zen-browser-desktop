@@ -437,6 +437,13 @@ pref("browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features", false
 pref("browser.preferences.moreFromMozilla", false, locked);
 pref("browser.aboutwelcome.enabled", false);
 
+// AI/ML stuff
+pref("browser.ml.chat.enabled", false);
+pref("browser.ml.chat.shortcuts", false);
+pref("browser.ml.chat.shortcuts.custom", false);
+pref("browser.ml.chat.sidebar", false);
+pref("browser.ml.enable", false);
+
 // ---- Experimental settings to try make zen faster
 pref("gfx.canvas.accelerated.cache-items", 32768);
 pref("gfx.canvas.accelerated.cache-size", 256);
