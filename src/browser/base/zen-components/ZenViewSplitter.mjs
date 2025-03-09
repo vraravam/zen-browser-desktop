@@ -1550,7 +1550,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     const containerRect = this.fakeBrowser.getBoundingClientRect();
     const padding = Services.prefs.getIntPref('zen.theme.content-element-separation', 0);
     const dropTarget = document.elementFromPoint(
-      side == 'left' ? containerRect.left + containerRect.width + padding + 5 : containerRect.left - padding - 5,
+      dropSide === 'left' ? containerRect.left + containerRect.width + padding + 5 : containerRect.left - padding - 5,
       event.clientY
     );
     const browser = dropTarget?.closest('browser');
