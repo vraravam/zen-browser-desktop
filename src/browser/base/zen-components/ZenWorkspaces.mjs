@@ -1405,15 +1405,16 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   _deleteAllTabsInWorkspace(workspaceID) {
-    for (let tab of this.allStoredTabs) {
-      if (tab.getAttribute('zen-workspace-id') === workspaceID) {
-        gBrowser.removeTab(tab, {
-          animate: false,
-          skipSessionStore: true,
-          closeWindowWithLastTab: false,
-        });
+    gBrowser.removeTabs(
+      Array.from(gBrowser.tabs).filter(
+        (tab) => tab.getAttribute('zen-workspace-id') === workspaceID && !tab.hasAttribute('zen-empty-tab')
+      ),
+      {
+        animate: false,
+        skipSessionStore: true,
+        closeWindowWithLastTab: false,
       }
-    }
+    );
   }
 
   moveTabToWorkspace(tab, workspaceID) {
